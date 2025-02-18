@@ -1,9 +1,10 @@
 {
-    "name": "csc14005-tiawai",
+    "name": "csc13010-tiawai",
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "prepare": "husky install"
+        "prepare": "husky install",
+        "lint-staged": "lint-staged"
     },
     "type": "module",
     "keywords": [],
@@ -30,12 +31,5 @@
         "lint-staged": "^15.2.10",
         "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.8"
-    },
-    "dependencies": {
-        "compression": "^1.7.5",
-        "cookie-parser": "^1.4.7",
-        "csc14005-tiawai": "file:",
-        "helmet": "^8.0.0",
-        "morgan": "^1.10.0"
     }
 }
