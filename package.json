@@ -1,0 +1,41 @@
+{
+    "name": "csc14005-tiawai",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "prepare": "husky install"
+    },
+    "type": "module",
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "lint-staged": {
+        "*.{css,scss}": [
+            "prettier --ignore-path .eslintignore --single-quote --tab-width 4 --write"
+        ],
+        "*.{js,jsx,ts,tsx}": [
+            "prettier --ignore-path .eslintignore --single-quote --tab-width 4 --trailing-comma all --write"
+        ],
+        "*.json": [
+            "prettier --ignore-path .eslintignore --write"
+        ],
+        "*.{html,md,yml}": [
+            "prettier --ignore-path .eslintignore --single-quote --write"
+        ]
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.6.1",
+        "@commitlint/config-conventional": "^19.6.0",
+        "husky": "^9.1.6",
+        "lint-staged": "^15.2.10",
+        "prettier": "^3.3.3",
+        "prettier-plugin-tailwindcss": "^0.6.8"
+    },
+    "dependencies": {
+        "compression": "^1.7.5",
+        "cookie-parser": "^1.4.7",
+        "csc14005-tiawai": "file:",
+        "helmet": "^8.0.0",
+        "morgan": "^1.10.0"
+    }
+}
