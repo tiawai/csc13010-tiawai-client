@@ -3,9 +3,9 @@ import { useRouter } from 'next/navigation';
 import { useSignUpMutation } from '@/services/auth';
 import { Form, Input, Checkbox, notification } from 'antd';
 import { FormButtonGradient } from '@/components/auth/ui/form-ui';
-import { TermAndPolicy } from '@/ui/auth';
+import { TermAndPolicy } from '@/components/auth/ui/term-and-policy';
 
-const FormSignUp = () => {
+const FormSignUp = ({ role }: { role: number }) => {
     const [form] = Form.useForm();
     const router = useRouter();
     const [SignUp, { isLoading }] = useSignUpMutation();
@@ -13,6 +13,7 @@ const FormSignUp = () => {
     const onFinish = async () => {
         const formData = form.getFieldsValue();
         const res = await SignUp(formData);
+        console.log(role);
 
         if (!res.error) {
             notification.success({

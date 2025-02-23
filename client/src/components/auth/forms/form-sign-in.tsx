@@ -10,11 +10,7 @@ import { useAppDispatch } from '@/lib/hooks/hook';
 import { FormButtonGradient } from '@/components/auth/ui/form-ui';
 const { Paragraph } = Typography;
 
-interface FormSignInProps {
-    role: number;
-}
-
-const FormSignIn = ({ role }: FormSignInProps) => {
+const FormSignIn = () => {
     const [form] = Form.useForm();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +86,6 @@ const FormSignIn = ({ role }: FormSignInProps) => {
             initialValues={{ remember: true }}
             onFinish={onFinish}
         >
-            {role}
             <Form.Item
                 name="username"
                 rules={[
@@ -140,4 +135,3 @@ const FormSignIn = ({ role }: FormSignInProps) => {
 };
 
 export { FormSignIn };
-export type { FormSignInProps };
