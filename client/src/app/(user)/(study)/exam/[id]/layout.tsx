@@ -1,13 +1,15 @@
-"use client";
+/* eslint-disable */
 
-import ExamProvider from "@/context/exam";
+import ExamProvider from '@/context/exam';
 
-export default function ExamLayout({
+export default async function ExamLayout({
     params,
     children,
 }: {
-    params: { id: number };
+    params: Promise<{ id: string }>;
     children: React.ReactNode;
 }) {
-    return <ExamProvider id={params.id}>{children}</ExamProvider>;
+    return (
+        <ExamProvider id={Number((await params).id)}>{children}</ExamProvider>
+    );
 }
