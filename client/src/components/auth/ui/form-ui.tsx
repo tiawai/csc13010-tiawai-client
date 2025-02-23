@@ -78,7 +78,7 @@ export const FormLayout = ({
         >
             {showBackground && (
                 <Image
-                    className="flex-[1] -translate-x-12 -translate-y-12 object-contain"
+                    className="flex-[1] -translate-x-4 -translate-y-16 scale-125 object-contain"
                     src={formBackground}
                     alt="circle1"
                 />
