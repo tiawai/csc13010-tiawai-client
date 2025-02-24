@@ -1,6 +1,6 @@
-"use client";
-import { useState } from "react";
-import { Button, Modal } from "antd";
+'use client';
+import { useState } from 'react';
+import { Button, Modal } from 'antd';
 
 export const TermAndPolicy = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,7 +19,7 @@ export const TermAndPolicy = () => {
 
     return (
         <>
-            Tôi đã đọc và chấp nhận{" "}
+            Tôi đã đọc và chấp nhận{' '}
             <Button
                 className="!m-0 !inline !p-0"
                 type="link"
