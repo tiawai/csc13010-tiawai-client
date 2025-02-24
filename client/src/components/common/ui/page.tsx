@@ -2,7 +2,7 @@ import {
     BannerBackground,
     BannerLayout,
     BannerTitle,
-} from '@/components/common/banner';
+} from '@/components/common/ui/banner';
 import { twJoin } from 'tailwind-merge';
 import Image, { StaticImageData } from 'next/image';
 

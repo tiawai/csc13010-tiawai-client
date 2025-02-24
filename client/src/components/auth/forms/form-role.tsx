@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { FormTitle } from '@/components/auth/ui/form-ui';
+import { FormTitle } from '@/components/auth/ui/form';
 import { twMerge } from 'tailwind-merge';
 import circle1 from '@public/big-generate-btn-icon.svg';
 import Title from 'antd/es/typography/Title';

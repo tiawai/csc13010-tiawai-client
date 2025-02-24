@@ -1,4 +1,4 @@
-import { PageLayout, PageTitle } from '@/components/common/page-ui';
+import { PageLayout, PageTitle } from '@/components/common/ui/page';
 import { PageContent } from './page-content';
 import profileTiawai from '@public/profile-tiawai.webp';
 

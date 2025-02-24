@@ -1,4 +1,4 @@
-import { FormLayout, FormTitle } from '@/components/auth/ui/form-ui';
+import { FormLayout, FormTitle } from '@/components/auth/ui/form';
 import { FormResetPassword } from '@/components/auth/forms/form-reset-passowrd';
 
 export default function ResetPasswordPage() {

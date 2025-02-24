@@ -4,7 +4,7 @@ import { Flex, Space, Typography } from 'antd';
 import Banner from '@/app/(user)/(study)/_ui/banner';
 import TestBox from '@/app/(user)/(study)/_ui/test-box';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import { BannerTitle } from '@/components/common/banner';
+import { BannerTitle } from '@/components/common/ui/banner';
 import { useGetExamsQuery } from '@/services/exam';
 const { Title } = Typography;
 

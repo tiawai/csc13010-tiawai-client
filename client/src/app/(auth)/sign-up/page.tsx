@@ -4,7 +4,7 @@ import {
     FormLayout,
     FormTitle,
     FormNavigation,
-} from '@/components/auth/ui/form-ui';
+} from '@/components/auth/ui/form';
 import { FormSignUp } from '@/components/auth/forms/form-sign-up';
 import { FormRole } from '@/components/auth/forms/form-role';
 
