@@ -1,9 +1,9 @@
-import { Flex } from "antd";
-import { twJoin } from "tailwind-merge";
+import { Flex } from 'antd';
+import { twJoin } from 'tailwind-merge';
 
 const Banner = ({
     children,
-    className = "",
+    className = '',
 }: Readonly<{
     children: React.ReactNode;
     className?: string;
@@ -12,13 +12,9 @@ const Banner = ({
         <Flex
             align="center"
             justify="center"
-            style={{
-                background:
-                    "linear-gradient(247deg,#BAEEF1 0.85%,#EFDBEE 89.91%)",
-                boxShadow: "0px 4px 154px 0px rgba(44, 21, 73, 0.25)",
-            }}
-            className={twJoin("mx-auto p-8", className)}
+            className={twJoin('relative mx-auto rounded-3xl p-8', className)}
         >
+            <div className="absolute bottom-0 left-0 right-0 top-0 z-[-1] rounded-2xl bg-gradient-to-br from-[#BAEEF1] to-[#EFDBEE] blur-xl"></div>
             {children}
         </Flex>
     );

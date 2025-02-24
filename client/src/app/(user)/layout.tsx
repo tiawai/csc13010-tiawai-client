@@ -1,16 +1,24 @@
-import Header from "@/ui/common/header";
-import ChatButton from "@/ui/chat-button";
+// import dynamic from "next/dynamic";
+import { Suspense } from 'react';
+import Header from '@/ui/common/header';
+import ChatButton from '@/ui/chat-button';
 
-export default function Userlayout({
+export default async function UserLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="m-auto max-w-[1440px] items-center space-y-12 p-4">
+        <main>
             <Header />
-            <ChatButton />
-            <div className="m-auto !mt-20 max-w-[1320px]">{children}</div>
-        </div>
+
+            <Suspense>
+                <ChatButton />
+            </Suspense>
+
+            <div className="m-auto !mt-28 max-w-[1320px] px-4">
+                <Suspense>{children}</Suspense>
+            </div>
+        </main>
     );
 }
