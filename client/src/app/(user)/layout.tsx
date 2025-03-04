@@ -1,6 +1,6 @@
 // import dynamic from "next/dynamic";
 import { Suspense } from 'react';
-import Header from '@/ui/common/header';
+import Header from '@/components/common/header';
 import ChatButton from '@/ui/chat-button';
 
 export default async function UserLayout({

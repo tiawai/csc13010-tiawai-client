@@ -1,4 +1,4 @@
-import Header from "@/ui/common/header";
+import Header from '@/components/common/header';
 
 export default function Userlayout({
     children,
