@@ -100,7 +100,7 @@ export default function Paraphrasing() {
                 </i>
             </Title>
 
-            <div className="m-auto rounded-xl border border-black">
+            <div className="m-auto mb-5 rounded-xl border border-black">
                 <div className="flex translate-y-4 items-start justify-center gap-4 px-4">
                     <Title
                         className="!mt-3 rounded-full bg-[#DAE3E9] px-4 py-1 !font-bold"
