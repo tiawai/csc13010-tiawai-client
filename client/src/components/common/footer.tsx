@@ -1,11 +1,11 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import logo from '@public/logo.svg';
-import clock from '@public/footer/clock.svg';
-import email from '@public/footer/email.svg';
-import phone from '@public/footer/phone.svg';
-import map from '@public/footer/map.svg';
 import { Row, Col } from 'antd';
+import {
+    ClockCircleOutlined,
+    MailOutlined,
+    PhoneOutlined,
+    PushpinOutlined,
+} from '@ant-design/icons';
 
 const services = [
     { name: 'Kỹ Năng IELTS', link: '/' },
@@ -16,35 +16,33 @@ const services = [
 ];
 
 const contactInfo = [
-    { icon: map, alt: 'address', text: '222 Nguyễn Văn Cừ, Quận 5' },
-    { icon: phone, alt: 'phone', text: '0912982282' },
-    { icon: email, alt: 'email', text: 'tiawai.co@gmail.com' },
     {
-        icon: clock,
-        alt: 'clock',
+        icon: <PushpinOutlined className="text-xl" />,
+        text: '222 Nguyễn Văn Cừ, Quận 5',
+    },
+    {
+        icon: <PhoneOutlined className="text-xl" />,
+        text: '0912982282',
+    },
+    {
+        icon: <MailOutlined className="text-xl" />,
+        text: 'tiawai.co@gmail.com',
+    },
+    {
+        icon: <ClockCircleOutlined className="text-xl" />,
         text: 'Thứ 2 - Chủ Nhật / 10:00 AM - 8:00 PM',
     },
 ];
 
 const Footer = () => {
     return (
-        <footer className="cursor-default bg-[#E9DAE9] py-5">
+        <footer className="mt-5 cursor-default bg-[#E9DAE9] py-5">
             <div className="mx-auto max-w-[1320px] px-6">
                 <Row gutter={[32, 32]}>
                     <Col xs={24} md={8}>
-                        <Link href="/" className="flex items-center gap-3">
-                            <div className="rounded-full bg-[#5369A1] p-2">
-                                <Image
-                                    src={logo}
-                                    alt="logo"
-                                    width={40}
-                                    height={40}
-                                />
-                            </div>
-                            <h4 className="font-chango text-lg font-normal text-black">
-                                tiawai
-                            </h4>
-                        </Link>
+                        <h4 className="font-chango text-lg font-normal text-black">
+                            tiawai
+                        </h4>
                         <p className="mt-2 text-xl font-bold">
                             Nền tảng học Tiếng Anh với AI
                         </p>
@@ -78,12 +76,7 @@ const Footer = () => {
                                     key={index}
                                     className="flex items-center gap-2"
                                 >
-                                    <Image
-                                        src={item.icon}
-                                        alt={item.alt}
-                                        width={25}
-                                        height={25}
-                                    />
+                                    {item.icon}
                                     {item.text}
                                 </li>
                             ))}
@@ -91,7 +84,6 @@ const Footer = () => {
                     </Col>
                 </Row>
 
-                {/* Copyright */}
                 <p className="mt-6 text-center text-sm text-gray-600">
                     © 2025 tiawai
                 </p>

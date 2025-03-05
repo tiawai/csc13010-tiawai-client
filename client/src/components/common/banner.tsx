@@ -32,4 +32,8 @@ const BannerTitle = ({ title }: { title: string }) => (
     <Title className="!text-5xl !font-bold !leading-snug">{title}</Title>
 );
 
-export { BannerBackground, BannerLayout, BannerTitle };
+const BannerSubTitle = ({ title }: { title: string }) => (
+    <Title className="!text-2xl !font-light !leading-snug">{title}</Title>
+);
+
+export { BannerBackground, BannerLayout, BannerTitle, BannerSubTitle };
