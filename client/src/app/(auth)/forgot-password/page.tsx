@@ -1,10 +1,10 @@
-"use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Form, Input, Button, Typography, notification } from "antd";
-import { FormLayout } from "@/ui/form";
-import { FormTitle } from "@/ui/common/title";
-import { usePasswordRecoveryMutation } from "@/services/auth";
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Form, Input, Button, Typography, notification } from 'antd';
+import { FormLayout } from '@/ui/form';
+import { FormTitle } from '@/ui/components/title';
+import { usePasswordRecoveryMutation } from '@/services/auth';
 const { Paragraph } = Typography;
 
 export default function ForgotPasswordPage() {
@@ -18,15 +18,15 @@ export default function ForgotPasswordPage() {
 
         if (!res.error) {
             notification.success({
-                message: "Gửi OTP thành công",
+                message: 'Gửi OTP thành công',
                 description:
-                    "Mã OTP đã được gửi đến email của bạn.\nĐang chuyển hướng...",
+                    'Mã OTP đã được gửi đến email của bạn.\nĐang chuyển hướng...',
             });
-            router.push("/reset-password?email=" + btoa(email));
+            router.push('/reset-password?email=' + btoa(email));
         } else {
             notification.error({
-                message: "Gửi OTP thất bại",
-                description: "Có lỗi xảy ra khi gửi OTP.",
+                message: 'Gửi OTP thất bại',
+                description: 'Có lỗi xảy ra khi gửi OTP.',
             });
         }
     };
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
             >
                 <FormTitle>Quên mật khẩu</FormTitle>
 
-                <Paragraph style={{ textAlign: "center" }}>
+                <Paragraph style={{ textAlign: 'center' }}>
                     Vui lòng nhập email để nhận mã OTP.
                 </Paragraph>
 
@@ -52,7 +52,7 @@ export default function ForgotPasswordPage() {
                     rules={[
                         {
                             required: true,
-                            message: "Email không được bỏ trống",
+                            message: 'Email không được bỏ trống',
                         },
                     ]}
                 >
@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
                 </Form.Item>
 
                 <Paragraph className="!text-center">
-                    Nhớ mật khẩu?{" "}
+                    Nhớ mật khẩu?{' '}
                     <Link href="/sign-in">
                         <strong>Đăng nhập</strong>
                     </Link>

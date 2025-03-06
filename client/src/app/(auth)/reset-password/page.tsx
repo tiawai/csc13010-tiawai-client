@@ -1,9 +1,9 @@
-"use client";
-import { useSearchParams, useRouter } from "next/navigation";
-import { Form, Input, Button, notification } from "antd";
-import { FormLayout } from "@/ui/form";
-import { FormTitle } from "@/ui/common/title";
-import { useResetPasswordMutation } from "@/services/auth";
+'use client';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Form, Input, Button, notification } from 'antd';
+import { FormLayout } from '@/ui/form';
+import { FormTitle } from '@/ui/components/title';
+import { useResetPasswordMutation } from '@/services/auth';
 
 export default function ResetPasswordPage() {
     const params = useSearchParams();
@@ -13,12 +13,12 @@ export default function ResetPasswordPage() {
 
     const onFinish = async () => {
         const { otp, newPassword, confirmPassword } = form.getFieldsValue();
-        const email = params.get("email") || "";
+        const email = params.get('email') || '';
 
-        if (email == "" || !(btoa(atob(email)) === email)) {
+        if (email == '' || !(btoa(atob(email)) === email)) {
             notification.error({
-                message: "Khôi phục mật khẩu thất bại",
-                description: "URL không hợp lệ.",
+                message: 'Khôi phục mật khẩu thất bại',
+                description: 'URL không hợp lệ.',
             });
             return;
         }
@@ -32,15 +32,15 @@ export default function ResetPasswordPage() {
 
         if (!res.error) {
             notification.success({
-                message: "Khôi phục mật khẩu thành công",
+                message: 'Khôi phục mật khẩu thành công',
                 description:
-                    "Mật khẩu của bạn đã được cập nhật.\nĐang chuyển hướng đến trang đăng nhập...",
+                    'Mật khẩu của bạn đã được cập nhật.\nĐang chuyển hướng đến trang đăng nhập...',
             });
-            router.push("/sign-in");
+            router.push('/sign-in');
         } else {
             notification.error({
-                message: "Khôi phục mật khẩu thất bại",
-                description: "Có lỗi xảy ra.",
+                message: 'Khôi phục mật khẩu thất bại',
+                description: 'Có lỗi xảy ra.',
             });
         }
     };
@@ -62,11 +62,11 @@ export default function ResetPasswordPage() {
                     rules={[
                         {
                             required: true,
-                            message: "OTP không được bỏ trống",
+                            message: 'OTP không được bỏ trống',
                         },
                         {
                             len: 6,
-                            message: "OTP phải gồm 6 chữ số",
+                            message: 'OTP phải gồm 6 chữ số',
                         },
                     ]}
                 >
@@ -76,10 +76,10 @@ export default function ResetPasswordPage() {
                 <Form.Item
                     name="newPassword"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mật khẩu" },
+                        { required: true, message: 'Vui lòng nhập mật khẩu' },
                         {
                             min: 5,
-                            message: "Mật khẩu phải có ít nhất 5 ký tự",
+                            message: 'Mật khẩu phải có ít nhất 5 ký tự',
                         },
                     ]}
                 >
@@ -91,22 +91,22 @@ export default function ResetPasswordPage() {
 
                 <Form.Item
                     name="confirmPassword"
-                    dependencies={["password"]}
+                    dependencies={['password']}
                     rules={[
                         {
                             required: true,
-                            message: "Vui lòng xác nhận mật khẩu",
+                            message: 'Vui lòng xác nhận mật khẩu',
                         },
                         ({ getFieldValue }) => ({
                             validator(_, value) {
                                 if (
                                     !value ||
-                                    getFieldValue("newPassword") === value
+                                    getFieldValue('newPassword') === value
                                 ) {
                                     return Promise.resolve();
                                 }
                                 return Promise.reject(
-                                    new Error("Mật khẩu xác nhận không khớp"),
+                                    new Error('Mật khẩu xác nhận không khớp'),
                                 );
                             },
                         }),

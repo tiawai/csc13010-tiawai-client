@@ -5,7 +5,7 @@ import GenerateButton from '@/ui/generate-button';
 import Banner from '@/app/(user)/(study)/_ui/banner';
 import TestBox from '@/app/(user)/(study)/_ui/test-box';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import { BannerTitle } from '@/ui/common/title';
+import { BannerTitle } from '@/ui/components/title';
 const { Title } = Typography;
 import { useGetExamPracticesQuery } from '@/services/exam';
 import { useState } from 'react';

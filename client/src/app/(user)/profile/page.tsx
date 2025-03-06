@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { Card, Flex, Form, FormProps, Input, Space } from 'antd';
 import Banner from '@/app/(user)/(study)/_ui/banner';
-import { BannerTitle } from '@/ui/common/title';
+import { BannerTitle } from '@/ui/components/title';
 import profileTiawai from '@public/profile-tiawai.webp';
 import UserCard from '@/ui/profile/user-card';
 import InfoCard from '@/ui/profile/info-card';

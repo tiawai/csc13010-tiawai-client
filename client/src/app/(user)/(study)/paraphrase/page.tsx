@@ -4,7 +4,7 @@ import { Input, Button, Typography, Tabs, notification, Space } from 'antd';
 import type { TabsProps } from 'antd';
 import Banner from '@/app/(user)/(study)/_ui/banner';
 import Image from 'next/image';
-import { BannerTitle } from '@/ui/common/title';
+import { BannerTitle } from '@/ui/components/title';
 import { useParaphraseMutation } from '@/services/ai';
 import bigTiawai from '@public/big-tiawai.svg';
 

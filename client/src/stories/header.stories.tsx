@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import Header from "../ui/common/header";
+import type { Meta, StoryObj } from '@storybook/react';
+import Header from '../ui/components/header';
 
 const meta: Meta<typeof Header> = {
-    title: "Example/Header",
+    title: 'Example/Header',
     component: Header,
     parameters: {
-        layout: "fullscreen",
+        layout: 'fullscreen',
     },
-    tags: ["autodocs"],
+    tags: ['autodocs'],
     argTypes: {
-        backgroundColor: { control: "color" },
-        onClick: { action: "clicked" },
+        backgroundColor: { control: 'color' },
+        onClick: { action: 'clicked' },
     },
 };
 

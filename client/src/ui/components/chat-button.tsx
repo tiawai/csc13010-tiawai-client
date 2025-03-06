@@ -1,6 +1,6 @@
-"use client";
-import Image from "next/image";
-import { useEffect, useState } from "react";
+'use client';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import {
     ConfigProvider,
     FloatButton,
@@ -11,24 +11,24 @@ import {
     Flex,
     Avatar,
     Skeleton,
-} from "antd";
-import { SendOutlined, CloseOutlined, UserOutlined } from "@ant-design/icons";
-import chatIcon from "@public/chat-icon.svg";
-import logo from "@public/logo.svg";
+} from 'antd';
+import { SendOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
+import chatIcon from '@public/chat-icon.svg';
+import logo from '@public/logo.svg';
 import {
     useSendMessageMutation,
     useGetBotAnswerMutation,
     useGetMessagesBySessionQuery,
-} from "@/services/chat";
-import { useAppSelector } from "@/lib/hooks/hook";
-import { Message } from "@/types/chat";
+} from '@/services/chat';
+import { useAppSelector } from '@/lib/hooks/hook';
+import { Message } from '@/types/chat';
 const { Title, Text } = Typography;
 
 const ChatButton = () => {
     const user = useAppSelector((state) => state.auth.user);
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
     const { data: messages, isLoading: isMessagesLoading } =
-        useGetMessagesBySessionQuery(chatSessionId || "", {
+        useGetMessagesBySessionQuery(chatSessionId || '', {
             skip: !chatSessionId,
         });
     const [isOpen, setIsOpen] = useState(false);
@@ -38,11 +38,11 @@ const ChatButton = () => {
     const [chatMessages, setChatMessages] = useState<Message[]>([
         {
             content:
-                "Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn ?",
+                'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn ?',
             isBot: true,
         },
     ]);
-    const [inputMessage, setInputMessage] = useState<string>("");
+    const [inputMessage, setInputMessage] = useState<string>('');
     const [needBotAnswer, setNeedBotAnswer] = useState(false);
     useEffect(() => {
         const getBotResponse = async () => {
@@ -78,7 +78,7 @@ const ChatButton = () => {
                 content: inputMessage,
                 isBot: false,
             }).unwrap();
-            setInputMessage("");
+            setInputMessage('');
             setNeedBotAnswer(true);
         } catch (error) {
             console.error(error);
@@ -90,7 +90,7 @@ const ChatButton = () => {
         <ConfigProvider
             theme={{
                 token: {
-                    colorPrimary: "#5369A1",
+                    colorPrimary: '#5369A1',
                     fontSizeIcon: 48,
                     controlHeight: 56.8,
                 },
@@ -109,7 +109,7 @@ const ChatButton = () => {
                 badge={{
                     count: 1,
                     showZero: false,
-                    offset: ["-1rem", "0.125rem"],
+                    offset: ['-1rem', '0.125rem'],
                 }}
                 className="transition-all hover:scale-110"
                 onClick={toggleChat}
@@ -157,19 +157,19 @@ const ChatButton = () => {
                             <Flex
                                 key={index}
                                 vertical
-                                align={msg.isBot ? "start" : "end"}
+                                align={msg.isBot ? 'start' : 'end'}
                                 className="mb-3"
                             >
                                 <Flex align="center">
                                     <Text
                                         className={`mb-1 max-w-[90%] rounded-xl p-2 text-justify ${
                                             msg.isBot
-                                                ? "ml-3 bg-[#E8EBF0]"
-                                                : "mr-3 bg-[#D1E6F0]"
+                                                ? 'ml-3 bg-[#E8EBF0]'
+                                                : 'mr-3 bg-[#D1E6F0]'
                                         }`}
                                         style={{
-                                            whiteSpace: "pre-wrap",
-                                            wordBreak: "break-word",
+                                            whiteSpace: 'pre-wrap',
+                                            wordBreak: 'break-word',
                                         }}
                                     >
                                         {msg.content}
@@ -201,7 +201,7 @@ const ChatButton = () => {
                             <Flex vertical align="start" className="mb-3">
                                 <Skeleton.Input
                                     active
-                                    style={{ width: "90%" }}
+                                    style={{ width: '90%' }}
                                     className="!ml-2 !rounded-xl"
                                 />
                                 <Image
@@ -223,7 +223,7 @@ const ChatButton = () => {
                             value={inputMessage}
                             onChange={(e) => setInputMessage(e.target.value)}
                             placeholder="Viết tin nhắn của bạn"
-                            style={{ borderRadius: "1.5rem" }}
+                            style={{ borderRadius: '1.5rem' }}
                             className="!rounded-xl !bg-[#E8EBF0] !pl-4 !pr-8 !placeholder-black/75"
                         />
 

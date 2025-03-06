@@ -1,16 +1,17 @@
-import Header from "@/ui/common/header";
-import ChatButton from "@/ui/chat-button";
-
+import Header from '@/ui/components/header';
+import ChatButton from '@/ui/components/chat-button';
+import Footer from '@/ui/components/footer';
 export default function Userlayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="m-auto max-w-[1440px] items-center space-y-12 p-4">
+        <div className="relative m-auto items-center px-4 pt-4">
             <Header />
             <ChatButton />
-            <div className="m-auto !mt-20 max-w-[1320px]">{children}</div>
+            <div className="m-auto !mt-20 mb-32 max-w-[1320px]">{children}</div>
+            <Footer />
         </div>
     );
 }

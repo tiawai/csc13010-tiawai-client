@@ -1,5 +1,5 @@
-"use client";
-import { Typography } from "antd";
+'use client';
+import { Typography } from 'antd';
 const { Title } = Typography;
 
 export const FormTitle = ({ children }: { children: React.ReactNode }) => (

@@ -1,36 +1,19 @@
-"use client";
-import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
-import { Flex, Space, Typography, Empty } from "antd";
-import Image from "next/image";
-import Link from "next/link";
-import IconFrame from "@/ui/icon-frame";
-import ExamFrame from "@/ui/exam-frame";
-import GenerateButton from "@/ui/generate-button";
-import homeMainImg from "@public/home-main-img.svg";
-import home7Svg from "@public/home-7.svg";
-import bigTiawai from "@public/big-tiawai.svg";
-import homeIconBg2 from "@public/home-icon-bg-2.svg";
-import home11 from "@public/home-11.png";
-import homeGradientBg from "@public/home-gradient-bg.svg";
-import FeaturesBox from "@/ui/home/features-box";
-import { Exam } from "@/types/exam";
-const { Title } = Typography;
-
-const mainHighlights = [
-    {
-        src: "/home-9.png",
-        alt: "home icon 9",
-        title: "Dễ dàng sử dụng",
-        description: "Thao tác đơn giản",
-    },
-    {
-        src: "/home-10.png",
-        alt: "home icon 10",
-        title: "Trải nghiệm học vui vẻ",
-        description:
-            "Các bài tập dưới dạng trò chơi mang lại trải nghiệm khác biệt",
-    },
-];
+'use client';
+// import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
+import { Flex, Space, Typography, Empty, Row, Col } from 'antd';
+import Image from 'next/image';
+import Link from 'next/link';
+import IconFrame from '@/ui/icon-frame';
+import ExamFrame from '@/ui/exam-frame';
+import GenerateButton from '@/ui/generate-button';
+import homeMainImg from '@public/home/home-main-img.svg';
+import bigTiawai from '@public/home/big-tiawai.png';
+import FeaturesBox from '@/ui/home/features-box';
+import { Exam } from '@/types/exam';
+import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/string/home';
+import { CheckCircleFilled } from '@ant-design/icons';
+import homeCircle1 from '@public/home/home-circle-1.svg';
+const { Title, Paragraph } = Typography;
 
 export interface ExamData {
     key: string;
@@ -38,60 +21,217 @@ export interface ExamData {
     tests: Exam[];
 }
 
+const examData: ExamData[] = [
+    {
+        key: 'exam',
+        type: 'Đề thi thử theo mẫu THPTQG',
+        tests: [
+            {
+                id: 1,
+                title: 'Đề thi thử số 1',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 2,
+                title: 'Đề thi thử số 2',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 3,
+                title: 'Đề thi thử số 3',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 4,
+                title: 'Đề thi thử số 4',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+        ],
+    },
+    {
+        key: 'practice',
+        type: 'Bài tập chuyên đề',
+        tests: [
+            {
+                id: 1,
+                title: 'Bài tập chuyên đề số 1',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 2,
+                title: 'Bài tập chuyên đề số 2',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 3,
+                title: 'Bài tập chuyên đề số 3',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 4,
+                title: 'Bài tập chuyên đề số 4',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+        ],
+    },
+];
+
+const Heading: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return (
+        <Title className="font-montserrat !text-5xl !font-black capitalize !leading-[1.17] !text-[#0E2A46]">
+            {children}
+        </Title>
+    );
+};
+
+const Description: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return (
+        <Paragraph className="color-[#333931] font-montserrat text-2xl">
+            {children}
+        </Paragraph>
+    );
+};
+
 export default function Home() {
-    const { data, isLoading } = useGetExamsQuery();
-    const { data: practiceData } = useGetExamPracticesQuery();
+    // const { data, isLoading } = useGetExamsQuery();
+    // const { data: practiceData } = useGetExamPracticesQuery();
 
-    if (isLoading || !data || !practiceData) return;
+    // if (isLoading || !data || !practiceData) return;
 
-    const examData: ExamData[] = [
-        {
-            key: "exam",
-            type: "Đề thi thử theo mẫu THPTQG",
-            tests: data,
-        },
-        {
-            key: "practice",
-            type: "Bài tập chuyên đề",
-            tests: practiceData,
-        },
-    ];
+    // const examData: ExamData[] = [
+    //     {
+    //         key: "exam",
+    //         type: "Đề thi thử theo mẫu THPTQG",
+    //         tests: data,
+    //     },
+    //     {
+    //         key: "practice",
+    //         type: "Bài tập chuyên đề",
+    //         tests: practiceData,
+    //     },
+    // ];
 
     return (
         <main
             className={`flex select-none flex-col items-center justify-center`}
         >
-            <Image
-                className="absolute bottom-0 left-0 right-0 top-0 -z-50 max-h-[3100px] w-svw"
-                src={homeGradientBg}
-                alt="home gradient bg"
+            <div
+                className="absolute -left-10 -right-10 -top-10 -z-50 h-[800px] blur-[77px]"
+                style={{
+                    background:
+                        'linear-gradient(247deg, #BAEEF1 0%, #EFDBEE 94%)',
+                }}
             />
-
-            <div className="!flex bg-[url('/home-icon-bg.svg')] bg-cover py-20">
-                <div className="!flex-[1]">
-                    <Title className="!text-6xl !font-bold !leading-snug">
-                        Nền tảng luyện thi THPTQG môn Tiếng Anh cùng với AI
-                    </Title>
-                    <Title
-                        className="!pr-10 !font-normal !text-[#8A8A8A]"
-                        level={5}
-                    >
-                        <span className="!font-chango text-xl">tiawai</span>{" "}
-                        cung cấp đầy đủ nội dung chất lượng gồm các đề luyện thi
-                        có sẵn và tạo ra bởi công nghệ AI, các bài luyện tập
-                        theo chủ đề, hỗ trợ paraphrase đoạn văn, flashcard mỗi
-                        ngày cùng với đó là Tia
+            <div className="flex items-center gap-8 py-20">
+                <div className="flex-[1.1]">
+                    <Title className="font-montserrat !text-6xl !font-extrabold !leading-tight">
+                        {HOME_TITLE}
                     </Title>
                 </div>
-                <Image
-                    className="h-96 flex-[1] object-cover"
-                    src={homeMainImg}
-                    alt="home main image"
-                    priority
-                />
+                <div className="flex-1">
+                    <div className="absolute right-72 top-36 -z-10 size-72 rounded-full border-[40px] border-[#f2c94c]/20" />
+                    <Image
+                        className="h-auto w-full object-contain"
+                        src={homeMainImg}
+                        alt="home main image"
+                        priority
+                    />
+                </div>
             </div>
 
             <FeaturesBox />
+
+            <Flex className="mx-auto mb-20 w-full p-8" justify="space-between">
+                <Flex vertical flex="0.7" className="relative">
+                    <Flex
+                        align="center"
+                        justify="space-between"
+                        className="mb-4 pr-28"
+                    >
+                        <span className="rounded-xl bg-primary px-4 py-2 font-montserrat font-bold">
+                            <i>Tại sao nên chọn tiawai</i>
+                        </span>
+                        <Image
+                            src="/home/home-waves.png"
+                            className="self-center"
+                            width={80}
+                            height={10}
+                            alt="home waves"
+                        />
+                    </Flex>
+
+                    <Heading>{HOME_HEADERS[0].title}</Heading>
+
+                    <Image
+                        src={homeCircle1}
+                        alt="home circle 1"
+                        className="absolute right-6 top-10 scale-95"
+                    />
+
+                    <Flex vertical className="pr-20">
+                        <Description>{HOME_HEADERS[0].description}</Description>
+                        <Row
+                            gutter={[16, 16]}
+                            className="pr-3 font-montserrat text-base font-semibold capitalize text-[#0E2A46]"
+                        >
+                            {HOME_FIRST_FEATURES.map((feature, index) => (
+                                <Col key={index} span={12} className="h-2/3">
+                                    <Flex
+                                        align="center"
+                                        className="h-full content-center justify-center rounded-[40px] bg-primary px-6 py-3"
+                                        gap={10}
+                                    >
+                                        <CheckCircleFilled className="!text-primary" />
+                                        <div>{feature}</div>
+                                    </Flex>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Flex>
+                </Flex>
+                <Flex className="flex-[0.6] justify-center">
+                    <Image
+                        width={350}
+                        height={492}
+                        className="self-center"
+                        src={bigTiawai}
+                        alt="big tiawai"
+                        loading="lazy"
+                    />
+                </Flex>
+            </Flex>
 
             <Flex className="!mb-20" vertical>
                 <Space size={80} direction="vertical">
@@ -135,67 +275,6 @@ export default function Home() {
                 </Space>
             </Flex>
 
-            <div className="relative mb-20 flex items-center">
-                <Image
-                    className="h-auto max-w-lg"
-                    src={bigTiawai}
-                    alt="big tiawai"
-                    loading="lazy"
-                />
-                <div className="">
-                    <Space direction="vertical" size={46}>
-                        <Title className="!m-0 !font-roboto !text-6xl !font-bold">
-                            Trải nghiệm học cùng Tia
-                        </Title>
-                        {mainHighlights.map((highlight, index) => (
-                            <Flex align="center" key={index}>
-                                <Space size="large">
-                                    <IconFrame
-                                        bgColor="#0E0314"
-                                        src={highlight.src}
-                                        alt={highlight.alt}
-                                        width={52}
-                                        height={52}
-                                    />
-                                    <Flex vertical>
-                                        <Title
-                                            className="!m-0 !font-roboto"
-                                            level={2}
-                                        >
-                                            {highlight.title}
-                                        </Title>
-                                        <Title
-                                            className="!m-0 !font-roboto !font-medium !text-[#8A8A8A]"
-                                            level={4}
-                                        >
-                                            {highlight.description}
-                                        </Title>
-                                    </Flex>
-                                </Space>
-                            </Flex>
-                        ))}
-                    </Space>
-                </div>
-                <Image
-                    className="absolute"
-                    loading="lazy"
-                    src={homeIconBg2}
-                    alt="home icon bg 2"
-                />
-                <Image
-                    className="absolute -bottom-48 -left-10 rotate-180"
-                    loading="lazy"
-                    src={home7Svg}
-                    alt="home icon 7"
-                />
-                <Image
-                    className="absolute -bottom-36 -right-10"
-                    loading="lazy"
-                    src={home11}
-                    alt="home icon 11"
-                />
-            </div>
-
             <Flex justify="center">
                 <Space size={91}>
                     <Flex
@@ -207,7 +286,7 @@ export default function Home() {
                                 Paraphasing
                             </Title>
                             <IconFrame
-                                src="/home-3.svg"
+                                src="/home/home-3.svg"
                                 alt="home icon 3"
                                 bgColor="#FFFFFF80"
                                 frameSize="125px"
@@ -230,7 +309,7 @@ export default function Home() {
                                 Flashcard
                             </Title>
                             <IconFrame
-                                src="/home-5.svg"
+                                src="/home/home-5.svg"
                                 alt="home icon 3"
                                 bgColor="#FFFFFF80"
                                 frameSize="125px"

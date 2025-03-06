@@ -1,11 +1,11 @@
-"use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useSignUpMutation } from "@/services/auth";
-import { Form, Input, Checkbox, Typography, notification } from "antd";
-import { FormLayout, ButtonGradient } from "@/ui/form";
-import { FormTitle } from "@/ui/common/title";
-import { TermAndPolicy } from "@/ui/auth";
+'use client';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSignUpMutation } from '@/services/auth';
+import { Form, Input, Checkbox, Typography, notification } from 'antd';
+import { FormLayout, ButtonGradient } from '@/ui/form';
+import { FormTitle } from '@/ui/components/title';
+import { TermAndPolicy } from '@/ui/auth';
 const { Paragraph } = Typography;
 
 export default function SignUpPage() {
@@ -19,14 +19,14 @@ export default function SignUpPage() {
 
         if (!res.error) {
             notification.success({
-                message: "Đăng ký thành công",
-                description: "Vui lòng đăng nhập để tiếp tục.",
+                message: 'Đăng ký thành công',
+                description: 'Vui lòng đăng nhập để tiếp tục.',
             });
-            router.push("/sign-in");
+            router.push('/sign-in');
         } else {
             notification.error({
-                message: "Đăng ký thất bại",
-                description: "Email đã tồn tại. Vui lòng thử lại.",
+                message: 'Đăng ký thất bại',
+                description: 'Email đã tồn tại. Vui lòng thử lại.',
             });
         }
     };
@@ -48,7 +48,7 @@ export default function SignUpPage() {
                     rules={[
                         {
                             required: true,
-                            message: "Họ và tên không được bỏ trống",
+                            message: 'Họ và tên không được bỏ trống',
                         },
                     ]}
                 >
@@ -59,9 +59,9 @@ export default function SignUpPage() {
                     name="email"
                     rules={[
                         {
-                            type: "email",
+                            type: 'email',
                             required: true,
-                            message: "Email không hợp lệ",
+                            message: 'Email không hợp lệ',
                         },
                     ]}
                 >
@@ -71,8 +71,8 @@ export default function SignUpPage() {
                 <Form.Item
                     name="password"
                     rules={[
-                        { required: true, message: "Vui lòng nhập mật khẩu" },
-                        { min: 5, message: "Mật khẩu phải có ít nhất 5 ký tự" },
+                        { required: true, message: 'Vui lòng nhập mật khẩu' },
+                        { min: 5, message: 'Mật khẩu phải có ít nhất 5 ký tự' },
                     ]}
                 >
                     <Input.Password
@@ -91,7 +91,7 @@ export default function SignUpPage() {
                                     ? Promise.resolve()
                                     : Promise.reject(
                                           new Error(
-                                              "Bạn phải chấp nhận điều khoản và chính sách",
+                                              'Bạn phải chấp nhận điều khoản và chính sách',
                                           ),
                                       ),
                         },
@@ -106,8 +106,8 @@ export default function SignUpPage() {
                     <ButtonGradient loading={isLoading} />
                 </Form.Item>
 
-                <Paragraph style={{ textAlign: "center" }}>
-                    Bạn đã là thành viên ?{" "}
+                <Paragraph style={{ textAlign: 'center' }}>
+                    Bạn đã là thành viên ?{' '}
                     <Link href="/sign-in">
                         <strong>Đăng nhập</strong>
                     </Link>
