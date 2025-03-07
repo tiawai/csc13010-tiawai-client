@@ -2,9 +2,9 @@ import Banner from '@/app/(user)/(study)/_ui/banner';
 import { BannerTitle, BannerSubTitle } from '@/components/common/banner';
 import Image from 'next/image';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import SearchForm from '@/components/teacher/exam/searchform';
+import SearchForm from '@/components/teacher/common/searchform';
 import { Row, Col } from 'antd';
-import Course from '@/components/teacher/exam/course';
+import Course from '@/components/teacher/classroom/course';
 import ieltsImage from '@public/example/ielts.png';
 
 const courses = [
