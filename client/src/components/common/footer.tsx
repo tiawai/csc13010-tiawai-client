@@ -6,6 +6,8 @@ import {
     PhoneOutlined,
     PushpinOutlined,
 } from '@ant-design/icons';
+import Image from 'next/image';
+import logo from '@public/logo.svg';
 
 const services = [
     { name: 'Kỹ Năng IELTS', link: '/' },
@@ -40,9 +42,19 @@ const Footer = () => {
             <div className="mx-auto max-w-[1320px] px-6">
                 <Row gutter={[32, 32]}>
                     <Col xs={24} md={8}>
-                        <h4 className="font-chango text-lg font-normal text-black">
-                            tiawai
-                        </h4>
+                        <Link href="/" className="flex items-center gap-3">
+                            <div className="rounded-full bg-[#5369A1] p-2">
+                                <Image
+                                    src={logo}
+                                    alt="logo"
+                                    width={40}
+                                    height={40}
+                                />
+                            </div>
+                            <h4 className="font-chango text-lg font-normal text-black">
+                                tiawai
+                            </h4>
+                        </Link>
                         <p className="mt-2 text-xl font-bold">
                             Nền tảng học Tiếng Anh với AI
                         </p>

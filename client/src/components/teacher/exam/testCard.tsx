@@ -1,4 +1,5 @@
 import { Button, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import {
     ClockCircleOutlined,
     DownloadOutlined,
@@ -17,7 +18,7 @@ interface TestCardProps {
 }
 
 const TestCard: React.FC<TestCardProps> = ({ title, duration, attempts }) => {
-    const items = [
+    const items: MenuProps['items'] = [
         {
             key: '1',
             label: (

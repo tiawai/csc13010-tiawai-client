@@ -1,4 +1,5 @@
 import { Button, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import videoIcon from '@public/teacher/video.svg';
@@ -8,7 +9,7 @@ interface LessonCardProps {
 }
 
 const LessonCard: React.FC<LessonCardProps> = ({ title }) => {
-    const items = [
+    const items: MenuProps['items'] = [
         {
             key: '1',
             label: (
