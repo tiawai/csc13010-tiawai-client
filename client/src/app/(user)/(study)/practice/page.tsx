@@ -2,10 +2,9 @@
 import Image from 'next/image';
 import { Empty, Flex, Modal, Select, Space, Typography } from 'antd';
 import GenerateButton from '@/ui/generate-button';
-import Banner from '@/app/(user)/(study)/_ui/banner';
-import TestBox from '@/app/(user)/(study)/_ui/test-box';
+import { Banner, BannerTitle } from '@/ui/components/banner';
+import TestBox from '@/ui/components/test-box';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import { BannerTitle } from '@/ui/components/title';
 const { Title } = Typography;
 import { useGetExamPracticesQuery } from '@/services/exam';
 import { useState } from 'react';

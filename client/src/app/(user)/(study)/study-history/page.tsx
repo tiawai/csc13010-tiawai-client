@@ -9,9 +9,8 @@ import {
     Typography,
     Empty,
 } from 'antd';
-import Banner from '@/app/(user)/(study)/_ui/banner';
+import { Banner, BannerTitle } from '@/ui/components/banner';
 import profileTiawai from '@public/profile-tiawai.webp';
-import { BannerTitle } from '@/ui/components/title';
 import { useState, useEffect } from 'react';
 import { useGetHistoryExamsQuery } from '@/services/user';
 import { SearchOutlined } from '@ant-design/icons';

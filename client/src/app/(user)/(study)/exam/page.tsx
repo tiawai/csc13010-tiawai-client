@@ -1,10 +1,9 @@
 'use client';
 import Image from 'next/image';
 import { Flex, Space, Typography } from 'antd';
-import Banner from '@/app/(user)/(study)/_ui/banner';
-import TestBox from '@/app/(user)/(study)/_ui/test-box';
+import { Banner, BannerTitle } from '@/ui/components/banner';
+import TestBox from '@/ui/components/test-box';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import { BannerTitle } from '@/ui/components/title';
 import { useGetExamsQuery } from '@/services/exam';
 const { Title } = Typography;
 

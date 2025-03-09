@@ -7,7 +7,3 @@ export const FormTitle = ({ children }: { children: React.ReactNode }) => (
         {children}
     </Title>
 );
-
-export const BannerTitle = ({ children }: { children: React.ReactNode }) => (
-    <Title className="!text-5xl !font-bold !leading-snug">{children}</Title>
-);

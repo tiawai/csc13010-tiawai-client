@@ -11,6 +11,8 @@ import {
     Space,
     Skeleton,
     Empty,
+    Flex,
+    Button,
 } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import fcBannerImage from '@public/flashcard/banner-img.png';
@@ -21,14 +23,15 @@ import itImage from '@public/flashcard/it.png';
 import literatureImage from '@public/flashcard/literature.png';
 import cultureImage from '@public/flashcard/culture.png';
 import heartImage from '@public/flashcard/heart.png';
-import Banner from '@/app/(user)/(study)/_ui/banner';
-import { BannerTitle } from '@/ui/components/title';
+import { Banner, BannerDescription, BannerTitle } from '@/ui/components/banner';
 import { useState } from 'react';
 import {
     useCreateFlashcardMutation,
     useGetAllFlashcardTopicsQuery,
 } from '@/services/flashcard';
 import { Flashcard } from '@/types/flashcard';
+import { FLASH_CARD_BANNER } from '@/string/string';
+import generateBtnIcon from '@public/generate-btn-icon.svg';
 const { TextArea } = Input;
 const { Title } = Typography;
 
@@ -94,34 +97,30 @@ export default function FlashCardPage() {
 
     return (
         <Space direction="vertical" className="select-none" size={60}>
-            <Banner>
+            <Banner gap={20}>
                 <Image
                     className="max-w-60"
                     src={fcBannerImage}
                     alt="big tiawai 2"
                 />
-
-                <BannerTitle>Học Flashcard mỗi ngày theo chủ đề</BannerTitle>
+                <Flex vertical align="end">
+                    <BannerTitle>{FLASH_CARD_BANNER.title}</BannerTitle>
+                    <BannerDescription>
+                        {FLASH_CARD_BANNER.description}
+                    </BannerDescription>
+                </Flex>
             </Banner>
 
             <Row justify={'center'} gutter={[0, 40]}>
-                <Title className="!font-normal" level={3}>
-                    <i>
-                        Tiawai cho phép bạn chọn{' '}
-                        <b> chủ đề để học Flashcard </b>
-                        hoặc bạn có thể{' '}
-                        <b>
-                            nhập vào đoạn văn sau đó tiawai sẽ giúp bạn trích
-                            xuất các từ vụng dưới dạng Flashcard
-                        </b>
-                    </i>
-                </Title>
-                <button
-                    className="h-[5rem] min-w-[31.25rem] rounded-xl bg-[#DBE3F8] font-roboto text-3xl font-medium transition-all duration-300 ease-in-out hover:scale-110"
+                <Button
+                    className="h-auto rounded-full bg-[#DBE3F8] py-0 font-roboto text-3xl font-medium transition-all duration-300 ease-in-out hover:scale-110"
                     onClick={showModal}
                 >
-                    Tạo Flashcard từ văn bản
-                </button>
+                    <Image src={generateBtnIcon} alt="generate button icon" />
+                    <span className="-ml-1 font-montserrat text-2xl font-medium">
+                        Nhập đoạn văn
+                    </span>
+                </Button>
                 <Modal
                     open={isModalOpen}
                     onOk={handleOk}
