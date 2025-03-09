@@ -312,7 +312,12 @@ export default function Home() {
                             className="pr-3 font-montserrat text-base font-semibold capitalize text-[#0E2A46]"
                         >
                             {HOME_FIRST_FEATURES.map((feature, index) => (
-                                <Col key={index} span={12} className="h-2/3">
+                                <Col
+                                    key={index}
+                                    lg={12}
+                                    md={24}
+                                    className="h-[120px]"
+                                >
                                     <Flex
                                         align="center"
                                         className="h-full content-center justify-center rounded-[40px] bg-primary px-6 py-3"
