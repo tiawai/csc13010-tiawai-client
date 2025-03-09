@@ -64,27 +64,25 @@ export default function FlashCardItemPage() {
 
     const flashcards = userFlashcards?.flashcards || defaultFlashcards;
     return (
-        <div className="bg-[url('/home-icon-bg.svg')]">
-            <Row gutter={[0, 40]}>
-                <Col offset={2}>
-                    <Link
-                        className="flex items-center gap-2 rounded-full bg-[#e9dae9] px-4 py-3 text-black"
-                        href="/flashcard"
-                    >
-                        <LeftOutlined />
-                        <span className="text-xl font-bold">
-                            Flashcard {decodedId}
-                        </span>
-                        <div className="rounded-full bg-[#f4edf4] px-4 py-1">
-                            <CarryOutOutlined className="text-[#4d2c5e]" />
-                        </div>
-                    </Link>
-                </Col>
+        <Row gutter={[0, 40]}>
+            <Col offset={2}>
+                <Link
+                    className="flex items-center gap-2 rounded-full bg-[#e9dae9] px-4 py-3 text-black"
+                    href="/flashcard"
+                >
+                    <LeftOutlined />
+                    <span className="text-xl font-bold">
+                        Flashcard {decodedId}
+                    </span>
+                    <div className="rounded-full bg-[#f4edf4] px-4 py-1">
+                        <CarryOutOutlined className="text-[#4d2c5e]" />
+                    </div>
+                </Link>
+            </Col>
 
-                <Col span={20} offset={2}>
-                    <FlashcardSlider flashcards={flashcards || []} />
-                </Col>
-            </Row>
-        </div>
+            <Col span={20} offset={2}>
+                <FlashcardSlider flashcards={flashcards || []} />
+            </Col>
+        </Row>
     );
 }
