@@ -48,7 +48,7 @@ export const HOME_HEADERS = [
             'Làm bài thi thử chuẩn format, chấm điểm chính xác, phân tích chi tiết để cải thiện từng kỹ năng. Sẵn sàng bứt phá điểm số TOEIC ngay hôm nay! 🚀📚',
     },
     {
-        title: 'Luyện thi THPTQG – Ôn tập hiệu quả, bứt phá điểm số! 🎯📚',
+        title: 'Luyện thi THPTQG – Ôn tập hiệu quả, bứt phá điểm số!',
         description:
             'Hệ thống đề thi chuẩn, cập nhật liên tục, phân tích đáp án chi tiết. Học đúng trọng tâm, rèn luyện mỗi ngày, tự tin chinh phục kỳ thi quan trọng! 🚀✨',
     },

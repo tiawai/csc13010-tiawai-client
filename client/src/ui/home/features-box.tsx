@@ -51,7 +51,7 @@ const FeaturesBox = ({ className = '' }: Readonly<{ className?: string }>) => {
     return (
         <Flex
             className={twMerge(
-                'relative mb-20 select-none justify-center p-8',
+                'relative mb-40 select-none justify-center p-8',
                 className,
             )}
         >

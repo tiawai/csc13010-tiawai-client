@@ -22,6 +22,12 @@ const config: Config = {
             backgroundColor: {
                 primary: '#E9DAE9',
                 secondary: '#DAE3E9',
+                'primary-button': '#4D2C5E',
+                'secondary-button': '#2C2F5E',
+            },
+            borderColor: {
+                'primary-button': '#4D2C5E',
+                'secondary-button': '#2C2F5E',
             },
             textColor: {
                 primary: '#4D2C5E',
