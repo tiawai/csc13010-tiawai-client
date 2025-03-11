@@ -13,6 +13,7 @@ import { useState } from 'react';
 import LessonCard from '@/components/teacher/exam/lessonCard';
 import TestCard from '@/components/teacher/exam/testCard';
 import { twMerge } from 'tailwind-merge';
+import { useRouter } from 'next/navigation';
 
 interface Student {
     key: string;
@@ -118,22 +119,32 @@ const columns: TableColumnsType<Student> = [
     },
 ];
 
-const items: MenuProps['items'] = [
-    {
-        key: '1',
-        label: 'Giao bài học',
-        icon: <FolderOpenOutlined />,
-    },
-    {
-        key: '2',
-        label: 'Giao đề thi/ bài tập',
-        icon: <FileTextOutlined />,
-    },
-];
-
 const ClassManagement = () => {
     const [activeTab, setActiveTab] = useState('students');
     const [activeTable, setActiveTable] = useState('lessons');
+    const router = useRouter();
+    const handleMenuClick = (key: string) => {
+        if (key === '1') {
+            router.push('/teacher/classroom/class-management/create-lesson');
+        } else if (key === '2') {
+            router.push('/teacher/classroom/class-management/create-exam');
+        }
+    };
+
+    const items: MenuProps['items'] = [
+        {
+            key: '1',
+            label: 'Giao bài học',
+            icon: <FolderOpenOutlined />,
+            onClick: () => handleMenuClick('1'),
+        },
+        {
+            key: '2',
+            label: 'Giao đề thi/ bài tập',
+            icon: <FileTextOutlined />,
+            onClick: () => handleMenuClick('2'),
+        },
+    ];
 
     return (
         <div className="p-6">

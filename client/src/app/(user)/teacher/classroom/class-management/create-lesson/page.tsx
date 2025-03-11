@@ -71,14 +71,11 @@ const CreateLesson = () => {
                             {isEditing ? (
                                 <CkEditor
                                     value={content}
-                                    onChange={(data) => {
-                                        setContent(data);
-                                        console.log(data);
-                                    }}
+                                    onChange={setContent}
                                 />
                             ) : (
                                 <div
-                                    className="min-h-[300px] rounded-md border bg-white p-4"
+                                    className="preview-content min-h-[300px] rounded-md border bg-white p-4"
                                     dangerouslySetInnerHTML={{
                                         __html: content,
                                     }}

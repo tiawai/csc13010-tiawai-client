@@ -53,20 +53,14 @@ body {
     @apply !m-auto !flex !justify-center !rounded-full !bg-[#E9DAE9] !font-bold !text-black;
 }
 
-ul {
-    list-style-type: disc !important;
-}
-
-ol {
-    list-style-type: decimal !important;
-}
-
 .ck-content ul,
-.ck-content ol {
-    list-style-type: disc !important; /* Cho danh sách không thứ tự */
+.preview-content ul {
+    list-style-type: disc !important;
     padding-left: 20px !important;
 }
 
-.ck-content ol {
-    list-style-type: decimal !important; /* Cho danh sách có thứ tự */
+.ck-content ol,
+.preview-content ol {
+    list-style-type: decimal !important;
+    padding-left: 15px !important;
 }
