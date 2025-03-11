@@ -15,7 +15,7 @@ const LeftTextBanner = ({
     src = bigTiawai,
 }: LeftTextBannerProps) => {
     return (
-        <Banner className="mb-40">
+        <Banner className="mb-28">
             <Flex vertical className="mt-10">
                 <BannerTitle>{title}</BannerTitle>
                 <BannerDescription>{description}</BannerDescription>
