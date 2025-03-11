@@ -1,13 +1,12 @@
-import { Banner, BannerDescription, BannerTitle } from '@/ui/components/banner';
 import { CHALLENGE_RULES, CHALLENGE_BANNER } from '@/strings/challenge';
 import { Avatar, Button, Col, Flex, Row } from 'antd';
 import Image from 'next/image';
-import bigTiawai from '@public/big-tiawai-2.svg';
 import { CustomTitle } from '@/ui/components/title';
 import ArrowButton from '@/ui/components/button';
 import { twJoin } from 'tailwind-merge';
 import crown from '@public/challenge/crown.svg';
 import trophy from '@public/challenge/trophy.svg';
+import LeftTextBanner from '@/ui/components/left-text-banner';
 
 const time = [
     { title: 'Ngày', value: 360 },
@@ -105,20 +104,7 @@ const top10 = [
 const Challenge = () => {
     return (
         <Flex vertical>
-            <Banner className="mb-40">
-                <Flex vertical className="mt-10">
-                    <BannerTitle>{CHALLENGE_BANNER.title}</BannerTitle>
-                    <BannerDescription>
-                        {CHALLENGE_BANNER.description}
-                    </BannerDescription>
-                </Flex>
-                <Image
-                    src={bigTiawai}
-                    sizes="100vw"
-                    className="h-auto w-[70%]"
-                    alt="big tiawai"
-                />
-            </Banner>
+            <LeftTextBanner {...CHALLENGE_BANNER} />
 
             <Flex vertical gap={40} className="mb-32">
                 <div>
