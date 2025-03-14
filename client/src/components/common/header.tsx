@@ -34,7 +34,7 @@ const adminItems: MenuItem[] = [
     },
 ];
 
-const userItems: MenuItem[] = [
+const studentItems: MenuItem[] = [
     {
         label: <Link href="/">Trang chủ</Link>,
         key: 'home',
@@ -54,6 +54,25 @@ const userItems: MenuItem[] = [
     {
         label: <Link href="/paraphrase">Paraphrase</Link>,
         key: 'paraphrase',
+    },
+    {
+        label: <Link href="/contact">Liên hệ</Link>,
+        key: 'contact',
+    },
+];
+
+const teacherItems: MenuItem[] = [
+    {
+        label: <Link href="/teacher/home">Trang chủ</Link>,
+        key: 'home',
+    },
+    {
+        label: <Link href="/teacher/class">Quản lý lớp học</Link>,
+        key: 'class',
+    },
+    {
+        label: <Link href="/teacher/exam">Quản lý bài học / đề thi</Link>,
+        key: 'exam',
     },
     {
         label: <Link href="/contact">Liên hệ</Link>,
@@ -85,7 +104,10 @@ const Header = () => {
     const pathname = usePathname();
     const router = useRouter();
     const user = useAppSelector((state) => state.auth.user);
-    const menuItems = user?.role === 'administrator' ? adminItems : userItems;
+    // const menuItems =
+    //     user?.role === "administrator" ? adminItems : studentItems;
+    // const menuItems = teacherItems;
+    const menuItems = studentItems;
 
     const currentPath =
         pathname === '/'
