@@ -1,3 +1,4 @@
+'use client';
 import { Flex } from 'antd';
 import { twJoin } from 'tailwind-merge';
 import { Typography } from 'antd';
