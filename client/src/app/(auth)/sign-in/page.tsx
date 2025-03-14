@@ -2,7 +2,7 @@ import {
     FormLayout,
     FormTitle,
     FormNavigation,
-} from '@/components/auth/ui/form-ui';
+} from '@/components/auth/ui/form';
 import { FormSignIn } from '@/components/auth/forms/form-sign-in';
 
 export default function SignInPage() {

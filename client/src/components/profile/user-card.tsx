@@ -1,5 +1,5 @@
 import { Avatar, Flex, Divider, Button } from 'antd';
-import { CardBorder, CardTitle } from '@/components/common/card-ui';
+import { CardBorder, CardTitle } from '@/components/common/ui/card';
 
 interface UserCardProps {
     name: string;

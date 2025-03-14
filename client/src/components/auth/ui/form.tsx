@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 import Button from 'antd/es/button';
-import { FormButtonGradientStyle } from '../styles/form-ui-style';
+import { FormButtonGradientStyle } from '../styles/form-style';
 import { RightOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';

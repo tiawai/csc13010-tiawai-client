@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Navigation } from '@/components/common/navigation-ui';
+import { Navigation } from '@/components/common/ui/navigation';
 import { UserCard, UserInfoCard } from '@/components/profile/user-card';
 import { UserInfoDisplay } from '@/components/profile/user-info-display';
 import {

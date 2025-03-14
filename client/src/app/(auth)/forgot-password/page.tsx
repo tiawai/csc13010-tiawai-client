@@ -3,7 +3,7 @@ import {
     FormDescription,
     FormNavigation,
     FormLayout,
-} from '@/components/auth/ui/form-ui';
+} from '@/components/auth/ui/form';
 import { FormForgotPassword } from '@/components/auth/forms/form-forgot-password';
 
 export default function ForgotPasswordPage() {

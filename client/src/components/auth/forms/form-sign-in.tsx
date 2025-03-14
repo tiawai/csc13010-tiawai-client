@@ -7,7 +7,7 @@ import { signIn, useSession } from 'next-auth/react';
 import { useCreateSessionMutation } from '@/services/chat';
 import { setAuthState, setChatSessionId } from '@/lib/slices/auth';
 import { useAppDispatch } from '@/lib/hooks/hook';
-import { FormButtonGradient } from '@/components/auth/ui/form-ui';
+import { FormButtonGradient } from '@/components/auth/ui/form';
 const { Paragraph } = Typography;
 
 const FormSignIn = () => {

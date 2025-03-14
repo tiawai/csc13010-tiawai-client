@@ -1,5 +1,5 @@
 import { Form, Input } from 'antd';
-import { CardButton } from '@/components/common/card-ui';
+import { CardButton } from '@/components/common/ui/card';
 
 const keyMap: { [key: string]: string } = {
     name: 'Họ và tên',

@@ -2,8 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useSignUpMutation } from '@/services/auth';
 import { Form, Input, Checkbox, notification } from 'antd';
-import { FormButtonGradient } from '@/components/auth/ui/form-ui';
-import { TermAndPolicy } from '@/components/auth/ui/term-and-policy';
+import { FormButtonGradient } from '@/components/auth/ui/form';
+import { TermAndPolicy } from '@/components/auth/forms/term-and-policy';
 
 const FormSignUp = ({ role }: { role: number }) => {
     const [form] = Form.useForm();
