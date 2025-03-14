@@ -1,13 +1,13 @@
-"use client";
-import createWebStorage from "redux-persist/lib/storage/createWebStorage";
-import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
-import { setupListeners } from "@reduxjs/toolkit/query";
+'use client';
+import createWebStorage from 'redux-persist/lib/storage/createWebStorage';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
+import { setupListeners } from '@reduxjs/toolkit/query';
 import {
     configureStore,
     combineReducers,
     Reducer,
     Action,
-} from "@reduxjs/toolkit";
+} from '@reduxjs/toolkit';
 import {
     persistStore,
     persistReducer,
@@ -17,9 +17,15 @@ import {
     PERSIST,
     PURGE,
     REGISTER,
-} from "redux-persist";
-import authReducer, { AuthState } from "@/lib/slices/auth";
-import { appApi } from "@/services/config";
+} from 'redux-persist';
+import authReducer, { AuthState } from '@/lib/slices/auth';
+import nationalTestCretorReducer, {
+    NationalTestCreatorState,
+} from '@/lib/slices/national-test-creator';
+import toeicTestCreatorReducer, {
+    ToeicTestCreatorState,
+} from '@/lib/slices/toeic-test-creator';
+import { appApi } from '@/services/config';
 
 const createNoopStorage = () => {
     return {
@@ -36,29 +42,33 @@ const createNoopStorage = () => {
 };
 
 const storage =
-    typeof window !== "undefined"
-        ? createWebStorage("local")
+    typeof window !== 'undefined'
+        ? createWebStorage('local')
         : createNoopStorage();
 
 export type RootState = {
     [appApi.reducerPath]: ReturnType<typeof appApi.reducer>;
     auth: AuthState;
+    nationalTestCreator: NationalTestCreatorState;
+    toeicTestCreator: ToeicTestCreatorState;
 };
 
 const persistConfig = {
-    key: "root",
+    key: 'root',
     storage,
     stateReconciler: autoMergeLevel2,
-    whitelist: ["auth"],
+    whitelist: ['auth', 'nationalTestCreator', 'toeicTestCreator'],
 };
 
 const appReducer = combineReducers({
     [appApi.reducerPath]: appApi.reducer,
     auth: authReducer,
+    nationalTestCreator: nationalTestCretorReducer,
+    toeicTestCreator: toeicTestCreatorReducer,
 });
 
 const rootReducer: Reducer<RootState, Action> = (state, action) => {
-    if (action.type === "auth/logOut") {
+    if (action.type === 'auth/logOut') {
         state = undefined;
     }
     return appReducer(state, action);
