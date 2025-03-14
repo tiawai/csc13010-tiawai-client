@@ -41,8 +41,19 @@ export const Banner = ({
     );
 };
 
-export const BannerTitle = ({ children }: { children: React.ReactNode }) => (
-    <Title className="font-montserrat !text-5xl !font-extrabold !leading-tight">
+export const BannerTitle = ({
+    children,
+    className,
+}: {
+    children: React.ReactNode;
+    className?: string;
+}) => (
+    <Title
+        className={twJoin(
+            'font-montserrat !text-5xl !font-extrabold !leading-tight',
+            className,
+        )}
+    >
         {children}
     </Title>
 );

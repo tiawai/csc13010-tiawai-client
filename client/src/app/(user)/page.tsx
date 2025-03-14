@@ -1,6 +1,6 @@
 'use client';
 // import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
-import { Flex, Typography, Empty, Row, Col, Input, Button } from 'antd';
+import { Flex, Typography, Empty, Row, Col, Button } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import ExamFrame from '@/ui/exam-frame';
@@ -9,15 +9,12 @@ import bigTiawai from '@public/home/big-tiawai.png';
 import FeaturesBox from '@/ui/home/features-box';
 import { Exam } from '@/types/exam';
 import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
-import {
-    ArrowRightOutlined,
-    CheckCircleFilled,
-    SearchOutlined,
-} from '@ant-design/icons';
+import { ArrowRightOutlined, CheckCircleFilled } from '@ant-design/icons';
 import homeCircle1 from '@public/home/home-circle-1.svg';
 import homeDots from '@public/home/home-dots.png';
 import { twMerge } from 'tailwind-merge';
 import ClassFrame from '@/ui/home/class-frame';
+import FindClassInput from '@/ui/components/find-class-input';
 const { Title, Paragraph } = Typography;
 
 export interface ExamData {
@@ -377,14 +374,7 @@ export default function Home() {
                                 {HOME_HEADERS[1].description}
                             </Description>
                         </div>
-                        <Input
-                            prefix={<SearchOutlined />}
-                            placeholder="Điền ID lớp học để tìm lớp học ngay!"
-                            className="-mt-10 flex-[0.4] self-center rounded-[40px] border border-black px-4 py-2 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
-                            style={{
-                                fontSize: '18px',
-                            }}
-                        />
+                        <FindClassInput className="-mt-10 flex-[0.4]" />
                     </Flex>
                     <Row gutter={[40, 24]} className="mb-10">
                         {classData.map((classItem, index) => (
