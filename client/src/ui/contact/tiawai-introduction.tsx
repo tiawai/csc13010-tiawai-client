@@ -3,8 +3,9 @@ import Image from 'next/image';
 import { Row, Col, Typography } from 'antd';
 import chatbotIcon from '@public/mascot/chatbot-icon.png';
 import mascot from '@public/mascot/full.webp';
-import mascotBgBlur from '@public/mascot/bg-blur.png';
-import bigTiawai from '@public/big-tiawai.svg';
+import mascotBgBlur from '@public/mascot/bg-blur-1.png';
+import mascotBgBlur2 from '@public/mascot/bg-blur-3.png';
+import Tiawai from '@public/tiawai.png';
 const { Title } = Typography;
 
 export const TiawaiIntroductionHeader = () => {
@@ -34,32 +35,34 @@ export const TiawaiIntroductionHeader = () => {
 
 export const TiawaiIntroduction = () => {
     return (
-        <section className="flex select-none items-center gap-24">
+        <section className="relative flex select-none items-center gap-24 px-10 py-16">
+            <div className="absolute inset-0 -z-10 flex items-center justify-center">
+                <Image
+                    className="h-[180%] w-[180%] scale-150 blur-2xl"
+                    src={mascotBgBlur}
+                    alt="maskot-bg-blur"
+                    priority
+                />
+            </div>
+
             <Col span={16}>
                 <Title level={3} className="text-justify !font-normal">
                     <i>
                         <b>tiawai </b>
-                        là một ứng dụng tiên tiến được thiết kế để hỗ trợ học
-                        sinh trong việc học tiếng Anh, đặc biệt là chuẩn bị cho
-                        kỳ thi THPT Quốc gia. <b>tiawai </b> tích hợp
-                        <b> công nghệ </b>
-                        AI để mang đến cho người dùng trải nghiệm học tập cá
-                        nhân hóa và hiệu quả.
+                        tiawai là <b>nền tảng học tập hiện đại</b>, giúp bạn
+                        chinh phục kỳ thi <b>TOEIC và THPTQG</b> một cách hiệu
+                        quả. Bên cạnh đó, bạn có thể tham gia lớp học theo lộ
+                        trình bài bản, làm đề thi thử, nhận hỗ trợ từ giáo viên
+                        và luyện thi THPTQG với ngân hàng đề thi chất lượng,
+                        được cập nhật thường xuyên.
                     </i>
                 </Title>
             </Col>
-            <Col span={6}>
-                <div className="relative h-full w-full content-center text-center">
-                    <Image
-                        className="absolute left-0 right-0 top-1/2 -z-10 -translate-y-1/2 scale-150"
-                        src={mascotBgBlur}
-                        alt="maskot-bg-blur"
-                        priority
-                    />
-                    <Title className="!font-chango !text-5xl !font-normal">
-                        tiawai
-                    </Title>
-                </div>
+
+            <Col span={6} className="text-center">
+                <Title className="!font-chango !text-5xl !font-normal">
+                    tiawai
+                </Title>
             </Col>
         </section>
     );
@@ -67,22 +70,27 @@ export const TiawaiIntroduction = () => {
 
 export const TiawaiDescription = () => {
     return (
-        <section className="flex select-none items-center gap-24">
-            <Col span={6}>
-                <div className="relative h-full w-full content-center text-center">
+        <section className="relative flex select-none items-center gap-24 px-10 py-16">
+            {/* Nền mở rộng bao quanh nội dung */}
+            <div className="absolute inset-0 -z-10 flex items-center justify-center space-y-20">
+                <Image
+                    className="h-[180%] w-[180%] scale-100 blur-2xl"
+                    src={mascotBgBlur2}
+                    alt="mascot-bg-blur"
+                    priority
+                />
+            </div>
+
+            <Col span={6} className="flex justify-center">
+                <div className="relative">
                     <Image
-                        className="absolute -left-[15%] right-0 top-1/2 -z-10 -translate-y-1/2 scale-150"
-                        src={mascotBgBlur}
-                        alt="maskot-bg-blur"
-                        priority
-                    />
-                    <Image
-                        className="m-auto h-[500px] scale-[180%]"
-                        src={bigTiawai}
+                        className="m-auto h-[300px] w-auto scale-100"
+                        src={Tiawai}
                         alt="tiawai mascot"
                     />
                 </div>
             </Col>
+
             <Col span={16}>
                 <Title level={3} className="!text-justify !font-normal">
                     <i>
@@ -95,7 +103,7 @@ export const TiawaiDescription = () => {
                         và hỗ trợ học sinh trong quá trình học tiếng Anh. Với sự
                         thân thiện và linh hoạt, Tia giúp tạo ra một môi trường
                         học tập tích cực, khuyến khích học sinh tham gia và
-                        tương tác nhiều hơn
+                        tương tác nhiều hơn.
                     </i>
                 </Title>
             </Col>

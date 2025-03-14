@@ -1,9 +1,9 @@
-'use client';
-import Header from '@/ui/components/header';
-import ChatButton from '@/ui/components/chat-button';
-import Footer from '@/ui/components/footer';
 import { usePathname } from 'next/navigation';
-export default function Userlayout({
+import { Suspense } from 'react';
+import Header from '@/components/common/header';
+import ChatButton from '@/ui/chat-button';
+
+export default async function UserLayout({
     children,
 }: {
     children: React.ReactNode;
@@ -12,11 +12,16 @@ export default function Userlayout({
     const hideFooter =
         pathname.startsWith('/flashcard/') && pathname !== '/flashcard';
     return (
-        <div className="relative m-auto items-center px-4 pt-4">
+        <main>
             <Header />
-            <ChatButton />
-            <div className="m-auto !mt-20 mb-32 max-w-[1320px]">{children}</div>
-            {!hideFooter && <Footer />}
-        </div>
+
+            <Suspense>
+                <ChatButton />
+            </Suspense>
+
+            <div className="m-auto !mt-28 max-w-[1320px] px-4">
+                <Suspense>{children}</Suspense>
+            </div>
+        </main>
     );
 }

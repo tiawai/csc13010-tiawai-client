@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 import {
     backpack,
     calculator,
@@ -7,10 +7,10 @@ import {
     pencil,
     scissors,
     authBg,
-} from "@public/auth-bg";
-import "./auth-background.css";
+} from '@public/auth-bg';
+import './auth-layout-background.css';
 
-export const AuthBackground = () => {
+export const AuthLayoutBackground = () => {
     return (
         <>
             <Image src={authBg} alt="Auth Background" priority fill />

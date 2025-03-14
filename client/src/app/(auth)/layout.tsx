@@ -1,4 +1,4 @@
-import { AuthBackground } from "@/ui/auth";
+import { AuthLayoutBackground } from '@/components/auth/styles/auth-layout-background';
 
 export default function AuthLayout({
     children,
@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
     return (
         <div className="auth__layout relative min-h-screen max-w-[100vw] content-center overflow-hidden">
-            <AuthBackground />
+            <AuthLayoutBackground />
             {children}
         </div>
     );

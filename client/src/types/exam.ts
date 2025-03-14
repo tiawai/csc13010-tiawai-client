@@ -1,4 +1,4 @@
-export const ChoicesTypes = ["A", "B", "C", "D"] as const;
+export const ChoicesTypes = ['A', 'B', 'C', 'D'] as const;
 export type ChoicesType = (typeof ChoicesTypes)[number];
 
 export type Choices = Record<ChoicesType, string>;
@@ -13,7 +13,6 @@ export interface Question {
     correctAnswer?: ChoicesType | null;
     isCorrect?: boolean;
     points?: number;
-    explanation?: string;
     isAnswered?: boolean;
     explanation?: string;
 }

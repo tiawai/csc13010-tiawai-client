@@ -39,9 +39,7 @@ const Exam = () => {
     return (
         <div className="select-none space-y-20">
             <Banner>
-                <BannerTitle>
-                    Luyện thi hiệu quả với trọn bộ đề THPTQG các năm
-                </BannerTitle>
+                <BannerTitle title="Luyện thi hiệu quả với trọn bộ đề THPTQG các năm" />
                 <Image
                     src={bigTiawai2}
                     alt="big tiawai 2"
