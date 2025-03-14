@@ -8,7 +8,7 @@ import homeMainImg from '@public/home/home-main-img.svg';
 import bigTiawai from '@public/home/big-tiawai.png';
 import FeaturesBox from '@/ui/home/features-box';
 import { Exam } from '@/types/exam';
-import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/string/home';
+import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
 import {
     ArrowRightOutlined,
     CheckCircleFilled,

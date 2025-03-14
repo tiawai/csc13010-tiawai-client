@@ -30,7 +30,7 @@ import {
     useGetAllFlashcardTopicsQuery,
 } from '@/services/flashcard';
 import { Flashcard } from '@/types/flashcard';
-import { FLASH_CARD_BANNER } from '@/string/string';
+import { FLASH_CARD_BANNER } from '@/strings/flashcard';
 import generateBtnIcon from '@public/generate-btn-icon.svg';
 const { TextArea } = Input;
 const { Title } = Typography;

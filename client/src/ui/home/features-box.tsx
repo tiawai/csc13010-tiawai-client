@@ -5,7 +5,7 @@ import Image from 'next/image';
 import home7Svg from '@public/home/home-7.svg';
 import home7Png from '@public/home/home-7.png';
 import { twMerge } from 'tailwind-merge';
-import { HOME_FEATURES } from '@/string/home';
+import { HOME_FEATURES } from '@/strings/home';
 const { Title, Paragraph } = Typography;
 
 const mainFeatures = [
