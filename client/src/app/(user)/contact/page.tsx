@@ -4,12 +4,12 @@ import {
     TiawaiIntroductionHeader,
     TiawaiIntroduction,
     TiawaiDescription,
-} from "@/ui/contact/tiawai-introduction";
+} from '@/ui/contact/tiawai-introduction';
 //import { FormLayout } from "@/ui/form";
-import { ContactForm } from "@/ui/contact/contact-form";
-import Image from "next/image";
-import FeaturesBox from "@/ui/home/features-box";
-import SectionBgGradient from "@public/section-bg-gradient.png";
+import { ContactForm } from '@/ui/contact/contact-form';
+import Image from 'next/image';
+import FeaturesBox from '@/ui/home/features-box';
+import SectionBgGradient from '@public/section-bg-gradient.png';
 
 export default function ContactPage() {
     return (
@@ -27,13 +27,14 @@ export default function ContactPage() {
                 <FeaturesBox />
             </div>
             <div className="-space-y-3">
-            <TiawaiIntroduction />
-            <TiawaiDescription />
+                <TiawaiIntroduction />
+                <TiawaiDescription />
             </div>
             <div className="mt-20">
                 {/* <FormLayout className="form__about-tiawai bg-[#E9DAE94D]">
                     <ContactForm />
-                </FormLayout> */}\\
+                </FormLayout> */}
+                \\
                 <ContactForm />
             </div>
         </div>

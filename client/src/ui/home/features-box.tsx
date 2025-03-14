@@ -2,53 +2,48 @@
 import { Flex, Typography } from 'antd';
 import IconFrame from '../icon-frame';
 import Image from 'next/image';
-import home7Svg from '@public/home-7.svg';
-import home7Png from '@public/home-7.png';
+import home7Svg from '@public/home/home-7.svg';
+import home7Png from '@public/home/home-7.png';
 import { twMerge } from 'tailwind-merge';
+import { HOME_FEATURES } from '@/string/home';
 const { Title, Paragraph } = Typography;
 
 const mainFeatures = [
     {
-        src: '/home-1.png',
+        src: '/home/home-1.png',
         alt: 'home icon 1',
-        title: 'Luyện từng dạng bài tập',
-        description:
-            'Cung cấp kho bài tập khổng lồ tự các nguồn chính thống và do AI tạo ra',
+        title: HOME_FEATURES[0].title,
+        description: HOME_FEATURES[0].description,
     },
     {
-        src: '/home-2.svg',
+        src: '/home/home-2.svg',
         alt: 'home icon 2',
-        title: 'Chatbox với Tia',
-        description:
-            'Tia hỗ trợ giải đáp các câu hỏi liên quan tới Tiếng Anh cùng vô vàn những sự hỗ trợ khác',
+        title: HOME_FEATURES[1].title,
+        description: HOME_FEATURES[1].description,
     },
     {
-        src: '/home-3.svg',
+        src: '/home/home-3.svg',
         alt: 'home icon 3',
-        title: 'Paraphrase',
-        description:
-            'Hỗ trợ viết lại câu hoặc đoạn văn bằng từ ngữ, ngữ pháp, và cấu trúc câu khác những vẫn giữ nguyên ý nghĩa câu',
+        title: HOME_FEATURES[2].title,
+        description: HOME_FEATURES[2].description,
     },
     {
-        src: '/home-4.png',
+        src: '/home/home-4.png',
         alt: 'home icon 4',
-        title: 'Luyện đề thi',
-        description:
-            'Đề thi THPTQG với trải nghiệm thi thật và kho đề chính thống và do AI tạo ra kèm giải thích chi tiết',
+        title: HOME_FEATURES[3].title,
+        description: HOME_FEATURES[3].description,
     },
     {
-        src: '/home-5.svg',
+        src: '/home/home-5.svg',
         alt: 'home icon 5',
-        title: 'Flashcard',
-        description:
-            'Cung cấp mỗi ngày 10 từ vựng cho bạn bằng phương pháp Flashcard',
+        title: HOME_FEATURES[4].title,
+        description: HOME_FEATURES[4].description,
     },
     {
-        src: '/home-6.svg',
+        src: '/home/home-6.svg',
         alt: 'home icon 6',
-        title: 'Dịch thuật',
-        description:
-            'Hỗ trợ dịch ngôn ngữ Anh-Việt, cung cấp đầy đủ loại từ, ví dụ đi kèm,... ',
+        title: HOME_FEATURES[5].title,
+        description: HOME_FEATURES[5].description,
     },
 ];
 
@@ -56,7 +51,7 @@ const FeaturesBox = ({ className = '' }: Readonly<{ className?: string }>) => {
     return (
         <Flex
             className={twMerge(
-                'relative mb-20 select-none justify-center p-8',
+                'relative mb-40 select-none justify-center p-8',
                 className,
             )}
         >
@@ -100,12 +95,12 @@ const FeaturesBox = ({ className = '' }: Readonly<{ className?: string }>) => {
             <Image
                 src={home7Svg}
                 alt="home icon 7"
-                className="absolute -bottom-8 -right-8 h-auto"
+                className="absolute -bottom-8 -right-40 h-auto"
             />
             <Image
                 src={home7Png}
                 alt="home icon 7"
-                className="absolute -bottom-8 left-0 h-auto"
+                className="absolute -bottom-8 -left-32 h-auto"
             />
         </Flex>
     );

@@ -1,4 +1,4 @@
-// import dynamic from "next/dynamic";
+import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
 import Header from '@/components/common/header';
 import Footer from '@/components/common/footer';
@@ -9,6 +9,9 @@ export default async function UserLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const pathname = usePathname();
+    const hideFooter =
+        pathname.startsWith('/flashcard/') && pathname !== '/flashcard';
     return (
         <main>
             <Header />

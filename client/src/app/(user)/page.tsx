@@ -1,36 +1,24 @@
-"use client";
-import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
-import { Flex, Space, Typography, Empty } from "antd";
-import Image from "next/image";
-import Link from "next/link";
-import IconFrame from "@/ui/icon-frame";
-import ExamFrame from "@/ui/exam-frame";
-import GenerateButton from "@/ui/generate-button";
-import homeMainImg from "@public/home-main-img.svg";
-import home7Svg from "@public/home-7.svg";
-import bigTiawai from "@public/big-tiawai.svg";
-import homeIconBg2 from "@public/home-icon-bg-2.svg";
-import home11 from "@public/home-11.png";
-import homeGradientBg from "@public/home-gradient-bg.svg";
-import FeaturesBox from "@/ui/home/features-box";
-import { Exam } from "@/types/exam";
-const { Title } = Typography;
-
-const mainHighlights = [
-    {
-        src: "/home-9.png",
-        alt: "home icon 9",
-        title: "Dễ dàng sử dụng",
-        description: "Thao tác đơn giản",
-    },
-    {
-        src: "/home-10.png",
-        alt: "home icon 10",
-        title: "Trải nghiệm học vui vẻ",
-        description:
-            "Các bài tập dưới dạng trò chơi mang lại trải nghiệm khác biệt",
-    },
-];
+'use client';
+// import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
+import { Flex, Typography, Empty, Row, Col, Input, Button } from 'antd';
+import Image from 'next/image';
+import Link from 'next/link';
+import ExamFrame from '@/ui/exam-frame';
+import homeMainImg from '@public/home/home-main-img.svg';
+import bigTiawai from '@public/home/big-tiawai.png';
+import FeaturesBox from '@/ui/home/features-box';
+import { Exam } from '@/types/exam';
+import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/string/home';
+import {
+    ArrowRightOutlined,
+    CheckCircleFilled,
+    SearchOutlined,
+} from '@ant-design/icons';
+import homeCircle1 from '@public/home/home-circle-1.svg';
+import homeDots from '@public/home/home-dots.png';
+import { twMerge } from 'tailwind-merge';
+import ClassFrame from '@/ui/home/class-frame';
+const { Title, Paragraph } = Typography;
 
 export interface ExamData {
     key: string;
@@ -38,214 +26,612 @@ export interface ExamData {
     tests: Exam[];
 }
 
+const examData: ExamData[] = [
+    {
+        key: 'reading',
+        type: 'TOEIC Reading',
+        tests: [
+            {
+                id: 1,
+                title: 'Đề thi thử số 1',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 2,
+                title: 'Đề thi thử số 2',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 3,
+                title: 'Đề thi thử số 3',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 4,
+                title: 'Đề thi thử số 4',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+        ],
+    },
+    {
+        key: 'listening',
+        type: 'TOEIC Listening',
+        tests: [
+            {
+                id: 1,
+                title: 'Bài tập chuyên đề số 1',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 2,
+                title: 'Bài tập chuyên đề số 2',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 3,
+                title: 'Bài tập chuyên đề số 3',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 4,
+                title: 'Bài tập chuyên đề số 4',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+        ],
+    },
+    {
+        key: 'thptqg',
+        type: 'Bộ đề thi THPTQG',
+        tests: [
+            {
+                id: 1,
+                title: 'Bài tập chuyên đề số 1',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 2,
+                title: 'Bài tập chuyên đề số 2',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 3,
+                title: 'Bài tập chuyên đề số 3',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+            {
+                id: 4,
+                title: 'Bài tập chuyên đề số 4',
+                totalQuestions: 10,
+                questions: [],
+                duration: 10,
+                totalAttempts: 0,
+                uploadedAt: '2024-01-01',
+            },
+        ],
+    },
+];
+
+const classData = [
+    {
+        image: '',
+        rating: 4.8,
+        price: 500000,
+        title: 'Lớp học 2',
+        lessons: 15,
+        students: 150,
+        duration: 150,
+        teacher: {
+            name: 'Teacher 2',
+            image: '',
+        },
+    },
+    {
+        image: '',
+        rating: 4.8,
+        price: 500000,
+        title: 'Lớp học 2',
+        lessons: 15,
+        students: 150,
+        duration: 150,
+        teacher: {
+            name: 'Teacher 2',
+            image: '',
+        },
+    },
+    {
+        image: '',
+        rating: 4.8,
+        price: 500000,
+        title: 'Lớp học 2',
+        lessons: 15,
+        students: 150,
+        duration: 150,
+        teacher: {
+            name: 'Teacher 2',
+            image: '',
+        },
+    },
+];
+
+const Heading: React.FC<{ children: React.ReactNode; className?: string }> = ({
+    children,
+    className,
+}) => {
+    return (
+        <Title
+            className={twMerge(
+                'font-montserrat !text-5xl !font-black capitalize !leading-[1.17] !text-[#0E2A46]',
+                className,
+            )}
+        >
+            {children}
+        </Title>
+    );
+};
+
+const Description: React.FC<{
+    children: React.ReactNode;
+    className?: string;
+}> = ({ children, className }) => {
+    return (
+        <Paragraph
+            className={twMerge(
+                'color-[#333931] font-montserrat text-2xl',
+                className,
+            )}
+        >
+            {children}
+        </Paragraph>
+    );
+};
+
 export default function Home() {
-    const { data, isLoading } = useGetExamsQuery();
-    const { data: practiceData } = useGetExamPracticesQuery();
+    // const { data, isLoading } = useGetExamsQuery();
+    // const { data: practiceData } = useGetExamPracticesQuery();
 
-    if (isLoading || !data || !practiceData) return;
+    // if (isLoading || !data || !practiceData) return;
 
-    const examData: ExamData[] = [
-        {
-            key: "exam",
-            type: "Đề thi thử theo mẫu THPTQG",
-            tests: data,
-        },
-        {
-            key: "practice",
-            type: "Bài tập chuyên đề",
-            tests: practiceData,
-        },
-    ];
+    // const examData: ExamData[] = [
+    //     {
+    //         key: "exam",
+    //         type: "Đề thi thử theo mẫu THPTQG",
+    //         tests: data,
+    //     },
+    //     {
+    //         key: "practice",
+    //         type: "Bài tập chuyên đề",
+    //         tests: practiceData,
+    //     },
+    // ];
 
     return (
-        <main
-            className={`flex select-none flex-col items-center justify-center`}
-        >
-            <Image
-                className="absolute bottom-0 left-0 right-0 top-0 -z-50 max-h-[3100px] w-svw"
-                src={homeGradientBg}
-                alt="home gradient bg"
+        <main className="flex select-none flex-col items-center justify-center">
+            <div
+                className="absolute inset-0 -z-50 h-[800px] blur-[77px]"
+                style={{
+                    background:
+                        'linear-gradient(247deg, #BAEEF1 0%, #EFDBEE 94%)',
+                }}
             />
-
-            <div className="!flex bg-[url('/home-icon-bg.svg')] bg-cover py-20">
-                <div className="!flex-[1]">
-                    <Title className="!text-6xl !font-bold !leading-snug">
-                        Nền tảng luyện thi THPTQG môn Tiếng Anh cùng với AI
-                    </Title>
-                    <Title
-                        className="!pr-10 !font-normal !text-[#8A8A8A]"
-                        level={5}
-                    >
-                        <span className="!font-chango text-xl">tiawai</span>{" "}
-                        cung cấp đầy đủ nội dung chất lượng gồm các đề luyện thi
-                        có sẵn và tạo ra bởi công nghệ AI, các bài luyện tập
-                        theo chủ đề, hỗ trợ paraphrase đoạn văn, flashcard mỗi
-                        ngày cùng với đó là Tia
+            <div className="flex items-center gap-8 py-20">
+                <div className="flex-[1.1]">
+                    <Title className="font-montserrat !text-6xl !font-extrabold !leading-tight">
+                        {HOME_TITLE}
                     </Title>
                 </div>
-                <Image
-                    className="h-96 flex-[1] object-cover"
-                    src={homeMainImg}
-                    alt="home main image"
-                    priority
-                />
+                <div className="flex-1">
+                    <div className="absolute right-72 top-36 -z-10 size-72 rounded-full border-[40px] border-[#f2c94c]/20" />
+                    <Image
+                        className="h-auto w-full object-contain"
+                        src={homeMainImg}
+                        alt="home main image"
+                        priority
+                    />
+                </div>
             </div>
 
             <FeaturesBox />
 
-            <Flex className="!mb-20" vertical>
-                <Space size={80} direction="vertical">
-                    {examData &&
-                        examData.map((exam: ExamData, index) => (
-                            <div key={index}>
-                                <Flex justify="space-between" align="center">
-                                    <Flex align="center" className="!gap-4">
-                                        <Title className="!m-0 !font-bold leading-none">
-                                            {exam.type}
-                                        </Title>
-                                        {index == 1 ? <GenerateButton /> : null}
-                                    </Flex>
-                                    <Link
-                                        href={`/${exam.key}`}
-                                        className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
+            <Flex className="mx-auto mb-40 w-full" justify="space-between">
+                <Flex vertical flex="0.7" className="relative">
+                    <Flex
+                        align="center"
+                        justify="space-between"
+                        className="mb-4 pr-28"
+                    >
+                        <span className="rounded-xl bg-primary px-4 py-2 font-montserrat font-bold">
+                            <i>Tại sao nên chọn tiawai</i>
+                        </span>
+                        <Image
+                            src="/home/home-waves.png"
+                            className="self-center"
+                            width={80}
+                            height={10}
+                            alt="home waves"
+                            loading="lazy"
+                        />
+                    </Flex>
+
+                    <Heading>{HOME_HEADERS[0].title}</Heading>
+
+                    <Image
+                        src={homeCircle1}
+                        alt="home circle 1"
+                        className="absolute right-12 top-10 scale-95"
+                        loading="lazy"
+                    />
+
+                    <Flex vertical className="pr-20">
+                        <Description>{HOME_HEADERS[0].description}</Description>
+                        <Row
+                            gutter={[16, 16]}
+                            className="pr-3 font-montserrat text-base font-semibold capitalize text-[#0E2A46]"
+                        >
+                            {HOME_FIRST_FEATURES.map((feature, index) => (
+                                <Col
+                                    key={index}
+                                    lg={12}
+                                    md={24}
+                                    className="h-[120px]"
+                                >
+                                    <Flex
+                                        align="center"
+                                        className="h-full content-center justify-center rounded-[40px] bg-primary px-6 py-3"
+                                        gap={10}
                                     >
-                                        Xem thêm &gt;
-                                    </Link>
-                                </Flex>
-                                {exam.tests.length > 0 ? (
-                                    <div className="mt-8 grid grid-cols-4 gap-4">
-                                        {exam.tests.map((test, index) => (
-                                            <ExamFrame
-                                                key={index}
-                                                examData={test}
-                                            />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <Empty
-                                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                        description="Không có dữ liệu"
-                                        imageStyle={{
-                                            height: 100,
-                                        }}
-                                    />
-                                )}
-                            </div>
-                        ))}
-                </Space>
+                                        <CheckCircleFilled className="!text-primary" />
+                                        <div>{feature}</div>
+                                    </Flex>
+                                </Col>
+                            ))}
+                        </Row>
+                    </Flex>
+                </Flex>
+                <Flex className="relative flex-[0.6] justify-center">
+                    <Image
+                        width={300}
+                        height={442}
+                        className="relative z-10 scale-90 self-center"
+                        src={bigTiawai}
+                        alt="big tiawai"
+                        loading="lazy"
+                    />
+                    <Image
+                        src={homeDots}
+                        alt="home dots"
+                        className="absolute bottom-1/2 right-0 scale-75"
+                        loading="lazy"
+                    />
+                    <div
+                        id="circle-1"
+                        className="absolute left-1/2 top-1/2 h-[650px] w-[700px] -translate-x-1/2 -translate-y-1/2 scale-75 rounded-full border border-black"
+                    />
+                    <div
+                        id="circle-2"
+                        className="absolute left-2/3 top-2/3 size-[250px] rounded-full border border-black"
+                    />
+                    <div
+                        id="bg"
+                        className="absolute left-16 top-40 -z-10 h-[459px] w-[528px] scale-90 rounded-full bg-[#269dff]/30 blur-[100px]"
+                    />
+                </Flex>
             </Flex>
 
-            <div className="relative mb-20 flex items-center">
-                <Image
-                    className="h-auto max-w-lg"
-                    src={bigTiawai}
-                    alt="big tiawai"
-                    loading="lazy"
-                />
-                <div className="">
-                    <Space direction="vertical" size={46}>
-                        <Title className="!m-0 !font-roboto !text-6xl !font-bold">
-                            Trải nghiệm học cùng Tia
-                        </Title>
-                        {mainHighlights.map((highlight, index) => (
-                            <Flex align="center" key={index}>
-                                <Space size="large">
-                                    <IconFrame
-                                        bgColor="#0E0314"
-                                        src={highlight.src}
-                                        alt={highlight.alt}
-                                        width={52}
-                                        height={52}
-                                    />
-                                    <Flex vertical>
-                                        <Title
-                                            className="!m-0 !font-roboto"
-                                            level={2}
-                                        >
-                                            {highlight.title}
-                                        </Title>
-                                        <Title
-                                            className="!m-0 !font-roboto !font-medium !text-[#8A8A8A]"
-                                            level={4}
-                                        >
-                                            {highlight.description}
-                                        </Title>
-                                    </Flex>
-                                </Space>
-                            </Flex>
+            <div className="relative mb-40 w-[calc(100vw-2rem)]">
+                <div className="absolute inset-0 -z-10 h-full bg-gradient-to-bl from-[#b9edf1]/50 to-[#efdbee]/50 opacity-90 blur-[77px]" />
+                <Flex
+                    vertical
+                    className="mx-auto max-w-[1320px]"
+                    align="center"
+                >
+                    <Heading className="relative !text-[2.7rem]">
+                        {HOME_HEADERS[1].title}
+                    </Heading>
+                    <Flex justify="space-between" className="mb-2" gap={70}>
+                        <div className="flex-1">
+                            <Description>
+                                {HOME_HEADERS[1].description}
+                            </Description>
+                        </div>
+                        <Input
+                            prefix={<SearchOutlined />}
+                            placeholder="Điền ID lớp học để tìm lớp học ngay!"
+                            className="-mt-10 flex-[0.4] self-center rounded-[40px] border border-black px-4 py-2 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]"
+                            style={{
+                                fontSize: '18px',
+                            }}
+                        />
+                    </Flex>
+                    <Row gutter={[40, 24]} className="mb-10">
+                        {classData.map((classItem, index) => (
+                            <Col xs={24} md={12} lg={8} key={index}>
+                                <ClassFrame class={classItem} />
+                            </Col>
                         ))}
-                    </Space>
-                </div>
-                <Image
-                    className="absolute"
-                    loading="lazy"
-                    src={homeIconBg2}
-                    alt="home icon bg 2"
-                />
-                <Image
-                    className="absolute -bottom-48 -left-10 rotate-180"
-                    loading="lazy"
-                    src={home7Svg}
-                    alt="home icon 7"
-                />
-                <Image
-                    className="absolute -bottom-36 -right-10"
-                    loading="lazy"
-                    src={home11}
-                    alt="home icon 11"
-                />
+                    </Row>
+                    <Button
+                        variant="solid"
+                        size="large"
+                        className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold capitalize text-white"
+                    >
+                        Khám phá thêm lớp học
+                        <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
+                            <ArrowRightOutlined className="!text-black" />
+                        </div>
+                    </Button>
+                </Flex>
             </div>
 
-            <Flex justify="center">
-                <Space size={91}>
-                    <Flex
-                        className="min-w-[450px] rounded-[2rem] bg-[#E9DAE9] py-12"
-                        justify="center"
-                    >
-                        <Space direction="vertical" size="large" align="center">
-                            <Title className="!font-roboto" level={2}>
-                                Paraphasing
-                            </Title>
-                            <IconFrame
-                                src="/home-3.svg"
-                                alt="home icon 3"
-                                bgColor="#FFFFFF80"
-                                frameSize="125px"
-                                lazy={true}
-                            ></IconFrame>
-                            <Link
-                                href="/paraphrase"
-                                className="cursor-pointer rounded-full bg-[#4D2C5E] px-4 py-1 font-roboto text-lg font-medium text-white hover:text-white"
-                            >
-                                Xem thêm
-                            </Link>
-                        </Space>
-                    </Flex>
-                    <Flex
-                        className="min-w-[450px] rounded-[2rem] bg-[#DAE3E9] py-12"
-                        justify="center"
-                    >
-                        <Space direction="vertical" align="center" size="large">
-                            <Title className="!font-roboto" level={2}>
-                                Flashcard
-                            </Title>
-                            <IconFrame
-                                src="/home-5.svg"
-                                alt="home icon 3"
-                                bgColor="#FFFFFF80"
-                                frameSize="125px"
-                                lazy={true}
-                            ></IconFrame>
-                            <Link
-                                href="/flashcard"
-                                className="cursor-pointer rounded-full bg-[#2C2F5E] px-4 py-1 font-roboto text-lg font-medium text-white hover:text-white"
-                            >
-                                Xem thêm
-                            </Link>
-                        </Space>
-                    </Flex>
-                </Space>
+            <Flex className="mb-40" gap={80} vertical>
+                <Flex vertical align="center" className="-mb-20">
+                    <Heading className="relative !text-[2.7rem]">
+                        {HOME_HEADERS[2].title}
+                    </Heading>
+                    <Description className="!px-20 text-center">
+                        {HOME_HEADERS[2].description}
+                    </Description>
+                </Flex>
+                {examData &&
+                    examData.slice(0, 2).map((exam: ExamData) => (
+                        <div key={exam.key}>
+                            <Flex justify="space-between" align="center">
+                                <Title className="!m-0 leading-none">
+                                    {exam.type}
+                                </Title>
+                                <Link
+                                    href={`/${exam.key}`}
+                                    className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
+                                >
+                                    Xem thêm &gt;
+                                </Link>
+                            </Flex>
+                            {exam.tests.length > 0 ? (
+                                <Row className="mt-8" gutter={[24, 24]}>
+                                    {exam.tests.map((test, index) => (
+                                        <Col xs={24} md={12} lg={6} key={index}>
+                                            <ExamFrame
+                                                key={index}
+                                                theme={
+                                                    exam.key == 'listening'
+                                                        ? 'blue'
+                                                        : 'pink'
+                                                }
+                                                examData={test}
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
+                            ) : (
+                                <Empty
+                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                    description="Không có dữ liệu"
+                                    imageStyle={{
+                                        height: 100,
+                                    }}
+                                />
+                            )}
+                        </div>
+                    ))}
             </Flex>
+
+            <Flex vertical className="mb-40">
+                <Flex vertical align="center">
+                    <Heading className="relative !text-[2.7rem]">
+                        {HOME_HEADERS[3].title}
+                    </Heading>
+                    <Description className="!px-20 text-center">
+                        {HOME_HEADERS[3].description}
+                    </Description>
+                </Flex>
+                <Flex justify="space-between" align="center">
+                    <Title className="!m-0 capitalize leading-none">
+                        {examData[2].type}
+                    </Title>
+                    <Link
+                        href={`/${examData[2].key}`}
+                        className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
+                    >
+                        Xem thêm &gt;
+                    </Link>
+                </Flex>
+                {examData[2].tests.length > 0 ? (
+                    <Row className="mt-8" gutter={[24, 24]}>
+                        {examData[2].tests.map((test, index) => (
+                            <Col xs={24} md={12} lg={6} key={index}>
+                                <ExamFrame
+                                    key={index}
+                                    theme={
+                                        examData[2].key === 'reading'
+                                            ? 'pink'
+                                            : 'blue'
+                                    }
+                                    examData={test}
+                                />
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <Empty
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        description="Không có dữ liệu"
+                        imageStyle={{
+                            height: 100,
+                        }}
+                    />
+                )}
+            </Flex>
+
+            <div className="relative w-[calc(100vw-2rem)]">
+                <div className="absolute inset-0 -z-10 h-full bg-gradient-to-bl from-[#b9edf1]/50 to-[#efdbee]/50 px-10 opacity-90 blur-[77px]" />
+                <Flex
+                    className="mx-auto max-w-[1320px]"
+                    gap={80}
+                    align="center"
+                >
+                    <Flex
+                        className="items-end text-center font-semibold text-[#413838]"
+                        justify="center"
+                    >
+                        <Flex
+                            vertical
+                            align="center"
+                            className="mb-[50px] w-40"
+                        >
+                            <Image
+                                src="/home/avatar-1.png"
+                                alt="avatar 1"
+                                width={80}
+                                height={80}
+                                className="mb-3"
+                                loading="lazy"
+                            />
+                            <span className="mb-3 rounded-2xl bg-[#BAD7EB] px-3 py-2 text-center font-montserrat text-lg font-medium">
+                                980 điểm
+                            </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="209"
+                                height="33"
+                                viewBox="0 0 209 33"
+                                fill="none"
+                                className="w-full"
+                            >
+                                <path
+                                    d="M28.4528 0.10791H208.654V32.2085H0L28.4528 0.10791Z"
+                                    fill="#5893BB"
+                                />
+                            </svg>
+                            <div className="-mt-1 mb-7 h-56 w-full bg-[#BAD7EB] text-[105px]">
+                                2
+                            </div>
+                        </Flex>
+                        <Flex vertical align="center" className="w-40">
+                            <Image
+                                src="/home/avatar-2.png"
+                                alt="avatar 2"
+                                width={80}
+                                height={80}
+                                className="relative mb-3"
+                                loading="lazy"
+                            />
+                            <Image
+                                src="/home/star-in-polygon.svg"
+                                alt="star in polygon"
+                                width={40}
+                                height={40}
+                                className="absolute -top-7"
+                                loading="lazy"
+                            />
+                            <span className="mb-3 rounded-2xl bg-[#BAD7EB] px-3 py-2 text-center font-montserrat text-lg font-medium">
+                                1000 điểm
+                            </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="222"
+                                height="33"
+                                viewBox="0 0 222 33"
+                                fill="none"
+                                className="w-full"
+                            >
+                                <path
+                                    d="M32.7549 0.0686035H189.245L221.346 32.1692H0.654297L32.7549 0.0686035Z"
+                                    fill="#BAD7EB"
+                                />
+                            </svg>
+                            <div className="-mt-[6px] h-[350px] w-full bg-gradient-to-b from-[#bad7eb] to-[#5893bb] text-[120px]">
+                                1
+                            </div>
+                        </Flex>
+                        <Flex vertical align="center" className="w-40">
+                            <Image
+                                src="/home/avatar-3.png"
+                                alt="avatar 3"
+                                width={80}
+                                height={80}
+                                className="mb-3"
+                                loading="lazy"
+                            />
+                            <span className="mb-3 rounded-2xl bg-[#BAD7EB] px-3 py-2 text-center font-montserrat text-lg font-medium">
+                                900 điểm
+                            </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="209"
+                                height="33"
+                                viewBox="0 0 209 33"
+                                fill="none"
+                                className="w-full"
+                            >
+                                <path
+                                    d="M0.345703 0.307129H178.65L209 32.4078H0.345703L0.345703 0.307129Z"
+                                    fill="#5893BB"
+                                />
+                            </svg>
+                            <div className="-mt-1 mb-6 h-56 w-full bg-[#BAD7EB] text-[90px]">
+                                3
+                            </div>
+                        </Flex>
+                    </Flex>
+                    <Flex vertical className="text-center">
+                        <Heading>{HOME_HEADERS[4].title}</Heading>
+                        <Description>{HOME_HEADERS[4].description}</Description>
+                        <Button
+                            variant="solid"
+                            size="large"
+                            className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold capitalize text-white"
+                        >
+                            Tham gia challenge ngay!
+                            <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
+                                <ArrowRightOutlined className="!text-black" />
+                            </div>
+                        </Button>
+                    </Flex>
+                </Flex>
+            </div>
         </main>
     );
 }

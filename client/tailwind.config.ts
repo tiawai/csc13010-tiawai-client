@@ -24,6 +24,21 @@ const config: Config = {
                 roboto: ['var(--font-roboto)'],
                 instrument: ['Instrument Serif', 'serif'],
                 nunitosans: ['Nunito Sans', 'serif'],
+                montserrat: ['Montserrat', 'sans-serif'],
+            },
+            backgroundColor: {
+                primary: '#E9DAE9',
+                secondary: '#DAE3E9',
+                'primary-button': '#4D2C5E',
+                'secondary-button': '#2C2F5E',
+            },
+            borderColor: {
+                'primary-button': '#4D2C5E',
+                'secondary-button': '#2C2F5E',
+            },
+            textColor: {
+                primary: '#4D2C5E',
+                secondary: '#2C2F5E',
             },
         },
     },

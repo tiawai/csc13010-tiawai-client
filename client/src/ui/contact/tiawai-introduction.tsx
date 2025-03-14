@@ -38,7 +38,7 @@ export const TiawaiIntroduction = () => {
         <section className="relative flex select-none items-center gap-24 px-10 py-16">
             <div className="absolute inset-0 -z-10 flex items-center justify-center">
                 <Image
-                    className="w-[180%] h-[180%] scale-150 blur-2xl"
+                    className="h-[180%] w-[180%] scale-150 blur-2xl"
                     src={mascotBgBlur}
                     alt="maskot-bg-blur"
                     priority
@@ -49,7 +49,12 @@ export const TiawaiIntroduction = () => {
                 <Title level={3} className="text-justify !font-normal">
                     <i>
                         <b>tiawai </b>
-                        tiawai là <b>nền tảng học tập hiện đại</b>, giúp bạn chinh phục kỳ thi <b>TOEIC và THPTQG</b> một cách hiệu quả. Bên cạnh đó, bạn có thể tham gia lớp học theo lộ trình bài bản, làm đề thi thử, nhận hỗ trợ từ giáo viên và luyện thi THPTQG với ngân hàng đề thi chất lượng, được cập nhật thường xuyên.
+                        tiawai là <b>nền tảng học tập hiện đại</b>, giúp bạn
+                        chinh phục kỳ thi <b>TOEIC và THPTQG</b> một cách hiệu
+                        quả. Bên cạnh đó, bạn có thể tham gia lớp học theo lộ
+                        trình bài bản, làm đề thi thử, nhận hỗ trợ từ giáo viên
+                        và luyện thi THPTQG với ngân hàng đề thi chất lượng,
+                        được cập nhật thường xuyên.
                     </i>
                 </Title>
             </Col>
@@ -63,14 +68,13 @@ export const TiawaiIntroduction = () => {
     );
 };
 
-
 export const TiawaiDescription = () => {
     return (
         <section className="relative flex select-none items-center gap-24 px-10 py-16">
             {/* Nền mở rộng bao quanh nội dung */}
             <div className="absolute inset-0 -z-10 flex items-center justify-center space-y-20">
                 <Image
-                    className="w-[180%] h-[180%] scale-100 blur-2xl"
+                    className="h-[180%] w-[180%] scale-100 blur-2xl"
                     src={mascotBgBlur2}
                     alt="mascot-bg-blur"
                     priority

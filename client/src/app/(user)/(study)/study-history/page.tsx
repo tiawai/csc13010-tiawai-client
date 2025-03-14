@@ -1,5 +1,5 @@
-"use client";
-import Image from "next/image";
+'use client';
+import Image from 'next/image';
 import {
     Card,
     Flex,
@@ -8,19 +8,18 @@ import {
     Button as AntdButton,
     Typography,
     Empty,
-} from "antd";
-import Banner from "@/app/(user)/(study)/_ui/banner";
-import profileTiawai from "@public/profile-tiawai.webp";
-import { BannerTitle } from "@/ui/common/title";
-import { useState, useEffect } from "react";
-import { useGetHistoryExamsQuery } from "@/services/user";
-import { SearchOutlined } from "@ant-design/icons";
-import { FilterIcon } from "@/ui/admin/icons";
-import { UserHistoryExam } from "@/types/exam";
-import { twMerge } from "tailwind-merge";
-import { useRouter } from "next/navigation";
-import IconFrame from "@/ui/icon-frame";
-import { ReloadOutlined, EyeOutlined } from "@ant-design/icons";
+} from 'antd';
+import { Banner, BannerTitle } from '@/ui/components/banner';
+import profileTiawai from '@public/profile-tiawai.webp';
+import { useState, useEffect } from 'react';
+import { useGetHistoryExamsQuery } from '@/services/user';
+import { SearchOutlined } from '@ant-design/icons';
+import { FilterIcon } from '@/ui/admin/icons';
+import { UserHistoryExam } from '@/types/exam';
+import { twMerge } from 'tailwind-merge';
+import { useRouter } from 'next/navigation';
+import IconFrame from '@/ui/icon-frame';
+import { ReloadOutlined, EyeOutlined } from '@ant-design/icons';
 
 const { Text, Title } = Typography;
 
@@ -46,13 +45,13 @@ const History = () => {
 
     const history: History[] = [
         {
-            title: "Danh sách đề thi",
-            buttonName: "Lịch sử làm đề thi",
+            title: 'Danh sách đề thi',
+            buttonName: 'Lịch sử làm đề thi',
             data: data?.filter((item) => !item.isGenerated) || [],
         },
         {
-            title: "Danh sách đề luyện tập",
-            buttonName: "Lịch sử làm luyện tập",
+            title: 'Danh sách đề luyện tập',
+            buttonName: 'Lịch sử làm luyện tập',
             data: data?.filter((item) => item.isGenerated) || [],
         },
     ];
@@ -64,7 +63,7 @@ const History = () => {
 
     const handleSearch = (value: string) => {
         const filtered = history[currentPage].data.filter((item) => {
-            const title = item.testTitle.toLowerCase() || "";
+            const title = item.testTitle.toLowerCase() || '';
             return title.includes(value.toLowerCase());
         });
         setFilteredData(filtered);
@@ -84,10 +83,10 @@ const History = () => {
                     bordered
                     style={{
                         width: 350,
-                        height: "fit-content",
-                        borderRadius: "50px",
-                        border: "2px solid black",
-                        padding: "20px 16px",
+                        height: 'fit-content',
+                        borderRadius: '50px',
+                        border: '2px solid black',
+                        padding: '20px 16px',
                     }}
                 >
                     <Flex
@@ -113,9 +112,9 @@ const History = () => {
                     bordered
                     style={{
                         width: 700,
-                        borderRadius: "50px",
-                        border: "2px solid black",
-                        padding: "10px 16px 0 16px",
+                        borderRadius: '50px',
+                        border: '2px solid black',
+                        padding: '10px 16px 0 16px',
                     }}
                 >
                     <Title level={4}>{history[currentPage].title}</Title>
@@ -137,7 +136,7 @@ const History = () => {
                         <AntdButton
                             icon={<FilterIcon width={18} />}
                             size="large"
-                            style={{ background: "#DAE3E9" }}
+                            style={{ background: '#DAE3E9' }}
                             className="font-roboto font-medium"
                         >
                             Bộ lọc
@@ -174,10 +173,10 @@ const Button = ({
     return (
         <button
             className={twMerge(
-                "w-full rounded-full transition-all duration-150 hover:scale-105",
+                'w-full rounded-full transition-all duration-150 hover:scale-105',
                 isCurrentPage
-                    ? "bg-[#E9DAE9] py-[6px] font-bold text-[#AF3FAF]"
-                    : "border-2 border-black py-1",
+                    ? 'bg-[#E9DAE9] py-[6px] font-bold text-[#AF3FAF]'
+                    : 'border-2 border-black py-1',
             )}
             onClick={onClick}
         >
@@ -187,17 +186,17 @@ const Button = ({
 };
 
 const ExamFrame = ({
-    theme = "pink",
+    theme = 'pink',
     examData,
 }: Readonly<{
-    theme?: "pink" | "blue";
+    theme?: 'pink' | 'blue';
     examData: UserHistoryExam;
 }>) => {
     const router = useRouter();
-    const iconSrc = theme === "pink" ? "/home-8.svg" : "/home-4.png";
-    const iconAlt = theme === "pink" ? "home icon 8" : "home icon 4";
-    const objColor = theme === "pink" ? "#4D2C5E" : "#2C2F5E";
-    const size = theme === "pink" ? 100 : 62;
+    const iconSrc = theme === 'pink' ? '/home/home-8.svg' : '/home/home-4.png';
+    const iconAlt = theme === 'pink' ? 'home icon 8' : 'home icon 4';
+    const objColor = theme === 'pink' ? '#4D2C5E' : '#2C2F5E';
+    const size = theme === 'pink' ? 100 : 62;
 
     return (
         <Card className="!w-full border-2 border-black">
