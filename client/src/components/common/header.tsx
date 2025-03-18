@@ -158,7 +158,12 @@ export const HeaderMenu = () => {
     const pathname = usePathname();
     const user = useAppSelector((state) => state.auth.user);
     const isAdmin = user?.role === 'administrator';
-    const menuItems = studentItems;
+    const menuItems =
+        user?.role === 'student'
+            ? studentItems
+            : isAdmin
+              ? adminItems
+              : teacherItems;
     const mode = isAdmin ? 'vertical' : 'horizontal';
     const currentPath =
         pathname === '/'
