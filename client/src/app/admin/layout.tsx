@@ -1,14 +1,24 @@
-import Header from '@/components/common/header';
+import { Suspense } from 'react';
+import Header, { HeaderMenu } from '@/components/common/header';
 
-export default function Userlayout({
+export default async function UserLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="m-auto max-w-[1440px] items-center space-y-12 p-4">
-            <Header />
-            <div className="m-auto !mt-20 max-w-[1320px]">{children}</div>
-        </div>
+        <>
+            <div className="m-auto !mt-28 min-h-[calc(100vh-300px)] px-4">
+                <Header />
+                <div className="flex">
+                    <HeaderMenu />
+                    <Suspense>
+                        <main className="m-auto max-w-[1320px] grow">
+                            {children}
+                        </main>
+                    </Suspense>
+                </div>
+            </div>
+        </>
     );
 }

@@ -49,6 +49,7 @@ const classData = [
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params;
+    console.log(id);
     return (
         <Flex vertical>
             <Banner className="mb-28">
