@@ -1,11 +1,11 @@
 /* eslint-disable */
-import NextAuth, { DefaultSession, User } from "next-auth";
-import { User as UserInfo } from "@/lib/slices/auth";
-import { JWT } from "next-auth/jwt";
+import NextAuth, { DefaultSession, User } from 'next-auth';
+import { User as UserInfo } from '@/lib/slices/auth';
+import { JWT } from 'next-auth/jwt';
 
-export type RefreshTokenError = "RefreshTokenError";
+export type RefreshTokenError = 'RefreshTokenError';
 
-declare module "next-auth" {
+declare module 'next-auth' {
     interface User {
         refreshToken: string;
         accessToken: string;
@@ -29,7 +29,7 @@ declare module "next-auth" {
     }
 }
 
-declare module "next-auth/jwt" {
+declare module 'next-auth/jwt' {
     interface JWT {
         accessToken: string;
         refreshToken: string;

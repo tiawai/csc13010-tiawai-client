@@ -1,8 +1,8 @@
-import { twJoin } from "tailwind-merge";
+import { twJoin } from 'tailwind-merge';
 
 const Heading = ({
     children,
-    className = "",
+    className = '',
 }: {
     children: React.ReactNode;
     className?: string;
@@ -10,7 +10,7 @@ const Heading = ({
     return (
         <h1
             className={twJoin(
-                "font-roboto text-[4.25rem] font-black leading-[5.75rem]",
+                'font-roboto text-[4.25rem] font-black leading-[5.75rem]',
                 className,
             )}
         >

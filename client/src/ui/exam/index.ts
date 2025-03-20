@@ -1,1 +1,1 @@
-export { ExamHistory } from "./exam-history";
+export { ExamHistory } from './exam-history';

@@ -1,7 +1,7 @@
-import React from "react";
-import { Preview } from "@storybook/react";
-import { theme } from "../src/app/theme";
-import { ConfigProvider } from "antd";
+import React from 'react';
+import { Preview } from '@storybook/react';
+import { theme } from '../src/app/theme';
+import { ConfigProvider } from 'antd';
 
 const preview: Preview = {
     parameters: {

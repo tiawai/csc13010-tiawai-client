@@ -32,6 +32,7 @@ const FormSignIn = () => {
                 console.error('Failed to create chat session', error);
             }
         };
+        /*
         if (session) {
             dispatch(
                 setAuthState({
@@ -50,6 +51,9 @@ const FormSignIn = () => {
                 router.push('/');
             }
         }
+        */
+
+        router.push('/');
     }, [session, router, createSession, dispatch]);
 
     const onFinish = async () => {

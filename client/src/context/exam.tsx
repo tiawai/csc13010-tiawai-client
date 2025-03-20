@@ -1,7 +1,7 @@
-"use client";
-import { createContext } from "react";
-import { Exam } from "@/types/exam";
-import { useGetExamByIdQuery } from "@/services/exam";
+'use client';
+import { createContext } from 'react';
+import { Exam } from '@/types/exam';
+import { useGetExamByIdQuery } from '@/services/exam';
 
 export const ExamContext = createContext<Exam | undefined>(undefined);
 

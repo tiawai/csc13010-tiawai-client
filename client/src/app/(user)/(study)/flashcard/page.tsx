@@ -15,14 +15,6 @@ import {
     Button,
 } from 'antd';
 import { twMerge } from 'tailwind-merge';
-import fcBannerImage from '@public/flashcard/banner-img.png';
-import scienceImage from '@public/flashcard/science.png';
-import researchImage from '@public/flashcard/research.png';
-import officeImage from '@public/flashcard/office.png';
-import itImage from '@public/flashcard/it.png';
-import literatureImage from '@public/flashcard/literature.png';
-import cultureImage from '@public/flashcard/culture.png';
-import heartImage from '@public/flashcard/heart.png';
 import { Banner, BannerDescription, BannerTitle } from '@/ui/components/banner';
 import { useState } from 'react';
 import {
@@ -38,27 +30,27 @@ const { Title } = Typography;
 const defaultTopics = [
     {
         title: 'Khoa học',
-        image: scienceImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/science.png',
     },
     {
         title: 'Nghiên cứu',
-        image: researchImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/research.png',
     },
     {
         title: 'Văn phòng',
-        image: officeImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/office.png',
     },
     {
         title: 'Công nghệ',
-        image: itImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/it.png',
     },
     {
         title: 'Văn học',
-        image: literatureImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/literature.png',
     },
     {
         title: 'Văn hóa',
-        image: cultureImage,
+        image: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/culture.png',
     },
 ];
 
@@ -100,7 +92,11 @@ export default function FlashCardPage() {
             <Banner gap={20}>
                 <Image
                     className="max-w-60"
-                    src={fcBannerImage}
+                    src={
+                        'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/banner-img.png'
+                    }
+                    width={400}
+                    height={400}
                     alt="big tiawai 2"
                 />
                 <Flex vertical align="end">
@@ -159,7 +155,9 @@ export default function FlashCardPage() {
                                                     <div className="relative m-auto aspect-square w-2/5 content-center rounded-3xl bg-white/50 p-4">
                                                         <Image
                                                             className="m-auto aspect-square"
-                                                            src={heartImage}
+                                                            src={
+                                                                'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/flashcard/heart.png'
+                                                            }
                                                             alt="tiawai chatbot icon"
                                                             width={50}
                                                             height={50}

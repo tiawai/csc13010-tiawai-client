@@ -1,15 +1,15 @@
-"use client";
-import { appApi } from "@/services/config";
-import { setSignOut } from "@/lib/slices/auth";
-import { store } from "@/lib/store/store";
+'use client';
+import { appApi } from '@/services/config';
+import { setSignOut } from '@/lib/slices/auth';
+import { store } from '@/lib/store/store';
 
 const authApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         signUp: builder.mutation({
             query: ({ username, email, password }) => ({
-                url: "/auth/sign-up",
-                method: "POST",
+                url: '/auth/sign-up',
+                method: 'POST',
                 body: {
                     username,
                     email,
@@ -20,8 +20,8 @@ const authApi = appApi.injectEndpoints({
 
         signIn: builder.mutation({
             query: ({ username, password }) => ({
-                url: "/auth/sign-in",
-                method: "POST",
+                url: '/auth/sign-in',
+                method: 'POST',
                 body: {
                     username,
                     password,
@@ -31,8 +31,8 @@ const authApi = appApi.injectEndpoints({
 
         signOut: builder.mutation({
             query: () => ({
-                url: "/auth/sign-out",
-                method: "POST",
+                url: '/auth/sign-out',
+                method: 'POST',
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 await queryFulfilled;
@@ -41,13 +41,13 @@ const authApi = appApi.injectEndpoints({
         }),
 
         refreshToken: builder.mutation({
-            query: () => "/auth/refresh-token",
+            query: () => '/auth/refresh-token',
         }),
 
         passwordRecovery: builder.mutation({
             query: ({ email }) => ({
-                url: "/auth/password-recovery",
-                method: "POST",
+                url: '/auth/password-recovery',
+                method: 'POST',
                 body: {
                     email,
                 },
@@ -56,8 +56,8 @@ const authApi = appApi.injectEndpoints({
 
         resetPassword: builder.mutation({
             query: ({ email, otp, newPassword, confirmPassword }) => ({
-                url: "/auth/reset-password",
-                method: "POST",
+                url: '/auth/reset-password',
+                method: 'POST',
                 body: {
                     email,
                     otp,
@@ -81,11 +81,11 @@ export const {
 export const handleRefreshToken = async (refreshToken: string) => {
     try {
         const res = await fetch(
-            process.env.NEXT_PUBLIC_BACKEND_BASE_URL + "/auth/refresh-token",
+            process.env.NEXT_PUBLIC_BACKEND_BASE_URL + '/auth/refresh-token',
             {
-                credentials: "include",
+                credentials: 'include',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${refreshToken}`,
                 },
             },

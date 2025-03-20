@@ -1,15 +1,15 @@
-"use client";
-import { useState, useEffect } from "react";
-import { useAppDispatch } from "@/lib/hooks/hook";
-import { useSession } from "next-auth/react";
-import { setAuthState } from "@/lib/slices/auth";
-import { useSignOutMutation } from "./services/auth";
-import { useAppSelector } from "@/lib/hooks/hook";
-import { setCridentials } from "@/lib/slices/auth";
-import { handleRefreshToken } from "@/services/auth";
-import { User } from "next-auth";
-import { appApi } from "@/services/config";
-import { store } from "@/lib/store/store";
+'use client';
+import { useState, useEffect } from 'react';
+import { useAppDispatch } from '@/lib/hooks/hook';
+import { useSession } from 'next-auth/react';
+import { setAuthState } from '@/lib/slices/auth';
+import { useSignOutMutation } from './services/auth';
+import { useAppSelector } from '@/lib/hooks/hook';
+import { setCridentials } from '@/lib/slices/auth';
+import { handleRefreshToken } from '@/services/auth';
+import { User } from 'next-auth';
+import { appApi } from '@/services/config';
+import { store } from '@/lib/store/store';
 
 export default function NextAuthWrapper({
     children,
@@ -33,15 +33,15 @@ export default function NextAuthWrapper({
                 if (res?.error) return;
 
                 const { accessToken } = res as User;
-                dispatch(setCridentials({ accessToken, refreshToken: "" }));
+                dispatch(setCridentials({ accessToken, refreshToken: '' }));
                 await signOut({});
-                window.localStorage.removeItem("refreshToken");
+                window.localStorage.removeItem('refreshToken');
             }
         };
 
         setLoading(true);
-        if (status === "loading") return;
-        if (session?.error === "RefreshTokenError" || session === null) {
+        if (status === 'loading') return;
+        if (session?.error === 'RefreshTokenError' || session === null) {
             setLoading(false);
             if (auth.user) {
                 handleSignOut();
@@ -53,13 +53,13 @@ export default function NextAuthWrapper({
                 session?.refreshToken
             ) {
                 const refreshToken =
-                    window.localStorage.getItem("refreshToken");
+                    window.localStorage.getItem('refreshToken');
                 if (
                     session.refreshToken &&
                     session.refreshToken !== refreshToken
                 ) {
                     window.localStorage.setItem(
-                        "refreshToken",
+                        'refreshToken',
                         session.refreshToken,
                     );
                     dispatch(
@@ -69,7 +69,7 @@ export default function NextAuthWrapper({
                             refreshToken: session.refreshToken,
                         }),
                     );
-                    store.dispatch(appApi.util.invalidateTags(["Auth"]));
+                    store.dispatch(appApi.util.invalidateTags(['Auth']));
                 }
             }
         }

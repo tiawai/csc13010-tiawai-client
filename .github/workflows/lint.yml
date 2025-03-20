@@ -1,12 +1,12 @@
 name: lint
 on:
     push:
-        branches: ["main", "dev"]
+        branches: ['main', 'dev']
     pull_request:
-        branches: ["main", "dev"]
+        branches: ['main', 'dev']
         paths-ignore:
-            - "README.md"
-            - "LICENSE"
+            - 'README.md'
+            - 'LICENSE'
 jobs:
     lint-prettier:
         runs-on: ubuntu-22.04
@@ -22,7 +22,7 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v2
               with:
-                  node-version: "22"
+                  node-version: '22'
 
             - name: Install dependencies
               run: cd client && pnpm install

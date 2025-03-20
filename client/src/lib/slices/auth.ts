@@ -1,6 +1,6 @@
-"use client";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { User } from "@/types/user";
+'use client';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { User } from '@/types/user';
 
 type AccessToken = string | undefined;
 type RefreshToken = string | undefined;
@@ -18,7 +18,7 @@ export type CredentialsProps = {
 };
 
 const authSlice = createSlice({
-    name: "auth",
+    name: 'auth',
     initialState: {
         user: undefined,
         accessToken: undefined,
