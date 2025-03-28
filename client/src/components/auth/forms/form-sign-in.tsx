@@ -8,6 +8,7 @@ import { useCreateSessionMutation } from '@/services/chat';
 import { setAuthState, setChatSessionId } from '@/lib/slices/auth';
 import { useAppDispatch } from '@/lib/hooks/hook';
 import { FormButtonGradient } from '@/components/auth/ui/form';
+import { Role } from '@/types/user';
 const { Paragraph } = Typography;
 
 const FormSignIn = () => {
@@ -40,8 +41,8 @@ const FormSignIn = () => {
                     refreshToken: session.refreshToken as string,
                 }),
             );
-            const role = session?.user?.role;
-            if (role === 'administrator') {
+            const role = session?.user?.role as Role;
+            if (role === Role.ADMIN) {
                 router.push('/admin');
             } else {
                 if (session.user.id) {
