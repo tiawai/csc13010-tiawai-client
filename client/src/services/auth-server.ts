@@ -1,4 +1,7 @@
-export const handleSignIn = async (username: string, password: string) => {
+export const handleSignIn = async (
+    username: string | unknown,
+    password: string | unknown,
+) => {
     try {
         const res = await fetch(
             process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/sign-in',

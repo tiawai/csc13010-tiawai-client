@@ -1,11 +1,11 @@
-import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import Credentials from "next-auth/providers/credentials";
-import { Provider } from "next-auth/providers";
-import { User, Session } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { jwtDecode } from "jwt-decode";
-import { handleSignIn, handleRefreshToken } from "@/services/auth-server";
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
+import Credentials from 'next-auth/providers/credentials';
+import { Provider } from 'next-auth/providers';
+import { User, Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import { jwtDecode } from 'jwt-decode';
+import { handleSignIn, handleRefreshToken } from '@/services/auth-server';
 
 const providers: Provider[] = [
     Credentials({
@@ -29,19 +29,19 @@ const providers: Provider[] = [
 
 export const providerMap = providers
     .map((provider) => {
-        if (typeof provider === "function") {
+        if (typeof provider === 'function') {
             const providerData = provider();
             return { id: providerData.id, name: providerData.name };
         } else {
             return { id: provider.id, name: provider.name };
         }
     })
-    .filter((provider) => provider.id !== "credentials");
+    .filter((provider) => provider.id !== 'credentials');
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers,
     pages: {
-        signIn: "/sign-in",
+        signIn: '/sign-in',
     },
     callbacks: {
         async jwt({ token, user }: { token: JWT; user: User }) {
@@ -76,7 +76,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 }
 
                 if (res?.error) {
-                    token.error = "RefreshTokenError";
+                    token.error = 'RefreshTokenError';
                     return token;
                 }
 
@@ -107,7 +107,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 refreshToken: token.refreshToken,
                 expires: decoded.exp
                     ? new Date(decoded.exp * 1000).toISOString()
-                    : "",
+                    : '',
                 user: {
                     ...token.user,
                 },
