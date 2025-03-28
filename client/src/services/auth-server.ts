@@ -1,14 +1,11 @@
-export const handleSignIn = async (
-    username: string | unknown,
-    password: string | unknown,
-) => {
+export const handleSignIn = async (username: string, password: string) => {
     try {
         const res = await fetch(
-            process.env.BACKEND_BASE_URL + "/auth/sign-in",
+            process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/sign-in',
             {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     username,
@@ -32,25 +29,25 @@ export const handleSignIn = async (
 export const handleRefreshToken = async (refreshToken: string) => {
     try {
         const res = await fetch(
-            process.env.BACKEND_BASE_URL + "/auth/refresh-token",
+            process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/refresh-token',
             {
-                credentials: "include",
+                credentials: 'include',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${refreshToken}`,
                 },
             },
         );
 
         if (res.ok) {
-            const setCookieHeader = res.headers.get("set-cookie");
+            const setCookieHeader = res.headers.get('set-cookie');
             if (setCookieHeader) {
                 const getRefreshToken = setCookieHeader.match(
                     /refresh_token=([^;]+);/,
                 );
                 const newRefreshToken = getRefreshToken
                     ? getRefreshToken[1]
-                    : "";
+                    : '';
                 const data = await res.json();
                 return {
                     accessToken: data.accessToken,
