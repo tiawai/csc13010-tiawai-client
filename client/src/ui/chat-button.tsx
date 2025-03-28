@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import {
-    ConfigProvider,
     FloatButton,
     Form,
     Input,
@@ -23,6 +22,12 @@ import {
 import { useAppSelector } from '@/lib/hooks/hook';
 import { Message } from '@/types/chat';
 const { Title, Text } = Typography;
+import { ChatButtonTheme } from './chat-button-theme';
+
+const initMessage: Message = {
+    content: 'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn ?',
+    isBot: true,
+};
 
 const ChatButton = () => {
     const user = useAppSelector((state) => state.auth.user);
@@ -32,29 +37,30 @@ const ChatButton = () => {
             skip: !chatSessionId,
         });
     const [isOpen, setIsOpen] = useState(false);
+
     const [sendMessage] = useSendMessageMutation();
+
     const [getBotAnswer, { isLoading: isAnswering }] =
         useGetBotAnswerMutation();
-    const [chatMessages, setChatMessages] = useState<Message[]>([
-        {
-            content:
-                'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn ?',
-            isBot: true,
-        },
-    ]);
+    const [chatMessages, setChatMessages] = useState<Message[]>([initMessage]);
+
     const [inputMessage, setInputMessage] = useState<string>('');
     const [needBotAnswer, setNeedBotAnswer] = useState(false);
+
     useEffect(() => {
         const getBotResponse = async () => {
             try {
+                console.log('<<<<<<<<<<<<<<<<<<< chatSessionId', chatSessionId);
                 if (!chatSessionId) return;
-                await getBotAnswer(chatSessionId).unwrap();
+                const res = await getBotAnswer(chatSessionId).unwrap();
+                console.log(res);
             } catch (error) {
                 console.error(error);
             }
         };
 
         if (needBotAnswer) {
+            console.log('Getting bot response');
             getBotResponse();
             setNeedBotAnswer(false);
         }
@@ -86,16 +92,9 @@ const ChatButton = () => {
     };
 
     if (isMessagesLoading) return null;
+
     return (
-        <ConfigProvider
-            theme={{
-                token: {
-                    colorPrimary: '#5369A1',
-                    fontSizeIcon: 48,
-                    controlHeight: 56.8,
-                },
-            }}
-        >
+        <ChatButtonTheme>
             <FloatButton
                 icon={
                     <Image
@@ -234,7 +233,7 @@ const ChatButton = () => {
                     </Form>
                 </div>
             )}
-        </ConfigProvider>
+        </ChatButtonTheme>
     );
 };
 
