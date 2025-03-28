@@ -7,9 +7,10 @@ import {
 } from '@/components/auth/ui/form';
 import { FormSignUp } from '@/components/auth/forms/form-sign-up';
 import { FormRole } from '@/components/auth/forms/form-role';
+import { Role } from '@/types/user';
 
 export default function SignUpPage() {
-    const [role, setRole] = useState<number | null>(null);
+    const [role, setRole] = useState<Role | null>(null);
     return (
         <FormLayout showBackground={role !== null}>
             {role === null ? (

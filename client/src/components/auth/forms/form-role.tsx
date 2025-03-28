@@ -1,10 +1,13 @@
+'use client';
+
 import Image from 'next/image';
 import { FormTitle } from '@/components/auth/ui/form';
 import { twMerge } from 'tailwind-merge';
 import circle1 from '@public/big-generate-btn-icon.svg';
 import Title from 'antd/es/typography/Title';
+import { Role } from '@/types/user';
 
-export const FormRole = ({ setRole }: { setRole: (role: number) => void }) => {
+export const FormRole = ({ setRole }: { setRole: (role: Role) => void }) => {
     return (
         <>
             <FormTitle title="Bạn là?" />
@@ -13,13 +16,13 @@ export const FormRole = ({ setRole }: { setRole: (role: number) => void }) => {
                     className="bg-tia-platinum"
                     title="Giáo Viên"
                     image={circle1}
-                    onClick={() => setRole(0)}
+                    onClick={() => setRole(Role.TEACHER)}
                 />
                 <FormRoleCard
                     className="bg-tia-azureish-white"
                     title="Học Sinh/Sinh Viên/Người dùng"
                     image={circle1}
-                    onClick={() => setRole(1)}
+                    onClick={() => setRole(Role.STUDENT)}
                 />
             </div>
         </>

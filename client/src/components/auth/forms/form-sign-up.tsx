@@ -4,16 +4,24 @@ import { useSignUpMutation } from '@/services/auth';
 import { Form, Input, Checkbox, notification } from 'antd';
 import { FormButtonGradient } from '@/components/auth/ui/form';
 import { TermAndPolicy } from '@/components/auth/forms/term-and-policy';
+import { Role } from '@/types/user';
 
-const FormSignUp = ({ role }: { role: number }) => {
+const FormSignUp = ({ role }: { role: Role }) => {
     const [form] = Form.useForm();
     const router = useRouter();
     const [SignUp, { isLoading }] = useSignUpMutation();
 
     const onFinish = async () => {
-        const formData = form.getFieldsValue();
-        const res = await SignUp(formData);
-        console.log(role);
+        const { username, email, password, phone, birthdate } =
+            form.getFieldsValue();
+        const res = await SignUp({
+            username,
+            email,
+            password,
+            phone,
+            birthdate,
+            role,
+        });
 
         if (!res.error) {
             notification.success({
@@ -73,6 +81,38 @@ const FormSignUp = ({ role }: { role: number }) => {
                 <Input.Password
                     className="form__input"
                     placeholder="Mật khẩu"
+                />
+            </Form.Item>
+
+            <Form.Item
+                name="phone"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Số điện thoại không được bỏ trống',
+                    },
+                    {
+                        pattern: /^[0-9]{10,11}$/,
+                        message: 'Số điện thoại không hợp lệ',
+                    },
+                ]}
+            >
+                <Input className="form__input" placeholder="Số điện thoại" />
+            </Form.Item>
+
+            <Form.Item
+                name="birthdate"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Vui lòng chọn ngày sinh',
+                    },
+                ]}
+            >
+                <Input
+                    className="form__input"
+                    type="date"
+                    placeholder="Ngày sinh"
                 />
             </Form.Item>
 
