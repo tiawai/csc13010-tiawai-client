@@ -13,8 +13,10 @@ import {
 } from '@ant-design/icons';
 import logo from '@public/logo.svg';
 import { signOut } from 'next-auth/react';
+import { useSignOutMutation } from '@/services/auth';
 import { useAppSelector } from '@/lib/hooks/hook';
 import { useDisableSessionMutation } from '@/services/chat';
+import { Role } from '@/types/user';
 
 const { Title, Paragraph } = Typography;
 
@@ -57,14 +59,16 @@ const dropdownItems: MenuProps["items"] = [
 const Header = () => {
     const router = useRouter();
     const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = user?.role === 'administrator';
+    const isAdmin = user?.role === Role.ADMIN;
     const [disableChatSession] = useDisableSessionMutation();
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
+    const [signOutClient] = useSignOutMutation();
 
     const handleDropdownClick: MenuProps['onClick'] = async ({ key }) => {
         if (key === 'signout') {
             if (chatSessionId) await disableChatSession(chatSessionId);
             await signOut({ redirect: false });
+            await signOutClient();
             router.push('/sign-in');
         }
     };
@@ -127,7 +131,7 @@ const Header = () => {
                         {user?.username}
                     </Title>
                     <Paragraph className="!m-0">
-                        {user?.role === 'administrator'
+                        {user?.role === Role.ADMIN
                             ? 'Quản trị viên'
                             : 'Người dùng'}
                     </Paragraph>
@@ -157,9 +161,9 @@ export default Header;
 export const HeaderMenu = () => {
     const pathname = usePathname();
     const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = user?.role === 'administrator';
+    const isAdmin = user?.role === Role.ADMIN;
     const menuItems =
-        user?.role === 'student'
+        user?.role === Role.STUDENT
             ? studentItems
             : isAdmin
               ? adminItems
@@ -167,7 +171,7 @@ export const HeaderMenu = () => {
     const mode = isAdmin ? 'vertical' : 'horizontal';
     const currentPath =
         pathname === '/'
-            ? user?.role === 'administrator'
+            ? user?.role === Role.ADMIN
                 ? 'dashboard'
                 : 'home'
             : pathname?.split('/')[1];

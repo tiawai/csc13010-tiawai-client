@@ -32,7 +32,7 @@ export const handleSignIn = async (
 export const handleRefreshToken = async (refreshToken: string) => {
     try {
         const res = await fetch(
-            process.env.NEXT_PUBLIC_BACKEND_URL + '/auth/refresh-token',
+            process.env.BACKEND_URL + '/auth/refresh-token',
             {
                 credentials: 'include',
                 headers: {

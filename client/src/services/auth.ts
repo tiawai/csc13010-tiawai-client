@@ -26,10 +26,10 @@ const authApi = appApi.injectEndpoints({
             }),
         }),
 
-        signOut: builder.mutation({
+        signOut: builder.mutation<void, void>({
             query: () => ({
                 url: '/auth/sign-out',
-                method: 'POST',
+                method: 'DELETE',
             }),
             async onQueryStarted(_, { queryFulfilled }) {
                 await queryFulfilled;

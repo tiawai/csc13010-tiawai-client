@@ -65,7 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 };
             }
 
-            if (Date.now() >= (decoded?.exp || 0) * 1000) {
+            if (Date.now() >= (decoded?.exp || 0) * 1000 - 300000) {
                 const res = await handleRefreshToken(token.refreshToken);
                 if (!res) {
                     return {

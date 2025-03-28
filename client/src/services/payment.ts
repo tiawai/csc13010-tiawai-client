@@ -5,7 +5,6 @@ import {
     PaymentWebhook,
     CreatePayment,
 } from '@/types/payment';
-import { verify } from 'crypto';
 
 const paymentApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -28,7 +27,7 @@ const paymentApi = appApi.injectEndpoints({
             invalidatesTags: ['Payment'],
         }),
 
-        paymentWebhook: builder.mutation<PaymentWebhook, any>({
+        paymentWebhook: builder.mutation<PaymentWebhook, void>({
             query: (body) => ({
                 url: 'payments/webhook',
                 method: 'POST',
