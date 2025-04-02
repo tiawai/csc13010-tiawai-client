@@ -16,9 +16,33 @@ import { signOut } from 'next-auth/react';
 import { useSignOutMutation } from '@/services/auth';
 import { useAppSelector } from '@/lib/hooks/hook';
 import { useDisableSessionMutation } from '@/services/chat';
-import { Role } from '@/types/user';
+import { Role, User } from '@/types/user';
 
 const { Title, Paragraph } = Typography;
+
+// prettier-ignore
+const guestItems: MenuProps["items"] = [
+    { label: <Link href="/student">Học sinh</Link>, key: "student" },
+    { label: <Link href="/teacher">Giáo viên</Link>, key: "teacher" },
+];
+
+// prettier-ignore
+const studentItems: MenuProps["items"] = [
+    { label: <Link href="/student/">Trang chủ</Link>, key: "home" },
+    { label: <Link href="/student/exam">Đề thi</Link>, key: "exam" },
+    { label: <Link href="/student/practice">Chuyên đề</Link>, key: "practice" },
+    { label: <Link href="/student/flashcard">Flashcard</Link>, key: "flashcard" },
+    { label: <Link href="/student/paraphrase">Paraphrase</Link>, key: "paraphrase" },
+    { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
+];
+
+// prettier-ignore
+const teacherItems: MenuProps["items"] = [
+    { label: <Link href="/teacher/">Trang chủ</Link>, key: "home" },
+    { label: <Link href="/teacher/classroom">Quản lý lớp học</Link>, key: "class" },
+    { label: <Link href="/teacher/exam">Quản lý bài học / đề thi</Link>, key: "exam" },
+    { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
+];
 
 // prettier-ignore
 const adminItems: MenuProps["items"] = [
@@ -32,34 +56,16 @@ const adminItems: MenuProps["items"] = [
 ];
 
 // prettier-ignore
-const studentItems: MenuProps["items"] = [
-    { label: <Link href="/">Trang chủ</Link>, key: "home" },
-    { label: <Link href="/exam">Đề thi</Link>, key: "exam" },
-    { label: <Link href="/practice">Chuyên đề</Link>, key: "practice" },
-    { label: <Link href="/flashcard">Flashcard</Link>, key: "flashcard" },
-    { label: <Link href="/paraphrase">Paraphrase</Link>, key: "paraphrase" },
-    { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
-];
-
-// prettier-ignore
-const teacherItems: MenuProps["items"] = [
-    { label: <Link href="/teacher/home">Trang chủ</Link>, key: "home" },
-    { label: <Link href="/teacher/class">Quản lý lớp học</Link>, key: "class" },
-    { label: <Link href="/teacher/exam">Quản lý bài học / đề thi</Link>, key: "exam" },
-    { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
-];
-
-// prettier-ignore
 const dropdownItems: MenuProps["items"] = [
     { key: "profile", label: <Link href="/profile">Hồ sơ cá nhân</Link>, icon: <UserOutlined /> },
-    { key: "history", label: <Link href="/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
+    { key: "history", label: <Link href="/student/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
     { key: "signout", label: "Đăng xuất", icon: <LogoutOutlined /> },
 ];
 
 const Header = () => {
     const router = useRouter();
     const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = user?.role === Role.ADMIN;
+    const isAdmin = User.isAdmin(user);
     const [disableChatSession] = useDisableSessionMutation();
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
     const [signOutClient] = useSignOutMutation();
@@ -69,7 +75,7 @@ const Header = () => {
             if (chatSessionId) await disableChatSession(chatSessionId);
             await signOut({ redirect: false });
             await signOutClient();
-            router.push('/sign-in');
+            router.push('/auth/sign-in');
         }
     };
 
@@ -100,14 +106,14 @@ const Header = () => {
                 type="primary"
                 size="large"
                 shape="round"
-                onClick={() => router.push('/sign-in')}
+                onClick={() => router.push('/auth/sign-in')}
             >
                 Đăng nhập
             </Button>
             <Button
                 size="large"
                 shape="round"
-                onClick={() => router.push('/sign-up')}
+                onClick={() => router.push('/auth/sign-up')}
             >
                 Đăng ký
             </Button>
@@ -128,12 +134,10 @@ const Header = () => {
                 />
                 <Flex className="!mr-4" vertical>
                     <Title className="!m-0" level={5}>
-                        {user?.username}
+                        {user.username}
                     </Title>
                     <Paragraph className="!m-0">
-                        {user?.role === Role.ADMIN
-                            ? 'Quản trị viên'
-                            : 'Người dùng'}
+                        {User.getRoleName(user)}
                     </Paragraph>
                 </Flex>
                 <DownOutlined />
@@ -151,23 +155,29 @@ const Header = () => {
         <HeaderLayout>
             <HeaderLogo />
             {!isAdmin && <HeaderMenu />}
-            {user ? <HeaderUserAction /> : <HeaderAuthentication />}
+            {user.role != Role.GUEST ? (
+                <HeaderUserAction />
+            ) : (
+                <HeaderAuthentication />
+            )}
         </HeaderLayout>
     );
 };
 
 export default Header;
 
+const userItems = {
+    Guest: guestItems,
+    Student: studentItems,
+    Teacher: teacherItems,
+    Admin: adminItems,
+};
+
 export const HeaderMenu = () => {
     const pathname = usePathname();
     const user = useAppSelector((state) => state.auth.user);
     const isAdmin = user?.role === Role.ADMIN;
-    const menuItems =
-        user?.role === Role.STUDENT
-            ? studentItems
-            : isAdmin
-              ? adminItems
-              : teacherItems;
+    const menuItems = userItems[user.role];
     const mode = isAdmin ? 'vertical' : 'horizontal';
     const currentPath =
         pathname === '/'

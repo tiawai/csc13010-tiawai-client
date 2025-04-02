@@ -1,4 +1,4 @@
-import Banner from '@/app/(user)/(study)/_ui/banner';
+import Banner from '@/app/(user)/student/(study)/_ui/banner';
 import { BannerTitle, BannerSubTitle } from '@/components/common/banner';
 import Image from 'next/image';
 import bigTiawai2 from '@public/big-tiawai-2.svg';

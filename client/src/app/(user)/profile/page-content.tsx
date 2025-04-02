@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Navigation } from '@/components/common/ui/navigation';
+import { Navigation } from '@/components/common/navigation';
 import { UserCard, UserInfoCard } from '@/components/profile/user-card';
 import { UserInfoDisplay } from '@/components/profile/user-info-display';
 import {
@@ -24,7 +24,7 @@ const userStudyingInfo = {
 };
 
 export const PageContent = () => {
-    const [navigationIndex, setNavigationIndex] = useState(0);
+    const [navigationIndex, setNavigationIndex] = useState<number>(0);
     const navigationItems = [
         {
             text: 'Thông tin của bạn',

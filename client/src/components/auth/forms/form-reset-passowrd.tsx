@@ -34,7 +34,7 @@ const FormResetPassword = () => {
                 description:
                     'Mật khẩu của bạn đã được cập nhật.\nĐang chuyển hướng đến trang đăng nhập...',
             });
-            router.push('/sign-in');
+            router.push('sign-in');
         } else {
             notification.error({
                 message: 'Khôi phục mật khẩu thất bại',

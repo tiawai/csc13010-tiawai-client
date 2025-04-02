@@ -4,7 +4,7 @@ import { FormNavigation, PageTitle } from '@/components/test/page-ui';
 import { FormNational } from '@/components/test/form-national';
 import { FormToeicListening } from '@/components/test/form-toeic-listening';
 import { FormToeicReading } from '@/components/test/form-toeic-reading';
-import { BoxBorder } from '@/components/common/ui/box';
+import { BoxBorder } from '@/components/common/box';
 import { FormToeicExport } from '@/components/test/form-toeic-ui';
 
 export default function AdminExamsPage() {

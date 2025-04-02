@@ -5,7 +5,7 @@ import {
     TiawaiIntroduction,
     TiawaiDescription,
 } from '@/ui/contact/tiawai-introduction';
-//import { FormLayout } from "@/ui/form";
+import { FormLayout } from '@/components/auth/ui/form';
 import { ContactForm } from '@/ui/contact/contact-form';
 import Image from 'next/image';
 import FeaturesBox from '@/ui/home/features-box';
@@ -31,11 +31,9 @@ export default function ContactPage() {
                 <TiawaiDescription />
             </div>
             <div className="mt-20">
-                {/* <FormLayout className="form__about-tiawai bg-[#E9DAE94D]">
+                <FormLayout>
                     <ContactForm />
-                </FormLayout> */}
-                \\
-                <ContactForm />
+                </FormLayout>
             </div>
         </div>
     );

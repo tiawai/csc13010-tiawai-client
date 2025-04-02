@@ -1,12 +1,12 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { User } from '@/types/user';
+import { User } from '@/types/user';
 
 type AccessToken = string | undefined;
 type RefreshToken = string | undefined;
 
 export type AuthState = {
-    user: User | undefined;
+    user: User;
     accessToken: AccessToken;
     refreshToken: RefreshToken;
     chatSessionId?: string;
@@ -17,14 +17,16 @@ export type CredentialsProps = {
     refreshToken: RefreshToken;
 };
 
+const initialState: AuthState = {
+    user: new User(),
+    accessToken: undefined,
+    refreshToken: undefined,
+    chatSessionId: undefined,
+};
+
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        user: undefined,
-        accessToken: undefined,
-        refreshToken: undefined,
-        chatSessionId: undefined,
-    } as AuthState,
+    initialState: initialState,
     reducers: {
         setAuthState: (state, action: PayloadAction<AuthState>): void => {
             state.user = action.payload.user;
@@ -45,8 +47,7 @@ const authSlice = createSlice({
         },
 
         setSignOut: (state): void => {
-            state.user = undefined;
-            state.accessToken = undefined;
+            state.user = new User();
             state.refreshToken = undefined;
             state.chatSessionId = undefined;
         },

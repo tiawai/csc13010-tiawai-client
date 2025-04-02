@@ -14,13 +14,13 @@ export const FormRole = ({ setRole }: { setRole: (role: Role) => void }) => {
             <div className="flex justify-center gap-8">
                 <FormRoleCard
                     className="bg-tia-platinum"
-                    title="Giáo Viên"
+                    title="Giảng viên"
                     image={circle1}
                     onClick={() => setRole(Role.TEACHER)}
                 />
                 <FormRoleCard
                     className="bg-tia-azureish-white"
-                    title="Học Sinh/Sinh Viên/Người dùng"
+                    title="Học viên"
                     image={circle1}
                     onClick={() => setRole(Role.STUDENT)}
                 />

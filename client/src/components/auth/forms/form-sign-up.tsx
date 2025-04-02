@@ -28,7 +28,7 @@ const FormSignUp = ({ role }: { role: Role }) => {
                 message: 'Đăng ký thành công',
                 description: 'Vui lòng đăng nhập để tiếp tục.',
             });
-            router.push('/sign-in');
+            router.push('sign-in');
         } else {
             notification.error({
                 message: 'Đăng ký thất bại',

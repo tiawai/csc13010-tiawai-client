@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { BannerTitle, BannerSubTitle } from '@/components/common/banner';
-import Banner from '@/app/(user)/(study)/_ui/banner';
+import Banner from '@/app/(user)/student/(study)/_ui/banner';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
 import SearchForm from '@/components/teacher/common/searchform';
 import { Space, Row, Col } from 'antd';

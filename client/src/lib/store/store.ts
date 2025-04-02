@@ -19,6 +19,7 @@ import {
     REGISTER,
 } from 'redux-persist';
 import authReducer, { AuthState } from '@/lib/slices/auth';
+import examReduver, { ExamState } from '@/lib/slices/test';
 import nationalTestCretorReducer, {
     NationalTestCreatorState,
 } from '@/lib/slices/national-test-creator';
@@ -49,6 +50,7 @@ const storage =
 export type RootState = {
     [appApi.reducerPath]: ReturnType<typeof appApi.reducer>;
     auth: AuthState;
+    exam: ExamState;
     nationalTestCreator: NationalTestCreatorState;
     toeicTestCreator: ToeicTestCreatorState;
 };
@@ -63,6 +65,7 @@ const persistConfig = {
 const appReducer = combineReducers({
     [appApi.reducerPath]: appApi.reducer,
     auth: authReducer,
+    exam: examReduver,
     nationalTestCreator: nationalTestCretorReducer,
     toeicTestCreator: toeicTestCreatorReducer,
 });

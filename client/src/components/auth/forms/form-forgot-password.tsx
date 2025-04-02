@@ -18,7 +18,7 @@ const FormForgotPassword = () => {
                 description:
                     'Mã OTP đã được gửi đến email của bạn.\nĐang chuyển hướng...',
             });
-            router.push('/reset-password?email=' + btoa(email));
+            router.push('reset-password?email=' + btoa(email));
         } else {
             notification.error({
                 message: 'Gửi OTP thất bại',

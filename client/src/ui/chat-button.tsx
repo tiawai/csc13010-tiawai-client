@@ -50,7 +50,6 @@ const ChatButton = () => {
     useEffect(() => {
         const getBotResponse = async () => {
             try {
-                console.log('<<<<<<<<<<<<<<<<<<< chatSessionId', chatSessionId);
                 if (!chatSessionId) return;
                 const res = await getBotAnswer(chatSessionId).unwrap();
                 console.log(res);

@@ -5,18 +5,57 @@ export enum Role {
     STUDENT = 'Student',
 }
 
-export type User = {
-    id?: string | undefined;
-    username?: string | undefined;
-    email?: string | undefined;
-    role?: Role | undefined;
-};
+export interface IUser {
+    id?: string;
+    username?: string;
+    email?: string;
+    role: Role;
+}
 
-export interface UserSignUpDto {
-    username: string;
-    email: string;
+export class User implements IUser {
+    id?: string;
+    username?: string;
+    email?: string;
+    role: Role;
+
+    constructor(role: Role = Role.GUEST, username?: string, email?: string) {
+        this.id = undefined;
+        this.username = username;
+        this.email = email;
+        this.role = role;
+    }
+
+    static isAdmin(user: User): boolean {
+        return user.role === Role.ADMIN;
+    }
+
+    static getRoleName(user: User): string {
+        const roleNames: Record<Role, string> = {
+            [Role.ADMIN]: 'Quản trị viên',
+            [Role.TEACHER]: 'Giáo viên',
+            [Role.STUDENT]: 'Học sinh',
+            [Role.GUEST]: 'Khách',
+        };
+        return roleNames[user.role];
+    }
+}
+
+export class UserSignUp extends User {
     password: string;
     phone: string;
     birthdate: string;
-    role: Role;
+
+    constructor(
+        username: string,
+        email: string,
+        password: string,
+        phone: string,
+        birthdate: string,
+        role: Role,
+    ) {
+        super(role, username, email);
+        this.password = password;
+        this.phone = phone;
+        this.birthdate = birthdate;
+    }
 }
