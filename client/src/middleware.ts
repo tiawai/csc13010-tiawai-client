@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { auth } from '@/auth';
-import { Role } from '@/types/user';
+import { Role, User } from '@/types/user';
 
 export const config = {
     matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -9,66 +9,73 @@ export const config = {
 type ProtectedRoutes = {
     [key in Role]: {
         invalidRoutes: string[];
-        validRoutes?: string[];
-        redirect?: string;
+        validRoutes: string[];
+        redirect: string;
     };
 };
 
 const protectedRoutes: ProtectedRoutes = {
     Guest: {
         invalidRoutes: [],
-        validRoutes: [
-            '/sign-up',
-            '/sign-in',
-            '/forgot-password',
-            '/reset-password',
-        ],
-        redirect: '/',
+        validRoutes: ['/student', '/teacher', '/auth'],
+        redirect: '/auth/sign-in',
     },
     Student: {
-        invalidRoutes: ['/admin', '/sign-up', '/sign-in'],
+        invalidRoutes: ['/admin', '/auth'],
+        validRoutes: [],
         redirect: '/',
     },
     Teacher: {
-        invalidRoutes: ['/admin', '/sign-up', '/sign-in'],
+        invalidRoutes: ['/admin', '/auth'],
+        validRoutes: [],
         redirect: '/',
     },
     Admin: {
-        invalidRoutes: ['/home', '/sign-up', '/sign-in'],
+        invalidRoutes: ['/auth'],
+        validRoutes: [],
         redirect: '/admin',
     },
 };
 
 export default auth((req: any) => {
-    // const user = req.auth?.user;
-    // const pathname =
-    //     req.nextUrl.pathname === "/" ? "/home" : req.nextUrl.pathname;
+    const authUser = req.auth?.user;
+    const user: User = authUser === undefined ? new User() : authUser;
+    const pathname = req.nextUrl.pathname;
 
-    // const role: Role = (user && (user?.role as Role)) || "guest";
+    if (pathname === '/') {
+        if (user.role === Role.GUEST) {
+            return Response.redirect(new URL('/student', req.nextUrl.origin));
+        }
+        const newUrl = new URL(
+            `/${user.role.toLowerCase()}`,
+            req.nextUrl.origin,
+        );
+        return Response.redirect(newUrl);
+    }
 
-    // if (role === "guest") {
-    //     const valid = protectedRoutes[role]?.validRoutes;
-    //     if (valid) {
-    //         const isValid = valid.some((route) => pathname.startsWith(route));
-    //         if (!isValid) {
-    //             const newUrl = new URL("/sign-in", req.nextUrl.origin);
-    //             return Response.redirect(newUrl);
-    //         }
-    //     }
-    // }
-    // const isProtected = protectedRoutes[role].invalidRoutes.some((route) =>
-    //     pathname.startsWith(route),
-    // );
+    const redirect = protectedRoutes[user.role].redirect;
+    const newUrl = new URL(redirect, req.nextUrl.origin);
 
-    // if (isProtected) {
-    //     const redirect = protectedRoutes[role]?.redirect;
-    //     if (redirect) {
-    //         const newUrl = new URL(redirect, req.nextUrl.origin);
-    //         return Response.redirect(newUrl);
-    //     }
+    const validRoutes = protectedRoutes[user.role];
+    if (validRoutes.validRoutes.length > 0) {
+        const isValid = protectedRoutes[user.role].validRoutes.some((route) =>
+            pathname.startsWith(route),
+        );
+        if (!isValid) {
+            return Response.redirect(newUrl);
+        }
+    }
 
-    //     return new Response("Page not found", { status: 404 });
-    // }
+    const invalidRoutes = protectedRoutes[user.role];
+    if (invalidRoutes.invalidRoutes.length > 0) {
+        const isProtected = protectedRoutes[user.role].invalidRoutes.some(
+            (route) => pathname.startsWith(route),
+        );
+
+        if (isProtected) {
+            return Response.redirect(newUrl);
+        }
+    }
 
     return;
 });
