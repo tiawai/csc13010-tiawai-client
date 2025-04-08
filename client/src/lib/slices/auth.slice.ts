@@ -1,6 +1,6 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User, UserUtils } from '@/types/user';
+import { User, UserUtils } from '@/types/user.type';
 
 type AccessToken = string | undefined;
 type RefreshToken = string | undefined;

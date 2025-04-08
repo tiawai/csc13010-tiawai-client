@@ -5,7 +5,7 @@ import { FormTitle } from '@/components/auth/ui/form';
 import { twMerge } from 'tailwind-merge';
 import circle1 from '@public/big-generate-btn-icon.svg';
 import Title from 'antd/es/typography/Title';
-import { Role } from '@/types/user';
+import { Role } from '@/types/user.type';
 
 export const FormRole = ({ setRole }: { setRole: (role: Role) => void }) => {
     return (

@@ -1,7 +1,8 @@
 'use client';
 
-import { ConfigProvider, App, notification } from 'antd';
+import { ConfigProvider, App } from 'antd';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { NotificationProvider } from '@/components/common/notification';
 
 export const theme = {
     token: {
@@ -10,12 +11,6 @@ export const theme = {
     },
 };
 
-notification.config({
-    placement: 'topRight',
-    showProgress: true,
-    duration: 3,
-});
-
 export default function ThemeProvider({
     children,
 }: {
@@ -23,9 +18,11 @@ export default function ThemeProvider({
 }) {
     return (
         <AntdRegistry>
-            <ConfigProvider theme={theme}>
-                <App>{children}</App>
-            </ConfigProvider>
+            <App>
+                <NotificationProvider>
+                    <ConfigProvider theme={theme}>{children}</ConfigProvider>
+                </NotificationProvider>
+            </App>
         </AntdRegistry>
     );
 }

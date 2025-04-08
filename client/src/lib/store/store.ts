@@ -18,7 +18,7 @@ import {
     PURGE,
     REGISTER,
 } from 'redux-persist';
-import authReducer, { AuthState } from '@/lib/slices/auth';
+import authReducer, { AuthState } from '@/lib/slices/auth.slice';
 import examReduver, { ExamState } from '@/lib/slices/test';
 import nationalTestCretorReducer, {
     NationalTestCreatorState,

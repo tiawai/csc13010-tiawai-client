@@ -7,7 +7,7 @@ import {
     UserUpdateInfoForm,
     UserUpdatePasswordForm,
 } from '@/components/profile/user-info-update';
-import { useGetMyProfileQuery } from '@/services/user';
+import { useGetMyProfileQuery } from '@/services/user.service';
 import { Loading } from '@/components/common/loading';
 
 const userStudyingInfo = {

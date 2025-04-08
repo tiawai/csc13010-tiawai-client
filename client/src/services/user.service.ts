@@ -1,6 +1,6 @@
 import { appApi } from '@/services/config';
 import { UserHistoryExam } from '@/types/exam';
-import { User } from '@/types/user';
+import { User } from '@/types/user.type';
 
 const userApi = appApi.injectEndpoints({
     overrideExisting: true,

@@ -13,10 +13,10 @@ import {
 } from '@ant-design/icons';
 import logo from '@public/logo.svg';
 import { signOut } from 'next-auth/react';
-import { useSignOutMutation } from '@/services/auth';
+import { useSignOutMutation } from '@/services/auth.service';
 import { useAppSelector } from '@/lib/hooks/hook';
 import { useDisableSessionMutation } from '@/services/chat';
-import { Role, UserUtils } from '@/types/user';
+import { Role, UserUtils } from '@/types/user.type';
 
 const { Title, Paragraph } = Typography;
 

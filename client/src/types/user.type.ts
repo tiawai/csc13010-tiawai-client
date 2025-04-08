@@ -12,12 +12,6 @@ export interface User {
     role: Role;
 }
 
-export interface UserSignUpDto extends User {
-    password: string;
-    phone: string;
-    birthdate: string;
-}
-
 export class UserUtils {
     static initUser(id = '', username = '', email = '', role: Role): User {
         return { id, username, email, role };

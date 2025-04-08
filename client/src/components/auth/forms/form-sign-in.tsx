@@ -2,13 +2,14 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Form, Input, Typography, notification } from 'antd';
-import { signIn, useSession } from 'next-auth/react';
 import { useCreateSessionMutation } from '@/services/chat';
-import { setAuthState, setChatSessionId } from '@/lib/slices/auth';
+import { useNotification } from '@/components/common/notification';
+import { Form, Input, Typography } from 'antd';
+import { signIn, useSession } from 'next-auth/react';
+import { setAuthState, setChatSessionId } from '@/lib/slices/auth.slice';
 import { useAppDispatch } from '@/lib/hooks/hook';
 import { FormButtonGradient } from '@/components/auth/ui/form';
-import { Role } from '@/types/user';
+import { Role } from '@/types/user.type';
 const { Paragraph } = Typography;
 
 const FormSignIn = () => {
@@ -16,6 +17,7 @@ const FormSignIn = () => {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const { data: session } = useSession();
+    const { notify } = useNotification();
 
     const dispatch = useAppDispatch();
     const [createSession] = useCreateSessionMutation();
@@ -65,15 +67,15 @@ const FormSignIn = () => {
         setIsLoading(false);
 
         if (res !== undefined && !res?.error) {
-            notification.success({
+            notify({
                 message: 'Đăng nhập thành công',
                 description: 'Chào mừng bạn trở lại với Tiawai',
             });
         } else {
-            notification.error({
+            notify({
                 message: 'Đăng nhập thất bại',
-                description:
-                    'Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.',
+                description: 'Email hoặc mật khẩu không hợp lệ.',
+                notiType: 'error',
             });
         }
     };

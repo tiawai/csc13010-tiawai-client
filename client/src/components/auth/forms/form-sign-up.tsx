@@ -1,38 +1,33 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useSignUpMutation } from '@/services/auth';
-import { Form, Input, Checkbox, notification } from 'antd';
+import { useSignUpMutation } from '@/services/auth.service';
+import { useNotification } from '@/components/common/notification';
+import { Form, Input, Checkbox } from 'antd';
 import { FormButtonGradient } from '@/components/auth/ui/form';
 import { TermAndPolicy } from '@/components/auth/forms/term-and-policy';
-import { Role } from '@/types/user';
+import { Role } from '@/types/user.type';
 
 const FormSignUp = ({ role }: { role: Role }) => {
     const [form] = Form.useForm();
     const router = useRouter();
     const [SignUp, { isLoading }] = useSignUpMutation();
+    const { notify } = useNotification();
 
     const onFinish = async () => {
-        const { username, email, password, phone, birthdate } =
-            form.getFieldsValue();
-        const res = await SignUp({
-            username,
-            email,
-            password,
-            phone,
-            birthdate,
-            role,
-        });
+        const { agreement, ...userSignUpDto } = form.getFieldsValue();
+        const res = await SignUp({ ...userSignUpDto, role });
 
         if (!res.error) {
-            notification.success({
+            notify({
                 message: 'Đăng ký thành công',
                 description: 'Vui lòng đăng nhập để tiếp tục.',
             });
             router.push('sign-in');
         } else {
-            notification.error({
+            notify({
                 message: 'Đăng ký thất bại',
                 description: 'Email đã tồn tại. Vui lòng thử lại.',
+                notiType: 'error',
             });
         }
     };

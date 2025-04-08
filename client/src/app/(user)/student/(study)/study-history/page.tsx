@@ -2,7 +2,7 @@
 import { Card, Flex, Input, Button, Typography, Empty } from 'antd';
 import profileTiawai from '@public/profile-tiawai.webp';
 import { useState, useEffect } from 'react';
-import { useGetHistoryExamsQuery } from '@/services/user';
+import { useGetHistoryExamsQuery } from '@/services/user.service';
 import { SearchOutlined } from '@ant-design/icons';
 import { FilterIcon } from '@/ui/admin/icons';
 import { UserHistoryExam } from '@/types/exam';

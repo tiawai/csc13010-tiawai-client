@@ -1,8 +1,8 @@
 'use client';
 import { appApi } from '@/services/config';
-import { setSignOut } from '@/lib/slices/auth';
 import { store } from '@/lib/store/store';
-import { UserSignUpDto } from '@/types/user';
+import { setSignOut } from '@/lib/slices/auth.slice';
+import { UserSignUpDto } from '@/types/auth.type';
 
 const authApi = appApi.injectEndpoints({
     overrideExisting: true,

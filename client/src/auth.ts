@@ -5,7 +5,10 @@ import { Provider } from 'next-auth/providers';
 import { User, Session } from 'next-auth';
 import { JWT } from 'next-auth/jwt';
 import { jwtDecode } from 'jwt-decode';
-import { handleSignIn, handleRefreshToken } from '@/services/auth-server';
+import {
+    handleSignIn,
+    handleRefreshToken,
+} from '@/services/auth-server.service';
 
 const providers: Provider[] = [
     Credentials({

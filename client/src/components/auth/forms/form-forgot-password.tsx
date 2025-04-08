@@ -1,11 +1,13 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { Form, Input, Button, notification } from 'antd';
-import { usePasswordRecoveryMutation } from '@/services/auth';
+import { Form, Input, Button } from 'antd';
+import { usePasswordRecoveryMutation } from '@/services/auth.service';
+import { useNotification } from '@/components/common/notification';
 
 const FormForgotPassword = () => {
     const router = useRouter();
     const [form] = Form.useForm();
+    const { notify } = useNotification();
     const [passwordRecovery, { isLoading }] = usePasswordRecoveryMutation();
 
     const onFinish = async () => {
@@ -13,16 +15,17 @@ const FormForgotPassword = () => {
         const res = await passwordRecovery({ email });
 
         if (!res.error) {
-            notification.success({
+            notify({
                 message: 'Gửi OTP thành công',
                 description:
                     'Mã OTP đã được gửi đến email của bạn.\nĐang chuyển hướng...',
             });
             router.push('reset-password?email=' + btoa(email));
         } else {
-            notification.error({
+            notify({
                 message: 'Gửi OTP thất bại',
                 description: 'Có lỗi xảy ra khi gửi OTP.',
+                type: 'error',
             });
         }
     };

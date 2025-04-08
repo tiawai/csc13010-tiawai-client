@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { auth } from '@/auth';
-import { Role, User, UserUtils } from '@/types/user';
+import { Role, User, UserUtils } from '@/types/user.type';
 
 export const config = {
     matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],

@@ -1,12 +1,14 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Form, Input, Button, notification } from 'antd';
-import { useResetPasswordMutation } from '@/services/auth';
+import { Form, Input, Button } from 'antd';
+import { useResetPasswordMutation } from '@/services/auth.service';
+import { useNotification } from '@/components/common/notification';
 
 const FormResetPassword = () => {
     const params = useSearchParams();
     const router = useRouter();
     const [form] = Form.useForm();
+    const { notify } = useNotification();
     const [resetPassword, { isLoading }] = useResetPasswordMutation();
 
     const onFinish = async () => {
@@ -14,9 +16,10 @@ const FormResetPassword = () => {
         const email = params.get('email') || '';
 
         if (email == '' || !(btoa(atob(email)) === email)) {
-            notification.error({
+            notify({
                 message: 'Khôi phục mật khẩu thất bại',
                 description: 'URL không hợp lệ.',
+                type: 'error',
             });
             return;
         }
@@ -29,16 +32,17 @@ const FormResetPassword = () => {
         });
 
         if (!res.error) {
-            notification.success({
+            notify({
                 message: 'Khôi phục mật khẩu thành công',
                 description:
                     'Mật khẩu của bạn đã được cập nhật.\nĐang chuyển hướng đến trang đăng nhập...',
             });
             router.push('sign-in');
         } else {
-            notification.error({
+            notify({
                 message: 'Khôi phục mật khẩu thất bại',
                 description: 'Có lỗi xảy ra.',
+                type: 'error',
             });
         }
     };
