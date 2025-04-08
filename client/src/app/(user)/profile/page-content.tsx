@@ -7,15 +7,8 @@ import {
     UserUpdateInfoForm,
     UserUpdatePasswordForm,
 } from '@/components/profile/user-info-update';
-
-const userInfo = {
-    name: 'Tiawai',
-    email: 'tiawai@gmail.com',
-    gender: 'Nam',
-    phone: '0123456789',
-    birthday: new Date('2000-01-01').toLocaleDateString(),
-    address: 'Hà Nội',
-};
+import { useGetMyProfileQuery } from '@/services/user';
+import { Loading } from '@/components/common/loading';
 
 const userStudyingInfo = {
     examTaken: 0,
@@ -24,7 +17,22 @@ const userStudyingInfo = {
 };
 
 export const PageContent = () => {
+    const { data, isLoading } = useGetMyProfileQuery();
     const [navigationIndex, setNavigationIndex] = useState<number>(0);
+
+    if (isLoading) return <Loading />;
+
+    console.log(data);
+
+    const userInfo = {
+        name: 'Tiawai',
+        email: data?.email || '',
+        gender: 'Nam',
+        phone: '0123456789',
+        birthday: new Date('2000-01-01').toLocaleDateString(),
+        address: 'Hà Nội',
+    };
+
     const navigationItems = [
         {
             text: 'Thông tin của bạn',

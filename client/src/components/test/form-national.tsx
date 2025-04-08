@@ -108,7 +108,6 @@ export const FormNational = memo(() => {
 FormNational.displayName = 'FormNational';
 
 const FormBasic = memo(() => {
-    console.log('render Yến ngọc');
     const { getField, setField } = useTestField('national');
     return (
         <>
@@ -138,7 +137,6 @@ const FormQuestions = memo(() => {
         'national',
         currentQuestionId,
     );
-    console.log('render Yến ngọc');
 
     return (
         <FormQuestionLayout>

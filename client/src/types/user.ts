@@ -5,28 +5,26 @@ export enum Role {
     STUDENT = 'Student',
 }
 
-export interface IUser {
-    id?: string;
-    username?: string;
-    email?: string;
+export interface User {
+    id: string;
+    username: string;
+    email: string;
     role: Role;
 }
 
-export class User implements IUser {
-    id?: string;
-    username?: string;
-    email?: string;
-    role: Role;
+export interface UserSignUpDto extends User {
+    password: string;
+    phone: string;
+    birthdate: string;
+}
 
-    constructor(role: Role = Role.GUEST, username?: string, email?: string) {
-        this.id = undefined;
-        this.username = username;
-        this.email = email;
-        this.role = role;
+export class UserUtils {
+    static initUser(id = '', username = '', email = '', role: Role): User {
+        return { id, username, email, role };
     }
 
-    static isAdmin(user: User): boolean {
-        return user.role === Role.ADMIN;
+    static initGuest(): User {
+        return { id: '', username: '', email: '', role: Role.GUEST };
     }
 
     static getRoleName(user: User): string {
@@ -38,24 +36,8 @@ export class User implements IUser {
         };
         return roleNames[user.role];
     }
-}
 
-export class UserSignUp extends User {
-    password: string;
-    phone: string;
-    birthdate: string;
-
-    constructor(
-        username: string,
-        email: string,
-        password: string,
-        phone: string,
-        birthdate: string,
-        role: Role,
-    ) {
-        super(role, username, email);
-        this.password = password;
-        this.phone = phone;
-        this.birthdate = birthdate;
+    static isAdmin(user: User): boolean {
+        return user.role === Role.ADMIN;
     }
 }

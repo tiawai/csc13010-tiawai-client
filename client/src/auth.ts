@@ -67,17 +67,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
             if (Date.now() >= (decoded?.exp || 0) * 1000 - 300000) {
                 const res = await handleRefreshToken(token.refreshToken);
-                if (!res) {
+
+                if (res == null || res?.error) {
+                    token.error = 'RefreshTokenError';
                     return {
                         ...token,
                         iat: decoded.iat,
                         exp: decoded.exp,
                     };
-                }
-
-                if (res?.error) {
-                    token.error = 'RefreshTokenError';
-                    return token;
                 }
 
                 const { accessToken, refreshToken } = res as User;

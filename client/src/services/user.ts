@@ -1,31 +1,29 @@
-import { appApi } from "@/services/config";
-import { UserHistoryExam } from "@/types/exam";
+import { appApi } from '@/services/config';
+import { UserHistoryExam } from '@/types/exam';
+import { User } from '@/types/user';
 
 const userApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
-        getMyProfile: builder.query({
-            query: () => ({
-                url: "/user",
-                method: "GET",
-            }),
-            providesTags: ["Auth"],
+        getMyProfile: builder.query<User, void>({
+            query: () => '/users/user',
+            providesTags: ['Auth'],
         }),
 
         getMyStatistics: builder.query({
             query: () => ({
-                url: "/user/exam",
-                method: "GET",
+                url: '/user/exam',
+                method: 'GET',
             }),
-            providesTags: ["Auth"],
+            providesTags: ['Auth'],
         }),
 
         getHistoryExams: builder.query<UserHistoryExam[], void>({
             query: () => ({
-                url: "/user/history/exams",
-                method: "GET",
+                url: '/user/history/exams',
+                method: 'GET',
             }),
-            providesTags: ["Auth", "History"],
+            providesTags: ['Auth', 'History'],
         }),
     }),
 });

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { auth } from '@/auth';
-import { Role, User } from '@/types/user';
+import { Role, User, UserUtils } from '@/types/user';
 
 export const config = {
     matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
@@ -39,7 +39,8 @@ const protectedRoutes: ProtectedRoutes = {
 
 export default auth((req: any) => {
     const authUser = req.auth?.user;
-    const user: User = authUser === undefined ? new User() : authUser;
+    const user: User =
+        authUser === undefined ? UserUtils.initGuest() : authUser;
     const pathname = req.nextUrl.pathname;
 
     if (pathname === '/') {

@@ -1,15 +1,14 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useAppDispatch } from '@/lib/hooks/hook';
+import { useAppSelector, useAppDispatch } from '@/lib/hooks/hook';
+import { Alert, Modal } from 'antd';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { setAuthState } from '@/lib/slices/auth';
 import { useSignOutMutation } from './services/auth';
-import { useAppSelector } from '@/lib/hooks/hook';
-import { setCridentials } from '@/lib/slices/auth';
-import { handleRefreshToken } from '@/services/auth';
-import { User } from 'next-auth';
 import { appApi } from '@/services/config';
 import { store } from '@/lib/store/store';
+import { signOut } from 'next-auth/react';
 
 export default function NextAuthWrapper({
     children,
@@ -17,66 +16,75 @@ export default function NextAuthWrapper({
     children: React.ReactNode;
 }) {
     const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [signOutClient] = useSignOutMutation();
     const { data: session, status } = useSession();
-    const [signOut] = useSignOutMutation();
-    const auth = useAppSelector((state) => state.auth);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+    const handleSignOut = async () => {
+        setIsOpenModal(true);
+        await signOut({ redirect: false });
+        await signOutClient();
+    };
 
     useEffect(() => {
-        const handleSignOut = async () => {
-            if (auth.refreshToken) {
-                const res = await handleRefreshToken(
-                    auth.refreshToken as string,
-                );
-
-                if (!res) return;
-                if (res?.error) return;
-
-                const { accessToken } = res as User;
-                dispatch(setCridentials({ accessToken, refreshToken: '' }));
-                await signOut();
-                window.localStorage.removeItem('refreshToken');
-            }
-        };
-
-        setLoading(true);
         if (status === 'loading') return;
-        if (session?.error === 'RefreshTokenError' || session === null) {
-            setLoading(false);
-            if (auth.user) {
+        if (session) {
+            if (session?.error === 'RefreshTokenError') {
                 handleSignOut();
-            }
-        } else {
-            if (
-                session?.user &&
-                session?.accessToken &&
-                session?.refreshToken
-            ) {
-                const refreshToken =
-                    window.localStorage.getItem('refreshToken');
-                if (
-                    session.refreshToken &&
-                    session.refreshToken !== refreshToken
-                ) {
-                    window.localStorage.setItem(
-                        'refreshToken',
-                        session.refreshToken,
-                    );
-                    dispatch(
-                        setAuthState({
-                            user: session.user,
-                            accessToken: session.accessToken,
-                            refreshToken: session.refreshToken,
-                        }),
-                    );
-                    store.dispatch(appApi.util.invalidateTags(['Auth']));
-                }
+            } else {
+                dispatch(
+                    setAuthState({
+                        user: session.user,
+                        accessToken: session.accessToken,
+                        refreshToken: session.refreshToken,
+                    }),
+                );
+                store.dispatch(appApi.util.invalidateTags(['Auth']));
             }
         }
-        setLoading(false);
-    }, [signOut, dispatch, session, auth.user, auth.refreshToken, status]);
+    }, [dispatch, session, status]);
 
-    if (loading) return null;
-
-    return <>{children}</>;
+    return (
+        <>
+            {children}
+            <SessionModal
+                isOpenModal={isOpenModal}
+                setIsOpenModal={setIsOpenModal}
+            />
+        </>
+    );
 }
+
+export const SessionModal = ({
+    isOpenModal,
+    setIsOpenModal,
+}: {
+    isOpenModal: boolean;
+    setIsOpenModal: (isOpen: boolean) => void;
+}) => {
+    const router = useRouter();
+    const handleRedirect = () => {
+        setIsOpenModal(false);
+        router.push('/auth/sign-in');
+    };
+
+    return (
+        <Modal
+            title="Phiên làm việc đã hết hạn"
+            open={isOpenModal}
+            onOk={handleRedirect}
+            cancelButtonProps={{ style: { display: 'none' } }}
+            okType="primary"
+            okText="Đăng nhập lại"
+            closable={false}
+            maskClosable={false}
+        >
+            <Alert
+                message="Phiên đăng nhập của bạn đã hết hạn"
+                description="Bạn cần đăng nhập lại để tiếp tục với tiawai."
+                type="warning"
+                showIcon
+            />
+        </Modal>
+    );
+};

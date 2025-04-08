@@ -16,7 +16,7 @@ import { signOut } from 'next-auth/react';
 import { useSignOutMutation } from '@/services/auth';
 import { useAppSelector } from '@/lib/hooks/hook';
 import { useDisableSessionMutation } from '@/services/chat';
-import { Role, User } from '@/types/user';
+import { Role, UserUtils } from '@/types/user';
 
 const { Title, Paragraph } = Typography;
 
@@ -69,7 +69,7 @@ const dropdownItems: MenuProps["items"] = [
 const Header = () => {
     const router = useRouter();
     const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = User.isAdmin(user);
+    const isAdmin = UserUtils.isAdmin(user);
     const [disableChatSession] = useDisableSessionMutation();
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
     const [signOutClient] = useSignOutMutation();
@@ -141,7 +141,7 @@ const Header = () => {
                         {user.username}
                     </Title>
                     <Paragraph className="!m-0">
-                        {User.getRoleName(user)}
+                        {UserUtils.getRoleName(user)}
                     </Paragraph>
                 </Flex>
                 <DownOutlined />

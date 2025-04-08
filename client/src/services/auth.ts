@@ -74,25 +74,3 @@ export const {
     usePasswordRecoveryMutation,
     useResetPasswordMutation,
 } = authApi;
-
-export const handleRefreshToken = async (refreshToken: string) => {
-    try {
-        const res = await fetch(
-            process.env.NEXT_PUBLIC_BACKEND_BASE_URL + '/auth/refresh-token',
-            {
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${refreshToken}`,
-                },
-            },
-        );
-
-        if (res.ok) {
-            const data = await res.json();
-            return { accessToken: data.accessToken };
-        }
-    } catch (error) {
-        return { error };
-    }
-};

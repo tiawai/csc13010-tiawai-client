@@ -27,9 +27,7 @@ const nationalTestCreatorSlice = createSlice({
     initialState,
     reducers: {
         resetTHPGQGTestCreator: () => {
-            return {
-                ...initialState,
-            };
+            return { ...initialState };
         },
 
         setNationalIsExporting: (state, action: PayloadAction<boolean>) => {
@@ -109,7 +107,6 @@ const nationalTestCreatorSlice = createSlice({
                     newQuestions[i] = { ...initQuestion };
                 }
             }
-            console.log('newQuestions', newQuestions);
 
             state.totalQuestions = newTotal;
             state.questions = newQuestions;

@@ -59,7 +59,8 @@ const persistConfig = {
     key: 'root',
     storage,
     stateReconciler: autoMergeLevel2,
-    whitelist: ['auth', 'nationalTestCreator', 'toeicTestCreator'],
+    whitelist: ['nationalTestCreator', 'toeicTestCreator'],
+    blacklist: ['auth'],
 };
 
 const appReducer = combineReducers({
@@ -71,7 +72,7 @@ const appReducer = combineReducers({
 });
 
 const rootReducer: Reducer<RootState, Action> = (state, action) => {
-    if (action.type === 'auth/logOut') {
+    if (action.type === 'auth/setSignOut') {
         state = undefined;
     }
     return appReducer(state, action);
