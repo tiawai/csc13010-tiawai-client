@@ -8,12 +8,12 @@ export default async function UserLayout({
 }) {
     return (
         <>
-            <div className="m-auto !mt-28 min-h-[calc(100vh-300px)] px-4">
+            <div className="h-lvh max-h-lvh overflow-hidden">
                 <Header />
-                <div className="flex">
+                <div className="flex h-full gap-4 px-4 pb-4 pt-28">
                     <HeaderMenu />
                     <Suspense>
-                        <main className="m-auto max-w-[1320px] grow">
+                        <main className="m-auto max-h-full max-w-[1320px] grow overflow-y-scroll">
                             {children}
                         </main>
                     </Suspense>
