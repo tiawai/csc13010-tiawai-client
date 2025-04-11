@@ -1,5 +1,5 @@
-import { NationalTestCreatorState } from '@/lib/slices/national-test-creator';
-import { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator';
+import { NationalTestCreatorState } from '@/lib/slices/national-test-creator.slice';
+import { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator.slice';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export const ChoicesTypes = ['A', 'B', 'C', 'D'] as const;
@@ -7,10 +7,10 @@ export type ChoicesType = (typeof ChoicesTypes)[number];
 export type Choices = Record<ChoicesType, string>;
 
 export interface Question {
-    questionId: number;
+    questionOrder: number;
     paragraph?: string;
     hasParagraph?: boolean;
-    question: string;
+    content: string;
     imageUrls?: string[];
     choices: Choices;
     correctAnswer?: ChoicesType;
@@ -19,9 +19,19 @@ export interface Question {
     explanation?: string;
 }
 
+export interface CreateQuestionDto {
+    paragraph?: string;
+    content?: string;
+    images?: string[];
+    explanation?: string;
+    points: number;
+    correctAnswer: ChoicesType;
+    choices: Choices;
+}
+
 export const initQuestion = {
-    questionId: 1,
-    question: '',
+    questionOrder: 1,
+    content: '',
     choices: {
         A: '',
         B: '',
@@ -39,7 +49,7 @@ export const initListQuestions = ({
 }): Question[] => {
     return Array.from({ length }, (_, i) => ({
         ...initQuestion,
-        questionId: offset + i + 1,
+        questionOrder: offset + i + 1,
     }));
 };
 
@@ -48,14 +58,14 @@ export type SelectQuestionFieldById = <T extends keyof Question>(
         toeicTestCreator?: ToeicTestCreatorState;
         nationalTestCreator?: NationalTestCreatorState;
     },
-    questionId: number,
+    questionOrder: number,
     field: T,
 ) => Question[T] | '';
 
 export type SetQuestionFieldById = (
     state: ToeicTestCreatorState | NationalTestCreatorState,
     action: PayloadAction<{
-        questionId: number;
+        questionOrder: number;
         field: keyof Question;
         value: Question[keyof Question];
     }>,
