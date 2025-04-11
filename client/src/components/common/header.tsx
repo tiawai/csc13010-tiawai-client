@@ -1,10 +1,18 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Flex, Menu, Space, Button, Typography, Avatar, Dropdown } from 'antd';
-import { MenuProps } from 'antd';
+import { useState } from 'react';
+import {
+    Flex,
+    Menu,
+    MenuProps,
+    Space,
+    Button,
+    Typography,
+    Avatar,
+    Dropdown,
+} from 'antd';
 import {
     DownOutlined,
     UserOutlined,
@@ -13,8 +21,9 @@ import {
 } from '@ant-design/icons';
 import logo from '@public/logo.svg';
 import { signOut } from 'next-auth/react';
-import { useSignOutMutation } from '@/services/auth.service';
+import { selectUser } from '@/lib/slices/auth.slice';
 import { useAppSelector } from '@/lib/hooks/hook';
+import { useSignOutMutation } from '@/services/auth.service';
 import { useDisableSessionMutation } from '@/services/chat';
 import { Role, UserUtils } from '@/types/user.type';
 
@@ -53,7 +62,8 @@ const adminItems: MenuProps["items"] = [
     { label: <Link href="/admin">Thống kê</Link>, key: "dashboard" },
     { label: <Link href="/admin/users">Quản lý người dùng</Link>, key: "users" },
     { label: <Link href="/admin/classrooms">Quản lý lớp học</Link>, key: "classrooms" },
-    { label: <Link href="/admin/assignments-tests">Quản lý bài tập & đề thi</Link>, key: "assignments-tests" },
+    { label: <Link href="/admin/assignments">Quản lý bài tập</Link>, key: "assignments" },
+    { label: <Link href="/admin/tests">Quản lý đề thi</Link>, key: "tests" },
     { label: <Link href="/admin/reports">Quản lý báo cáo</Link>, key: "reports" },
     { label: <Link href="/admin/transactions">Quản lý giao dịch</Link>, key: "transactions" },
     { label: <Link href="/admin/challenges">Quản lý challenge</Link>, key: "challenges" },
@@ -68,11 +78,10 @@ const dropdownItems: MenuProps["items"] = [
 
 const Header = () => {
     const router = useRouter();
-    const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = UserUtils.isAdmin(user);
+    const [signOutClient] = useSignOutMutation();
     const [disableChatSession] = useDisableSessionMutation();
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
-    const [signOutClient] = useSignOutMutation();
+    const user = useAppSelector(selectUser);
 
     const handleDropdownClick: MenuProps['onClick'] = async ({ key }) => {
         if (key === 'signout') {
@@ -158,7 +167,7 @@ const Header = () => {
     return (
         <HeaderLayout>
             <HeaderLogo />
-            {!isAdmin && <HeaderMenu />}
+            {!UserUtils.isAdmin(user) && <HeaderMenu />}
             {user.role != Role.GUEST ? (
                 <HeaderUserAction />
             ) : (
@@ -179,23 +188,15 @@ const userItems = {
 
 export const HeaderMenu = () => {
     const pathname = usePathname();
-    const user = useAppSelector((state) => state.auth.user);
-    const isAdmin = user?.role === Role.ADMIN;
+    const user = useAppSelector(selectUser);
+
+    const [current, setCurrent] = useState(pathname);
+    const onClick: MenuProps['onClick'] = ({ key }) => setCurrent(key);
+
+    const isAdmin = UserUtils.isAdmin(user);
     const menuItems = userItems[user.role];
     const mode = isAdmin ? 'vertical' : 'horizontal';
-    const currentPath =
-        pathname === '/'
-            ? user?.role === Role.ADMIN
-                ? 'dashboard'
-                : 'home'
-            : pathname?.split('/')[1];
-    const [current, setCurrent] = useState(currentPath);
-
-    useEffect(() => {
-        setCurrent(currentPath);
-    }, [currentPath]);
-
-    const onClick: MenuProps['onClick'] = ({ key }) => setCurrent(key);
+    const flexDirection = isAdmin ? 'column' : 'row';
 
     return (
         <Menu
@@ -209,7 +210,7 @@ export const HeaderMenu = () => {
                 fontSize: 16,
                 fontWeight: 600,
                 display: 'flex',
-                flexDirection: isAdmin ? 'column' : 'row',
+                flexDirection: flexDirection,
                 gap: '1rem',
             }}
         />

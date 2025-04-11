@@ -38,7 +38,7 @@ const FormSignIn = () => {
         if (session) {
             dispatch(
                 setAuthState({
-                    user: session.user.id,
+                    user: session.user,
                     accessToken: session.accessToken as string,
                     refreshToken: session.refreshToken as string,
                 }),
@@ -111,10 +111,6 @@ const FormSignIn = () => {
                     {
                         required: true,
                         message: 'Mật khẩu không được bỏ trống',
-                    },
-                    {
-                        min: 5,
-                        message: 'Mật khẩu phải có ít nhất 5 ký tự',
                     },
                 ]}
             >
