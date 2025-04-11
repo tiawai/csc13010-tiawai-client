@@ -9,6 +9,7 @@ import {
     handleSignIn,
     handleRefreshToken,
 } from '@/services/auth-server.service';
+import { User as UserInfo } from '@/types/user.type';
 
 const providers: Provider[] = [
     Credentials({
@@ -64,7 +65,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         email: decoded?.email,
                         username: decoded?.username,
                         role: decoded?.role,
-                    },
+                    } as UserInfo,
                 };
             }
 
@@ -72,11 +73,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const res = await handleRefreshToken(token.refreshToken);
 
                 if (res == null || res?.error) {
-                    token.error = 'RefreshTokenError';
                     return {
                         ...token,
-                        iat: decoded.iat,
-                        exp: decoded.exp,
+                        error: 'RefreshTokenError',
                     };
                 }
 
@@ -98,6 +97,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 exp: decoded.exp,
             };
         },
+
         async session({ session, token }: { session: Session; token: JWT }) {
             const decoded = jwtDecode(token.refreshToken);
 

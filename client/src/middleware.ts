@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { auth } from '@/auth';
+import { auth } from './handlers';
 import { Role, User, UserUtils } from '@/types/user.type';
 
 export const config = {
