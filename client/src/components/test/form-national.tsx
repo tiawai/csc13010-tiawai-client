@@ -9,13 +9,15 @@ import {
     setNationalCurrentQuestionId,
     selectNationalCurrentQuestionId,
     // selectTHPTGQTestCreatorField,
-} from '@/lib/slices/national-test-creator';
+} from '@/lib/slices/national-test-creator.slice';
 import { FormLayout, FormQuestionNavigation } from './form-ui';
 import { FormFooter } from './form-national-ui';
 import {
     TestQuestionTitle,
     TestQuestionDuration,
     TestQuestionTotalQuestions,
+    TestQuestionStartDate,
+    TestQuestionEndDate,
 } from './test-question-ui';
 import {
     QuestionContent,
@@ -24,7 +26,8 @@ import {
     QuestionExplanation,
 } from './question-ui';
 import { FormQuestionTitle, FormQuestionLayout } from './form-ui';
-import { useTestField, useQuestionField } from '@/lib/hooks/test';
+import { useTestField } from '@/lib/hooks/use-test-field';
+import { useQuestionField } from '@/lib/hooks/use-question-field';
 
 export const FormNational = memo(() => {
     const dispatch = useAppDispatch();
@@ -115,7 +118,15 @@ const FormBasic = memo(() => {
                 getField={getField}
                 setField={setField}
             />
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-x-8">
+                <TestQuestionStartDate<'national'>
+                    getField={getField}
+                    setField={setField}
+                />
+                <TestQuestionEndDate<'national'>
+                    getField={getField}
+                    setField={setField}
+                />
                 <TestQuestionTotalQuestions
                     getField={getField}
                     setField={setField}

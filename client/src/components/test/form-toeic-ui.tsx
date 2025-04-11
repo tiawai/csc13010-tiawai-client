@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { Modal, Select, Button } from 'antd';
+import { ConfigProvider, Modal, Select, Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import {
     setIsExporting,
     selectIsExporting,
-} from '@/lib/slices/toeic-test-creator';
-import { ConfigProvider } from 'antd';
+} from '@/lib/slices/toeic-test-creator.slice';
 import clsx from 'clsx';
 
 export const FormToeicExport = () => {

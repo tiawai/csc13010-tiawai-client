@@ -4,9 +4,10 @@ import Title from 'antd/es/typography/Title';
 import { useCallback } from 'react';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
-import { Question } from '@/types/question';
+import { Question } from '@/types/question.type';
 import { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '@/lib/store/store';
+import { ArrowLeftOutlined, ArrowRightOutlined } from '@ant-design/icons';
 
 export const FormLabel = ({ label }: { label: string }) => (
     <Title className={clsx('!text-tia-jacarta')} level={4}>
@@ -43,7 +44,7 @@ export const FormLayout = memo(
         questions: React.ReactNode;
     }) => {
         return (
-            <div className="flex gap-8">
+            <div className="flex gap-8 max-lg:flex-col">
                 <div className="h-max rounded-3xl bg-tia-platinum-2">
                     {navigator}
                 </div>
@@ -84,14 +85,14 @@ export const FormQuestionNavigation = memo(
         return (
             <FormQuestionLayout>
                 <FormQuestionTitle title="Câu hỏi" />
-                <div className="grid grid-cols-[repeat(5,min-content)] gap-2 p-6">
+                <div className="grid grid-cols-3 justify-items-center gap-2 p-6 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5">
                     {currentQuestions.map((question) => (
                         <QuestionButton
-                            key={question.questionId}
+                            key={question.questionOrder}
                             question={question}
                             onNavigate={onNavigate}
                             isActive={
-                                currentQuestionId === question.questionId ||
+                                currentQuestionId === question.questionOrder ||
                                 currentQuestionId === question?.parentQuestion
                             }
                         />
@@ -115,17 +116,19 @@ export const QuestionButton = memo(
         return (
             <Button
                 onClick={() =>
-                    onNavigate(question.parentQuestion ?? question.questionId)
+                    onNavigate(
+                        question.parentQuestion ?? question.questionOrder,
+                    )
                 }
                 className={clsx(
-                    'hover:border-tia-deep-koamaru',
+                    'w-min hover:border-tia-deep-koamaru',
                     isActive && '!bg-tia-deep-koamaru !text-white',
                     !isActive &&
                         question.parentQuestion &&
                         '!bg-tia-deep-koamaru/50 !text-white',
                 )}
             >
-                {question.questionId}
+                {question.questionOrder}
             </Button>
         );
     },
@@ -137,19 +140,60 @@ export const QuestionButton = memo(
 interface NavigationButtonProps {
     text: string;
     onClick: () => void;
+    loading?: boolean;
 }
+
+export const NavigationButtonBack = ({
+    text,
+    onClick,
+    loading = false,
+}: NavigationButtonProps) => {
+    return (
+        <Button
+            className="!bg-tia-platinum-2"
+            icon={<ArrowLeftOutlined />}
+            iconPosition="start"
+            shape="round"
+            onClick={onClick}
+            loading={loading}
+        >
+            {text}
+        </Button>
+    );
+};
+
+export const NavigationButtonNext = ({
+    text,
+    onClick,
+    loading = false,
+}: NavigationButtonProps) => {
+    return (
+        <Button
+            className="!bg-tia-platinum-2"
+            icon={<ArrowRightOutlined />}
+            iconPosition="end"
+            shape="round"
+            onClick={onClick}
+            loading={loading}
+        >
+            {text}
+        </Button>
+    );
+};
 
 export const NavigationButtonCancel = ({
     text,
     onClick,
+    loading = false,
 }: NavigationButtonProps) => {
     return (
         <Button
             key="cancel"
             shape="round"
             type="primary"
-            danger
             onClick={onClick}
+            loading={loading}
+            danger
         >
             {text}
         </Button>
@@ -159,6 +203,7 @@ export const NavigationButtonCancel = ({
 export const NavigationButtonSave = ({
     text,
     onClick,
+    loading = false,
 }: NavigationButtonProps) => {
     return (
         <Button
@@ -166,6 +211,7 @@ export const NavigationButtonSave = ({
             className="!bg-tia-platinum"
             shape="round"
             onClick={onClick}
+            loading={loading}
         >
             {text}
         </Button>
@@ -175,6 +221,7 @@ export const NavigationButtonSave = ({
 export const NavigationButtonExport = ({
     text,
     onClick,
+    loading = false,
 }: NavigationButtonProps) => {
     return (
         <Button
@@ -182,6 +229,7 @@ export const NavigationButtonExport = ({
             className="!bg-tia-platinum"
             shape="round"
             onClick={onClick}
+            loading={loading}
         >
             {text}
         </Button>

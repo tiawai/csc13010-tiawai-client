@@ -1,19 +1,62 @@
 import { Button, Modal } from 'antd';
 import { memo, useState } from 'react';
-import { useAppDispatch } from '@/lib/hooks/hook';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import {
     resetTHPGQGTestCreator,
     setNationalIsExporting,
-} from '@/lib/slices/national-test-creator';
+} from '@/lib/slices/national-test-creator.slice';
 import {
     NavigationButtonCancel,
     NavigationButtonExport,
     NavigationButtonSave,
 } from './form-ui';
+import { useCreateNationalTestMutation } from '@/services/test.service';
+import { CreateQuestionDto } from '@/types/question.type';
+import { CreateNationalTestDto, TestType } from '@/types/test.type';
 
 export const FormFooter = memo(() => {
     const dispatch = useAppDispatch();
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [createNationalTest, { isLoading }] = useCreateNationalTestMutation();
+    const testState = useAppSelector((state) => state.nationalTestCreator);
+
+    const handleSaveTest = async () => {
+        const {
+            title,
+            startDate,
+            endDate,
+            duration,
+            totalQuestions,
+            questions,
+        } = testState;
+
+        const body: CreateNationalTestDto = {
+            test: {
+                title: title,
+                type: TestType.NATIONAL_TEST,
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString(),
+                totalQuestions: totalQuestions,
+                timeLength: duration,
+            },
+
+            questions: questions.map(
+                (_, idx): CreateQuestionDto => ({
+                    content: `Câu hỏi ${idx + 1}`,
+                    points: 0.25,
+                    correctAnswer: 'A',
+                    choices: {
+                        A: 'Đáp án A',
+                        B: 'Đáp án B',
+                        C: 'Đáp án C',
+                        D: 'Đáp án D',
+                    },
+                }),
+            ),
+        };
+
+        await createNationalTest(body);
+    };
 
     const handleCancelTest = () => {
         dispatch(resetTHPGQGTestCreator());
@@ -29,7 +72,8 @@ export const FormFooter = memo(() => {
                 />
                 <NavigationButtonSave
                     text="Lưu"
-                    onClick={() => dispatch(setNationalIsExporting(false))}
+                    onClick={handleSaveTest}
+                    loading={isLoading}
                 />
                 <NavigationButtonExport
                     text="Xuất bản"

@@ -11,12 +11,15 @@ import {
     setSubQuestions,
     setCurrentQuestionId,
     selectCurrentQuestions,
-} from '@/lib/slices/toeic-test-creator';
+    setToeicTestField,
+    selectFirstPart,
+} from '@/lib/slices/toeic-test-creator.slice';
 import {
     FormQuestionLayout,
     FormQuestionTitle,
     FormLayout,
     FormQuestionNavigation,
+    NavigationButtonNext,
 } from './form-ui';
 import {
     PartNavigation,
@@ -25,6 +28,12 @@ import {
     PartNavigationFooter,
 } from './part-toeic-ui';
 import { BasicQuestion, QuestionNavigation } from './question-ui';
+import { useTestField } from '@/lib/hooks/use-test-field';
+import {
+    TestQuestionEndDate,
+    TestQuestionStartDate,
+    TestQuestionTitle,
+} from './test-question-ui';
 
 const partMap: Record<ListeningPart, { title: string; description: string }> = {
     part1: {
@@ -48,6 +57,10 @@ const partMap: Record<ListeningPart, { title: string; description: string }> = {
 export const FormToeicListening = memo(() => {
     const dispatch = useAppDispatch();
     const currentPart = useAppSelector(selectCurrentPart) as ListeningPart;
+    const firstPart = useAppSelector(selectFirstPart) as ListeningPart;
+    const isSelectbasic = useAppSelector(
+        (state) => state.toeicTestCreator.isSelectBasic,
+    );
 
     const [form] = Form.useForm();
     const onFinish = (values: string) => {
@@ -60,30 +73,80 @@ export const FormToeicListening = memo(() => {
 
     if (!partMap[currentPart]) return null;
 
+    console.log('currentPart', isSelectbasic);
+
     return (
         <Form form={form} layout="vertical" size="large" onFinish={onFinish}>
             <div className="space-y-6">
-                <PartNavigation partMap={partMap} />
-                <PartTitle title={partMap[currentPart].title} />
-                <PartDescription
-                    description={partMap[currentPart].description}
-                />
-                <FormLayout
-                    navigator={
-                        <FormQuestionNavigation
-                            selectCurrentQuestionId={selectCurrentQuestionId}
-                            selectCurrentQuestions={selectCurrentQuestions}
-                            setCurrentQuestionId={setCurrentQuestionId}
+                {isSelectbasic ? (
+                    <>
+                        <FormBasic />
+                        <div className="flex justify-end">
+                            <NavigationButtonNext
+                                text={partMap[firstPart].title}
+                                onClick={() =>
+                                    dispatch(
+                                        setToeicTestField({
+                                            field: 'isSelectBasic',
+                                            value: false,
+                                        }),
+                                    )
+                                }
+                            />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <PartNavigation partMap={partMap} />
+                        <PartTitle title={partMap[currentPart].title} />
+                        <PartDescription
+                            description={partMap[currentPart].description}
                         />
-                    }
-                    questions={<FormPartQuestions />}
-                />
-                <PartNavigationFooter partMap={partMap} />
+                        <FormLayout
+                            navigator={
+                                <FormQuestionNavigation
+                                    selectCurrentQuestionId={
+                                        selectCurrentQuestionId
+                                    }
+                                    selectCurrentQuestions={
+                                        selectCurrentQuestions
+                                    }
+                                    setCurrentQuestionId={setCurrentQuestionId}
+                                />
+                            }
+                            questions={<FormPartQuestions />}
+                        />
+                        <PartNavigationFooter partMap={partMap} />
+                    </>
+                )}
             </div>
         </Form>
     );
 });
+
 FormToeicListening.displayName = 'FormToeicListening';
+
+const FormBasic = memo(() => {
+    const { getField, setField } = useTestField('toeic');
+    return (
+        <>
+            <TestQuestionTitle<'toeic'>
+                getField={getField}
+                setField={setField}
+            />
+            <div className="grid grid-cols-2 gap-x-8">
+                <TestQuestionStartDate<'toeic'>
+                    getField={getField}
+                    setField={setField}
+                />
+                <TestQuestionEndDate<'toeic'>
+                    getField={getField}
+                    setField={setField}
+                />
+            </div>
+        </>
+    );
+});
 
 const FormPartQuestions = memo(() => {
     const dispatch = useAppDispatch();
@@ -127,11 +190,11 @@ const FormPartQuestions = memo(() => {
                 )}
 
                 {questionType === 0 ? (
-                    <BasicQuestion questionId={currentQuestionId} />
+                    <BasicQuestion questionOrder={currentQuestionId} />
                 ) : (
                     <>
                         <BasicQuestion
-                            questionId={currentQuestionId}
+                            questionOrder={currentQuestionId}
                             showQuestion={false}
                             showQuestionImage={true}
                         />
@@ -142,7 +205,7 @@ const FormPartQuestions = memo(() => {
                                     <div className="h-px w-full bg-tia-deep-koamaru"></div>
                                 </Form.Item>
                                 <BasicQuestion
-                                    questionId={subQuestion}
+                                    questionOrder={subQuestion}
                                     showQuestion={false}
                                 />
                             </Fragment>
