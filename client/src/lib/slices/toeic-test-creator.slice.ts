@@ -1,11 +1,11 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Question, initListQuestions } from '@/types/question';
-import type { SelectQuestionFieldById } from '@/types/question';
+import { Question, initListQuestions } from '@/types/question.type';
+import type { SelectQuestionFieldById } from '@/types/question.type';
 
 const TOEIC_READING_PARTS = {
-    part5: 16,
-    part6: 30,
+    part5: 30,
+    part6: 16,
     part7: 54,
 };
 const TOEIC_LISTENING_PARTS = {
@@ -22,7 +22,6 @@ export type ToeicTestType = 'reading' | 'listening';
 const testInfo: Record<
     ToeicTestType,
     {
-        title: string;
         duration: number;
         firstPart: string;
         lastPart: string;
@@ -31,7 +30,6 @@ const testInfo: Record<
     }
 > = {
     reading: {
-        title: 'Reading',
         duration: 75,
         firstPart: 'part5',
         lastPart: 'part7',
@@ -52,7 +50,6 @@ const testInfo: Record<
         },
     },
     listening: {
-        title: 'Listening',
         duration: 45,
         firstPart: 'part1',
         lastPart: 'part4',
@@ -85,25 +82,55 @@ const testInfo: Record<
 export interface ToeicTestCreatorState {
     testType: ToeicTestType;
     title: string;
+    startDate: string;
+    endDate: string;
     duration: number;
     currentPart: string;
     currentPartLength: number;
     currentQuestionId: number;
+    isSelectBasic: boolean;
+    basic: Record<ToeicTestType, Basic>;
     questions: Record<string, Question[]>;
+    readonly totalQuestions: number;
     isExporting: boolean;
+}
+
+export interface Basic {
+    title: string;
+    startDate: string;
+    endDate: string;
+    isSelectBasic: boolean;
 }
 
 const initialState: ToeicTestCreatorState = {
     testType: 'reading',
-    title: testInfo.reading.title,
+    title: '',
+    startDate: '',
+    endDate: '',
     duration: testInfo.reading.duration,
     currentPart: testInfo.reading.firstPart,
     currentPartLength: TOEIC_READING_PARTS.part5,
     currentQuestionId: 1,
+    isSelectBasic: true,
+    basic: {
+        reading: {
+            title: '',
+            startDate: '',
+            endDate: '',
+            isSelectBasic: true,
+        },
+        listening: {
+            title: '',
+            startDate: '',
+            endDate: '',
+            isSelectBasic: true,
+        },
+    },
     questions: {
         ...testInfo.reading.init,
         ...testInfo.listening.init,
     },
+    totalQuestions: 100,
     isExporting: false,
 };
 
@@ -124,9 +151,18 @@ const toeicTestCreatorSlice = createSlice({
         },
 
         setToeicTestType: (state, action: PayloadAction<ToeicTestType>) => {
+            const preType = state.testType;
+            state.basic[preType].title = state.title;
+            state.basic[preType].startDate = state.startDate;
+            state.basic[preType].endDate = state.endDate;
+            state.basic[preType].isSelectBasic = state.isSelectBasic;
+
             const testType = action.payload;
             state.testType = testType;
-            state.title = testInfo[testType].title;
+            state.title = state.basic[testType].title;
+            state.startDate = state.basic[testType].startDate;
+            state.endDate = state.basic[testType].endDate;
+            state.isSelectBasic = state.basic[testType].isSelectBasic;
             state.currentPart = testInfo[testType].firstPart;
             state.currentPartLength = state.questions[state.currentPart].length;
             state.duration = testInfo[testType].duration;
@@ -147,13 +183,13 @@ const toeicTestCreatorSlice = createSlice({
             const part = action.payload;
             state.currentPart = part;
             state.currentPartLength = state.questions[part].length;
-            state.currentQuestionId = state.questions[part][0].questionId;
+            state.currentQuestionId = state.questions[part][0].questionOrder;
         },
 
         setCurrentQuestionId: (state, action: PayloadAction<number>) => {
             const questionsPart = state.questions[state.currentPart];
             const indexInPart = questionsPart.findIndex(
-                (q) => q.questionId === action.payload,
+                (q) => q.questionOrder === action.payload,
             );
             if (indexInPart >= 0 && indexInPart < questionsPart.length) {
                 state.currentQuestionId = action.payload;
@@ -163,19 +199,19 @@ const toeicTestCreatorSlice = createSlice({
         setToeicQuestionFieldById: (
             state: ToeicTestCreatorState,
             action: PayloadAction<{
-                questionId: number;
+                questionOrder: number;
                 field: keyof Question;
                 value: Question[keyof Question];
             }>,
         ) => {
-            const { questionId, field, value } = action.payload;
+            const { questionOrder, field, value } = action.payload;
             const currentPart = state.questions[state.currentPart];
             const indexInPart = currentPart.findIndex(
-                (q) => q.questionId === questionId,
+                (q) => q.questionOrder === questionOrder,
             );
             if (indexInPart >= 0 && indexInPart < currentPart.length) {
                 if (field === 'subQuestions') {
-                    handleSubQuestions(state, questionId, value as number);
+                    handleSubQuestions(state, questionOrder, value as number);
                 } else {
                     (currentPart[indexInPart][field] as typeof value) = value;
                 }
@@ -187,7 +223,7 @@ const toeicTestCreatorSlice = createSlice({
             const currentPart = state.currentPart;
             const currentQuestionId = state.currentQuestionId;
             const indexInPart = state.questions[currentPart].findIndex(
-                (q) => q.questionId === currentQuestionId,
+                (q) => q.questionOrder === currentQuestionId,
             );
             const question = state.questions[currentPart][indexInPart];
 
@@ -221,7 +257,7 @@ const toeicTestCreatorSlice = createSlice({
                 if (subQuestion?.parentQuestion) {
                     break;
                 }
-                subQuestions.push(subQuestion.questionId);
+                subQuestions.push(subQuestion.questionOrder);
                 subQuestion.parentQuestion = currentQuestionId;
             }
 
@@ -262,12 +298,12 @@ export default toeicTestCreatorSlice.reducer;
 
 const handleSubQuestions = (
     state: ToeicTestCreatorState,
-    questionId: number,
+    questionOrder: number,
     numberSubQuestions: number,
 ) => {
     const currentPart = state.currentPart;
     const indexInPart = state.questions[currentPart].findIndex(
-        (q) => q.questionId === questionId,
+        (q) => q.questionOrder === questionOrder,
     );
     const question = state.questions[currentPart][indexInPart];
 
@@ -278,7 +314,9 @@ const handleSubQuestions = (
             i < Math.min(indexInPart + 5, state.currentPartLength);
             i++
         ) {
-            if (state.questions[currentPart][i].parentQuestion === questionId) {
+            if (
+                state.questions[currentPart][i].parentQuestion === questionOrder
+            ) {
                 delete state.questions[currentPart][i].parentQuestion;
             }
         }
@@ -294,8 +332,8 @@ const handleSubQuestions = (
         if (subQuestion?.parentQuestion) {
             break;
         }
-        subQuestions.push(subQuestion.questionId);
-        subQuestion.parentQuestion = questionId;
+        subQuestions.push(subQuestion.questionOrder);
+        subQuestion.parentQuestion = questionOrder;
     }
 
     if (subQuestions.length <= 1) {
@@ -314,7 +352,7 @@ export const selectToeicTestField = <K extends keyof ToeicTestCreatorState>(
 
 export const selectToeicQuestionFieldById: SelectQuestionFieldById = (
     state,
-    questionId,
+    questionOrder,
     field,
 ) => {
     if (!state.toeicTestCreator) {
@@ -324,18 +362,18 @@ export const selectToeicQuestionFieldById: SelectQuestionFieldById = (
     const { currentPart, questions } = state.toeicTestCreator;
     const question =
         questions[currentPart].find(
-            (q: Question) => q.questionId === questionId,
+            (q: Question) => q.questionOrder === questionOrder,
         ) || questions[currentPart][0];
     return question?.[field] ?? '';
 };
 
 export const selectQuestionById = (
     state: { toeicTestCreator: ToeicTestCreatorState },
-    questionId: number,
+    questionOrder: number,
 ) => {
     const { currentPart, questions } = state.toeicTestCreator;
     return (
-        questions[currentPart].find((q) => q.questionId === questionId) ||
+        questions[currentPart].find((q) => q.questionOrder === questionOrder) ||
         questions[currentPart][0]
     );
 };
@@ -366,6 +404,10 @@ export const selectNextPart = (state: {
     return parts[index + 1] || currentPart;
 };
 
+export const selectFirstPart = (state: {
+    toeicTestCreator: ToeicTestCreatorState;
+}) => testInfo[state.toeicTestCreator.testType].firstPart;
+
 export const selectLastPart = (state: {
     toeicTestCreator: ToeicTestCreatorState;
 }) => testInfo[state.toeicTestCreator.testType].lastPart;
@@ -385,9 +427,31 @@ export const selectCurrentQuestion = (state: {
         state.toeicTestCreator;
     return (
         questions[currentPart].find(
-            (q) => q.questionId === currentQuestionId,
+            (q) => q.questionOrder === currentQuestionId,
         ) || questions[currentPart][0]
     );
+};
+
+export const selectReadingQuestions = (state: {
+    toeicTestCreator: ToeicTestCreatorState;
+}) => {
+    const { questions } = state.toeicTestCreator;
+    return Object.keys(questions)
+        .filter((part) => part in TOEIC_READING_PARTS)
+        .reduce((acc, part) => {
+            return [...acc, ...questions[part]];
+        }, [] as Question[]);
+};
+
+export const selectListeningQuestions = (state: {
+    toeicTestCreator: ToeicTestCreatorState;
+}) => {
+    const { questions } = state.toeicTestCreator;
+    return Object.keys(questions)
+        .filter((part) => part in TOEIC_LISTENING_PARTS)
+        .reduce((acc, part) => {
+            return [...acc, ...questions[part]];
+        }, [] as Question[]);
 };
 
 export const selectIsExporting = (state: {

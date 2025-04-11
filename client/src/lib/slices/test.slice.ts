@@ -1,24 +1,24 @@
 'use client';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Exam } from '@/types/exam';
+import { Test } from '@/types/test.type';
 
-export interface ExamState {
-    exam?: Exam;
+export interface TestState {
+    test?: Test;
     loading: boolean;
     error?: string;
 }
 
-const initialState: ExamState = {
-    exam: undefined,
+const initialState: TestState = {
+    test: undefined,
     loading: false,
     error: undefined,
 };
 
-export const fetchExamById = createAsyncThunk<Exam, number>(
-    'exam/fetchExamById',
+export const fetchTestById = createAsyncThunk<Test, string>(
+    'test/fetchTestById',
     async (id, { rejectWithValue }) => {
         try {
-            const response = await fetch(`/api/exams/${id}`);
+            const response = await fetch(`/api/tests/${id}`);
             if (!response.ok) throw new Error('Lỗi khi lấy dữ liệu đề thi!');
             return await response.json();
         } catch (error) {
@@ -27,35 +27,35 @@ export const fetchExamById = createAsyncThunk<Exam, number>(
     },
 );
 
-const examSlice = createSlice({
-    name: 'exam',
+const testSlice = createSlice({
+    name: 'test',
     initialState,
     reducers: {
-        resetExam: (state) => {
-            state.exam = undefined;
+        resetTest: (state) => {
+            state.test = undefined;
             state.loading = false;
             state.error = undefined;
         },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchExamById.pending, (state) => {
+            .addCase(fetchTestById.pending, (state) => {
                 state.loading = true;
                 state.error = undefined;
             })
             .addCase(
-                fetchExamById.fulfilled,
-                (state, action: PayloadAction<Exam>) => {
+                fetchTestById.fulfilled,
+                (state, action: PayloadAction<Test>) => {
                     state.loading = false;
-                    state.exam = action.payload;
+                    state.test = action.payload;
                 },
             )
-            .addCase(fetchExamById.rejected, (state, action) => {
+            .addCase(fetchTestById.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
             });
     },
 });
 
-export const { resetExam } = examSlice.actions;
-export default examSlice.reducer;
+export const { resetTest } = testSlice.actions;
+export default testSlice.reducer;

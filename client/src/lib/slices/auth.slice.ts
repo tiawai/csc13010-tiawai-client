@@ -1,6 +1,7 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User, UserUtils } from '@/types/user.type';
+import type { RootState } from '@/lib/store/store';
 
 type AccessToken = string | undefined;
 type RefreshToken = string | undefined;
@@ -58,3 +59,5 @@ export default authSlice.reducer;
 
 export const { setAuthState, setCridentials, setChatSessionId, setSignOut } =
     authSlice.actions;
+
+export const selectUser = (state: RootState) => state.auth.user;
