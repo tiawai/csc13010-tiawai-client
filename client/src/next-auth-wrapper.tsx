@@ -1,12 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useAppSelector, useAppDispatch } from '@/lib/hooks/hook';
+import { useState, useEffect, useMemo } from 'react';
+import { useAppDispatch } from '@/lib/hooks/hook';
 import { Alert, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { setAuthState } from '@/lib/slices/auth.slice';
 import { useSignOutMutation } from './services/auth.service';
-import { appApi } from '@/services/config';
+import { appApi } from '@/services/config.service';
 import { store } from '@/lib/store/store';
 import { signOut } from 'next-auth/react';
 
@@ -20,11 +20,13 @@ export default function NextAuthWrapper({
     const { data: session, status } = useSession();
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
-    const handleSignOut = async () => {
-        setIsOpenModal(true);
-        await signOut({ redirect: false });
-        await signOutClient();
-    };
+    const handleSignOut = useMemo(() => {
+        return async () => {
+            setIsOpenModal(true);
+            await signOut({ redirect: false });
+            await signOutClient();
+        };
+    }, [signOutClient]);
 
     useEffect(() => {
         if (status === 'loading') return;
@@ -42,7 +44,7 @@ export default function NextAuthWrapper({
                 store.dispatch(appApi.util.invalidateTags(['Auth']));
             }
         }
-    }, [dispatch, session, status]);
+    }, [dispatch, session, status, handleSignOut]);
 
     return (
         <>

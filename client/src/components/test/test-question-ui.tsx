@@ -1,8 +1,8 @@
 import { Form, Input } from 'antd';
 import { FormLabel } from './form-ui';
-import { NationalTestCreatorState } from '@/lib/slices/national-test-creator';
-import { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator';
-import type { TestType } from '@/lib/hooks/test';
+import { NationalTestCreatorState } from '@/lib/slices/national-test-creator.slice';
+import { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator.slice';
+import type { TestType } from '@/lib/hooks/use-test-field';
 
 export interface TestQuestionProps<T extends TestType> {
     getField: <
@@ -35,6 +35,7 @@ export const TestQuestionTitle = <T extends TestType>({
     return (
         <Form.Item
             label={<FormLabel label="Tên đề" />}
+            initialValue={title}
             name="title"
             rules={[
                 {
@@ -49,6 +50,65 @@ export const TestQuestionTitle = <T extends TestType>({
                 variant="filled"
                 value={title}
                 onChange={(e) => setField('title', e.target.value)}
+            />
+        </Form.Item>
+    );
+};
+
+export const TestQuestionStartDate = <T extends TestType>({
+    getField,
+    setField,
+}: TestQuestionProps<T>) => {
+    const startDate = getField('startDate');
+    return (
+        <Form.Item
+            label={<FormLabel label="Ngày bắt đầu" />}
+            initialValue={startDate}
+            name="startDate"
+            rules={[
+                {
+                    required: true,
+                    message: 'Ngày bắt đầu không được bỏ trống',
+                },
+            ]}
+        >
+            <Input
+                placeholder="Nhập ngày bắt đầu (YYYY-MM-DD)"
+                className="!rounded-full !bg-[#E9DAE9] !placeholder-black/50"
+                variant="filled"
+                type="date"
+                value={startDate}
+                onChange={(e) => setField('startDate', e.target.value)}
+            />
+        </Form.Item>
+    );
+};
+
+export const TestQuestionEndDate = <T extends TestType>({
+    getField,
+    setField,
+}: TestQuestionProps<T>) => {
+    const endDate = getField('endDate');
+
+    return (
+        <Form.Item
+            label={<FormLabel label="Ngày kết thúc" />}
+            initialValue={endDate}
+            name="endDate"
+            rules={[
+                {
+                    required: true,
+                    message: 'Ngày kết thúc không được bỏ trống',
+                },
+            ]}
+        >
+            <Input
+                placeholder="Nhập ngày kết thúc (YYYY-MM-DD)"
+                className="!rounded-full !bg-[#E9DAE9] !placeholder-black/50"
+                variant="filled"
+                type="date"
+                value={endDate}
+                onChange={(e) => setField('endDate', e.target.value)}
             />
         </Form.Item>
     );

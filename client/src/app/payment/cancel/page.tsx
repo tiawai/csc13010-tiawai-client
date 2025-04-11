@@ -5,7 +5,7 @@ import { Result, Button, Spin } from 'antd';
 import { useRouter } from 'next/navigation';
 import { Banner, BannerTitle } from '@/ui/components/banner';
 import { useVerifyPaymentMutation } from '@/services/payment';
-import { Payment, PaymentType, PaymentContent } from '@/types/payment';
+import { Payment, PaymentType, PaymentContent } from '@/types/payment.type';
 
 const paymentContent: Record<PaymentType, PaymentContent> = {
     CLASSROOM: {

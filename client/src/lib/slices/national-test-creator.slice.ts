@@ -1,11 +1,17 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Question, initQuestion, initListQuestions } from '@/types/question';
-import type { SelectQuestionFieldById } from '@/types/question';
+import {
+    Question,
+    initQuestion,
+    initListQuestions,
+} from '@/types/question.type';
+import type { SelectQuestionFieldById } from '@/types/question.type';
 import type { RootState } from '@/lib/store/store';
 
 export interface NationalTestCreatorState {
     title: string;
+    startDate: string;
+    endDate: string;
     duration: number;
     totalQuestions: number;
     currentQuestionId: number;
@@ -15,7 +21,9 @@ export interface NationalTestCreatorState {
 
 const initialState: NationalTestCreatorState = {
     title: '',
-    duration: 60,
+    startDate: '',
+    endDate: '',
+    duration: 120,
     totalQuestions: 50,
     currentQuestionId: 1,
     questions: initListQuestions({ length: 50 }),
@@ -44,14 +52,14 @@ const nationalTestCreatorSlice = createSlice({
         setNationalQuestionFieldById: (
             state: NationalTestCreatorState,
             action: PayloadAction<{
-                questionId: number;
+                questionOrder: number;
                 field: keyof Question;
                 value: Question[keyof Question];
             }>,
         ) => {
-            const { questionId, field, value } = action.payload;
+            const { questionOrder, field, value } = action.payload;
             const indexInQuestions = state.questions.findIndex(
-                (question) => question.questionId === questionId,
+                (question) => question.questionOrder === questionOrder,
             );
             if (state.questions[indexInQuestions]) {
                 state.questions[indexInQuestions] = {
@@ -80,7 +88,7 @@ const nationalTestCreatorSlice = createSlice({
                     for (let i = currentTotal; i < newTotal; i++) {
                         state.questions.push({
                             ...initQuestion,
-                            questionId: i + 1,
+                            questionOrder: i + 1,
                         });
                     }
                 }
@@ -133,11 +141,11 @@ export const selectNationalTestField = <
 
 export const selectNationalQuestionFieldById: SelectQuestionFieldById = (
     state,
-    questionId,
+    questionOrder,
     field,
 ) => {
     if (!state.nationalTestCreator) return '';
-    const indexInQuestions = questionId - 1;
+    const indexInQuestions = questionOrder - 1;
     return state.nationalTestCreator.questions[indexInQuestions][field];
 };
 

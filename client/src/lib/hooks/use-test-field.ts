@@ -1,20 +1,15 @@
 /* eslint-disable */
 import { useAppDispatch, useAppSelector } from './hook';
-import { Question } from '@/types/question';
 import {
     selectNationalTestField,
-    selectNationalQuestionFieldById,
-    setNationalQuestionFieldById,
     setNationalTestField,
-} from '@/lib/slices/national-test-creator';
+} from '@/lib/slices/national-test-creator.slice';
 import {
     selectToeicTestField,
-    selectToeicQuestionFieldById,
-    setToeicQuestionFieldById,
     setToeicTestField,
-} from '@/lib/slices/toeic-test-creator';
-import type { NationalTestCreatorState } from '@/lib/slices/national-test-creator';
-import type { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator';
+} from '@/lib/slices/toeic-test-creator.slice';
+import type { NationalTestCreatorState } from '@/lib/slices/national-test-creator.slice';
+import type { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator.slice';
 import type { RootState } from '@/lib/store/store';
 
 export type TestType = 'national' | 'toeic';
@@ -23,36 +18,11 @@ const testConfig = {
     national: {
         selectField: selectNationalTestField,
         setField: setNationalTestField,
-        selectQuestionField: selectNationalQuestionFieldById,
-        setQuestionField: setNationalQuestionFieldById,
     },
     toeic: {
         selectField: selectToeicTestField,
         setField: setToeicTestField,
-        selectQuestionField: selectToeicQuestionFieldById,
-        setQuestionField: setToeicQuestionFieldById,
     },
-};
-
-export const useQuestionField = (testType: TestType, questionId: number) => {
-    const dispatch = useAppDispatch();
-
-    const getField = (field: keyof Question) =>
-        useAppSelector((state) => {
-            const selectQuestionField =
-                testConfig[testType].selectQuestionField;
-            return selectQuestionField(state, questionId, field);
-        });
-
-    const setField = (
-        field: keyof Question,
-        value: Question[keyof Question],
-    ) => {
-        const setQuestionField = testConfig[testType].setQuestionField;
-        dispatch(setQuestionField({ questionId, field, value }));
-    };
-
-    return { getField, setField };
 };
 
 export const useTestField = <T extends TestType>(testType: T) => {

@@ -7,7 +7,7 @@ import { FormToeicReading } from '@/components/test/form-toeic-reading';
 import { BoxBorder } from '@/components/common/box';
 import { FormToeicExport } from '@/components/test/form-toeic-ui';
 
-export default function AdminExamsPage() {
+export default function AdminCreateTestPage() {
     const [form, setForm] = useState(0);
     const formMap = useMemo(
         () => [

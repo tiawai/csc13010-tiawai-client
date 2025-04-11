@@ -19,14 +19,14 @@ import {
     REGISTER,
 } from 'redux-persist';
 import authReducer, { AuthState } from '@/lib/slices/auth.slice';
-import examReduver, { ExamState } from '@/lib/slices/test';
+import testReducer, { TestState } from '@/lib/slices/test.slice';
 import nationalTestCretorReducer, {
     NationalTestCreatorState,
-} from '@/lib/slices/national-test-creator';
+} from '@/lib/slices/national-test-creator.slice';
 import toeicTestCreatorReducer, {
     ToeicTestCreatorState,
-} from '@/lib/slices/toeic-test-creator';
-import { appApi } from '@/services/config';
+} from '@/lib/slices/toeic-test-creator.slice';
+import { appApi } from '@/services/config.service';
 
 const createNoopStorage = () => {
     return {
@@ -50,7 +50,7 @@ const storage =
 export type RootState = {
     [appApi.reducerPath]: ReturnType<typeof appApi.reducer>;
     auth: AuthState;
-    exam: ExamState;
+    test: TestState;
     nationalTestCreator: NationalTestCreatorState;
     toeicTestCreator: ToeicTestCreatorState;
 };
@@ -66,7 +66,7 @@ const persistConfig = {
 const appReducer = combineReducers({
     [appApi.reducerPath]: appApi.reducer,
     auth: authReducer,
-    exam: examReduver,
+    test: testReducer,
     nationalTestCreator: nationalTestCretorReducer,
     toeicTestCreator: toeicTestCreatorReducer,
 });

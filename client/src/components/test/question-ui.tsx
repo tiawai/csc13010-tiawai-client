@@ -1,12 +1,11 @@
-import { memo, useState } from 'react';
-import { Form, Input, Upload, Checkbox, message, Button } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import clsx from 'clsx';
-import { Choices, ChoicesTypes } from '@/types/question';
-import { FormLabel } from './form-ui';
+import { Button, Checkbox, Form, Input, Upload, message } from 'antd';
 import { RcFile, UploadFile } from 'antd/es/upload';
-import { Question } from '@/types/question';
-import { useQuestionField } from '@/lib/hooks/test';
+import clsx from 'clsx';
+import { memo, useEffect, useState } from 'react';
+import { useQuestionField } from '@/lib/hooks/use-question-field';
+import { Choices, ChoicesTypes, Question } from '@/types/question.type';
+import { FormLabel } from './form-ui';
 
 export interface QuestionProps {
     getField: (field: keyof Question) => Question[keyof Question];
@@ -48,12 +47,12 @@ export const QuestionParagraph = ({ getField, setField }: QuestionProps) => {
 };
 
 export const QuestionContent = ({ getField, setField }: QuestionProps) => {
-    const questionId = getField('questionId') as number;
-    const question = getField('question') as string;
+    const questionOrder = getField('questionOrder') as number;
+    const question = getField('content') as string;
 
     return (
         <Form.Item
-            label={<FormLabel label={`Câu hỏi ${questionId}`} />}
+            label={<FormLabel label={`Câu hỏi ${questionOrder}`} />}
             rules={[
                 {
                     required: true,
@@ -66,7 +65,7 @@ export const QuestionContent = ({ getField, setField }: QuestionProps) => {
                 placeholder="Ghi câu hỏi tại đây"
                 autoSize={{ minRows: 1 }}
                 value={question}
-                onChange={(e) => setField('question', e.target.value)}
+                onChange={(e) => setField('content', e.target.value)}
             />
         </Form.Item>
     );
@@ -74,12 +73,16 @@ export const QuestionContent = ({ getField, setField }: QuestionProps) => {
 
 const { Dragger } = Upload;
 export const QuestionImage = ({ getField, setField }: QuestionProps) => {
-    const questionId = getField('questionId') as number;
+    const questionOrder = getField('questionOrder') as number;
     const imageUrls = (getField('imageUrls') as string[]) || ([] as string[]);
     const subQuestions = getField('subQuestions') as number[];
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, setLocalImageUrls] = useState<string[]>(imageUrls);
+
+    useEffect(() => {
+        setLocalImageUrls(imageUrls);
+    }, [imageUrls]);
 
     const beforeUpload = (file: RcFile) => {
         if (!file.type.startsWith('image/')) {
@@ -113,7 +116,9 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
         <>
             <Form.Item
                 label={
-                    <FormLabel label={`Hình ảnh câu hỏi hỏi ${questionId}`} />
+                    <FormLabel
+                        label={`Hình ảnh câu hỏi hỏi ${questionOrder}`}
+                    />
                 }
                 rules={[
                     {
@@ -128,6 +133,12 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
                     listType="picture"
                     beforeUpload={beforeUpload}
                     onRemove={onRemove}
+                    fileList={imageUrls.map((url, idx) => ({
+                        uid: `${idx}`,
+                        name: `question-${String(questionOrder).padStart(3, '0')}${idx + 1}`,
+                        status: 'done',
+                        url,
+                    }))}
                 >
                     <p className="ant-upload-drag-icon">
                         <UploadOutlined />
@@ -170,12 +181,12 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
 };
 
 export const QuestionChoices = ({ getField, setField }: QuestionProps) => {
-    const questionId = getField('questionId') as number;
+    const questionOrder = getField('questionOrder') as number;
     const choices = getField('choices') as Choices;
 
     return (
         <>
-            <FormLabel label={`Đáp án ${questionId}:`} />
+            <FormLabel label={`Đáp án ${questionOrder}:`} />
             <div className="grid grid-cols-2 gap-x-6">
                 {ChoicesTypes.map((type) => (
                     <Form.Item
@@ -254,15 +265,15 @@ export const QuestionExplanation = ({ getField, setField }: QuestionProps) => {
 
 export const BasicQuestion = memo(
     ({
-        questionId,
+        questionOrder,
         showQuestion = true,
         showQuestionImage = false,
     }: {
-        questionId: number;
+        questionOrder: number;
         showQuestion?: boolean;
         showQuestionImage?: boolean;
     }) => {
-        const { getField, setField } = useQuestionField('toeic', questionId);
+        const { getField, setField } = useQuestionField('toeic', questionOrder);
         return (
             <>
                 {showQuestion && (
@@ -282,7 +293,7 @@ export const BasicQuestion = memo(
     },
     (prevProps, nextProps) => {
         return (
-            prevProps.questionId === nextProps.questionId &&
+            prevProps.questionOrder === nextProps.questionOrder &&
             prevProps.showQuestion === nextProps.showQuestion &&
             prevProps.showQuestionImage === nextProps.showQuestionImage
         );

@@ -1,10 +1,10 @@
-import { appApi } from '@/services/config';
+import { appApi } from '@/services/config.service';
 import {
     Payment,
     PaymentVerify,
     PaymentWebhook,
     CreatePayment,
-} from '@/types/payment';
+} from '@/types/payment.type';
 
 const paymentApi = appApi.injectEndpoints({
     overrideExisting: true,

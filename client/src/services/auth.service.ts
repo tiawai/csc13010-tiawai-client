@@ -1,5 +1,5 @@
 'use client';
-import { appApi } from '@/services/config';
+import { appApi } from '@/services/config.service';
 import { store } from '@/lib/store/store';
 import { setSignOut } from '@/lib/slices/auth.slice';
 import { UserSignUpDto } from '@/types/auth.type';

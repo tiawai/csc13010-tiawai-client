@@ -1,6 +1,6 @@
 /* eslint-disable */
 import NextAuth, { DefaultSession, User } from 'next-auth';
-import { User as UserInfo } from '@/lib/slices/auth.slice';
+import { User as UserInfo } from '@/types/user.type';
 import { JWT } from 'next-auth/jwt';
 
 export type RefreshTokenError = 'RefreshTokenError';
