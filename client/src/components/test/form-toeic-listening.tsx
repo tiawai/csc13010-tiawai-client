@@ -148,6 +148,8 @@ const FormBasic = memo(() => {
     );
 });
 
+FormBasic.displayName = 'FormBasic';
+
 const FormPartQuestions = memo(() => {
     const dispatch = useAppDispatch();
     const currentQuestionId = useAppSelector(selectCurrentQuestionId);
