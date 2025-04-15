@@ -1,10 +1,6 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-    Question,
-    initQuestion,
-    initListQuestions,
-} from '@/types/question.type';
+import { Question, QuestionUtils } from '@/types/question.type';
 import type { SelectQuestionFieldById } from '@/types/question.type';
 import type { RootState } from '@/lib/store/store';
 
@@ -26,7 +22,7 @@ const initialState: NationalTestCreatorState = {
     duration: 120,
     totalQuestions: 50,
     currentQuestionId: 1,
-    questions: initListQuestions({ length: 50 }),
+    questions: QuestionUtils.initListQuestions(50),
     isExporting: false,
 };
 
@@ -86,10 +82,7 @@ const nationalTestCreatorSlice = createSlice({
                     state.questions.splice(newTotal, currentTotal - newTotal);
                 } else {
                     for (let i = currentTotal; i < newTotal; i++) {
-                        state.questions.push({
-                            ...initQuestion,
-                            questionOrder: i + 1,
-                        });
+                        state.questions.push(QuestionUtils.initQuestion(i + 1));
                     }
                 }
                 state.totalQuestions = newTotal;
@@ -112,7 +105,7 @@ const nationalTestCreatorSlice = createSlice({
                 }
             } else {
                 for (let i = currentTotal; i < newTotal; i++) {
-                    newQuestions[i] = { ...initQuestion };
+                    newQuestions[i] = QuestionUtils.initQuestion(i + 1);
                 }
             }
 
