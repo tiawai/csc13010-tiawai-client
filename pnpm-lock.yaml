@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      csc13010-tiawai:
+        specifier: 'file:'
+        version: 'file:'
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.6.1
@@ -219,6 +223,9 @@ packages:
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
+
+  'csc13010-tiawai@file:':
+    resolution: {directory: '', type: directory}
 
   dargs@8.1.0:
     resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
@@ -931,6 +938,8 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  'csc13010-tiawai@file:': {}
 
   dargs@8.1.0: {}
 

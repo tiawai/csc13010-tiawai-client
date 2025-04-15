@@ -1,16 +1,23 @@
-import Header from "@/ui/common/header";
-import ChatButton from "@/ui/chat-button";
+import Header from '@/components/common/header';
+import Footer from '@/components/common/footer';
+import ChatButton from '@/ui/chat-button';
+import { SessionWrapper } from '@/components/common/wrapper';
 
-export default function Userlayout({
+export default async function UserLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <div className="m-auto max-w-[1440px] items-center space-y-12 p-4">
-            <Header />
-            <ChatButton />
-            <div className="m-auto !mt-20 max-w-[1320px]">{children}</div>
+        <div className="flex h-lvh min-h-lvh flex-col overflow-x-clip">
+            <SessionWrapper>
+                <Header />
+                <ChatButton />
+                <main className="mx-auto w-full max-w-[1320px] grow px-4 pb-4 pt-28">
+                    {children}
+                </main>
+                <Footer />
+            </SessionWrapper>
         </div>
     );
 }

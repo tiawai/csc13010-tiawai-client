@@ -1,37 +1,37 @@
-import { appApi } from "@/services/config";
+import { appApi } from '@/services/config';
 
 const chatApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         sendMessage: builder.mutation({
             query: (body) => ({
-                url: "/messages",
-                method: "POST",
+                url: '/messages',
+                method: 'POST',
                 body,
             }),
-            invalidatesTags: ["Chat"],
+            invalidatesTags: ['Chat'],
         }),
 
         getBotAnswer: builder.mutation({
             query: (sessionId: string) => ({
                 url: `/messages/${sessionId}`,
-                method: "POST",
+                method: 'POST',
             }),
-            invalidatesTags: ["Chat"],
+            invalidatesTags: ['Chat'],
         }),
 
         getMessagesBySession: builder.query({
             query: (sessionId: string) => ({
                 url: `/messages/${sessionId}`,
-                method: "GET",
+                method: 'GET',
             }),
-            providesTags: ["Auth", "Chat"],
+            providesTags: ['Auth', 'Chat'],
         }),
 
         createSession: builder.mutation({
             query: (body) => ({
                 url: `/chat-sessions`,
-                method: "POST",
+                method: 'POST',
                 body,
             }),
         }),
@@ -39,7 +39,7 @@ const chatApi = appApi.injectEndpoints({
         disableSession: builder.mutation({
             query: (sessionId: string) => ({
                 url: `/chat-sessions/${sessionId}`,
-                method: "PATCH",
+                method: 'PATCH',
             }),
         }),
     }),

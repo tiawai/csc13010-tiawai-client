@@ -1,11 +1,15 @@
-import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
-import Credentials from "next-auth/providers/credentials";
-import { Provider } from "next-auth/providers";
-import { User, Session } from "next-auth";
-import { JWT } from "next-auth/jwt";
-import { jwtDecode } from "jwt-decode";
-import { handleSignIn, handleRefreshToken } from "@/services/auth-server";
+import NextAuth from 'next-auth';
+import GitHub from 'next-auth/providers/github';
+import Credentials from 'next-auth/providers/credentials';
+import { Provider } from 'next-auth/providers';
+import { User, Session } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import { jwtDecode } from 'jwt-decode';
+import {
+    handleSignIn,
+    handleRefreshToken,
+} from '@/services/auth-server.service';
+import { User as UserInfo } from '@/types/user.type';
 
 const providers: Provider[] = [
     Credentials({
@@ -29,19 +33,19 @@ const providers: Provider[] = [
 
 export const providerMap = providers
     .map((provider) => {
-        if (typeof provider === "function") {
+        if (typeof provider === 'function') {
             const providerData = provider();
             return { id: providerData.id, name: providerData.name };
         } else {
             return { id: provider.id, name: provider.name };
         }
     })
-    .filter((provider) => provider.id !== "credentials");
+    .filter((provider) => provider.id !== 'credentials');
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers,
     pages: {
-        signIn: "/sign-in",
+        signIn: '/sign-in',
     },
     callbacks: {
         async jwt({ token, user }: { token: JWT; user: User }) {
@@ -61,23 +65,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         email: decoded?.email,
                         username: decoded?.username,
                         role: decoded?.role,
-                    },
+                    } as UserInfo,
                 };
             }
 
-            if (Date.now() >= (decoded?.exp || 0) * 1000) {
+            if (Date.now() >= (decoded?.exp || 0) * 1000 - 300000) {
                 const res = await handleRefreshToken(token.refreshToken);
-                if (!res) {
+
+                if (res == null || res?.error) {
                     return {
                         ...token,
-                        iat: decoded.iat,
-                        exp: decoded.exp,
+                        error: 'RefreshTokenError',
                     };
-                }
-
-                if (res?.error) {
-                    token.error = "RefreshTokenError";
-                    return token;
                 }
 
                 const { accessToken, refreshToken } = res as User;
@@ -98,6 +97,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 exp: decoded.exp,
             };
         },
+
         async session({ session, token }: { session: Session; token: JWT }) {
             const decoded = jwtDecode(token.refreshToken);
 
@@ -107,7 +107,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 refreshToken: token.refreshToken,
                 expires: decoded.exp
                     ? new Date(decoded.exp * 1000).toISOString()
-                    : "",
+                    : '',
                 user: {
                     ...token.user,
                 },

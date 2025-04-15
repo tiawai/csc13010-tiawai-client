@@ -1,16 +1,16 @@
-"use client";
-import { useState, useEffect, useMemo } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import { Flex, Button, Input, Spin, Table } from "antd";
-import { FilterIcon } from "@/ui/admin/icons";
-import { useGetUsersQuery } from "@/services/admin";
-import { User } from "@/types/user";
-import ContainerBorder from "@/ui/admin/exam/container-border";
-import Banner from "@/ui/admin/banner";
+'use client';
+import { useState, useEffect, useMemo } from 'react';
+import { SearchOutlined } from '@ant-design/icons';
+import { Flex, Button, Input, Spin, Table } from 'antd';
+import { FilterIcon } from '@/ui/admin/icons';
+import { useGetUsersQuery } from '@/services/admin.service';
+import { User } from '@/types/user.type';
+import ContainerBorder from '@/ui/admin/exam/container-border';
+import Banner from '@/ui/admin/banner';
 
 const Users = () => {
     const { data: users, isLoading } = useGetUsersQuery();
-    const [searchText, setSearchText] = useState<string>("");
+    const [searchText, setSearchText] = useState<string>('');
     const [filteredData, setFilteredData] = useState<User[] | undefined>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(5);
@@ -24,8 +24,8 @@ const Users = () => {
     const handleSearch = (value: string) => {
         setSearchText(value);
         const filtered = users?.filter((user) => {
-            const username = user.username?.toLowerCase() || "";
-            const email = user.email?.toLowerCase() || "";
+            const username = user.username?.toLowerCase() || '';
+            const email = user.email?.toLowerCase() || '';
             return (
                 username.includes(value.toLowerCase()) ||
                 email.includes(value.toLowerCase())
@@ -45,18 +45,18 @@ const Users = () => {
     const columns = useMemo(
         () => [
             {
-                title: "Tên",
-                dataIndex: "username",
-                key: "username",
+                title: 'Tên',
+                dataIndex: 'username',
+                key: 'username',
             },
             {
-                title: "Email",
-                dataIndex: "email",
-                key: "email",
+                title: 'Email',
+                dataIndex: 'email',
+                key: 'email',
             },
             {
-                title: "Thanh điều khiển",
-                key: "actions",
+                title: 'Thanh điều khiển',
+                key: 'actions',
                 render: () => (
                     <div className="flex gap-4">
                         <Button
@@ -77,7 +77,7 @@ const Users = () => {
 
     if (isLoading || !users) {
         return (
-            <div style={{ textAlign: "center", padding: "20px" }}>
+            <div style={{ textAlign: 'center', padding: '20px' }}>
                 <Spin size="large" />
             </div>
         );
@@ -104,7 +104,7 @@ const Users = () => {
                     <Button
                         icon={<FilterIcon width={18} />}
                         size="large"
-                        style={{ background: "#E9DAE9" }}
+                        style={{ background: '#E9DAE9' }}
                         className="font-roboto font-medium"
                     >
                         Bộ lọc
@@ -115,7 +115,7 @@ const Users = () => {
                     dataSource={filteredData}
                     rowKey={(record) => record?.id || 0}
                     pagination={{
-                        position: ["bottomCenter"],
+                        position: ['bottomCenter'],
                         pageSize: pageSize,
                         pageSizeOptions: [5, 10, 20, 50],
                         total: filteredData?.length || 0,

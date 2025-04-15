@@ -1,15 +1,18 @@
-"use client";
-import { useState, useEffect, useMemo } from "react";
-import { Flex, Table, Button, Input, Spin } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { FilterIcon } from "@/ui/admin/icons";
-import { useGetExamsQuery, useDeleteExamByIdMutation } from "@/services/admin";
-import { Exam } from "@/types/exam";
+'use client';
+import { useState, useEffect, useMemo } from 'react';
+import { Flex, Table, Button, Input, Spin } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import { FilterIcon } from '@/ui/admin/icons';
+import {
+    useGetExamsQuery,
+    useDeleteExamByIdMutation,
+} from '@/services/admin.service';
+import { Exam } from '@/types/exam';
 
 export default function ManageExams() {
     const { data: exams, isLoading } = useGetExamsQuery();
     const [deleteExamById] = useDeleteExamByIdMutation();
-    const [searchText, setSearchText] = useState<string>("");
+    const [searchText, setSearchText] = useState<string>('');
     const [filteredData, setFilteredData] = useState<Exam[] | undefined>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(5);
@@ -23,7 +26,7 @@ export default function ManageExams() {
     const handleSearch = (value: string) => {
         setSearchText(value);
         const filtered = exams?.filter((exam) => {
-            const title = exam.title?.toLowerCase() || "";
+            const title = exam.title?.toLowerCase() || '';
             return title.includes(value.toLowerCase());
         });
         setFilteredData(filtered);
@@ -40,34 +43,34 @@ export default function ManageExams() {
     const columns = useMemo(
         () => [
             {
-                title: "Tên đề thi",
-                dataIndex: "title",
-                key: "title",
+                title: 'Tên đề thi',
+                dataIndex: 'title',
+                key: 'title',
             },
             {
-                title: "Ngày",
-                dataIndex: "uploadedAt",
-                key: "uploadedAt",
+                title: 'Ngày',
+                dataIndex: 'uploadedAt',
+                key: 'uploadedAt',
                 render: (date: string) => new Date(date).toLocaleDateString(),
             },
             {
-                title: "Thời gian (phút)",
-                dataIndex: "duration",
-                key: "duration",
+                title: 'Thời gian (phút)',
+                dataIndex: 'duration',
+                key: 'duration',
             },
             {
-                title: "Lượt làm",
-                dataIndex: "totalAttempts",
-                key: "totalAttempts",
+                title: 'Lượt làm',
+                dataIndex: 'totalAttempts',
+                key: 'totalAttempts',
             },
             {
-                title: "Thanh điều khiển",
-                key: "actions",
+                title: 'Thanh điều khiển',
+                key: 'actions',
                 render: (record: Exam) => (
                     <Flex justify="start" gap={10}>
                         <Button
                             shape="round"
-                            onClick={() => console.log("Xem:", record)}
+                            onClick={() => console.log('Xem:', record)}
                             className="!bg-[#DAE3E9] text-black"
                         >
                             Xem
@@ -89,7 +92,7 @@ export default function ManageExams() {
 
     if (isLoading || !exams) {
         return (
-            <div style={{ textAlign: "center", padding: "20px" }}>
+            <div style={{ textAlign: 'center', padding: '20px' }}>
                 <Spin size="large" />
             </div>
         );
@@ -114,7 +117,7 @@ export default function ManageExams() {
                 <Button
                     icon={<FilterIcon width={18} />}
                     size="large"
-                    style={{ background: "#E9DAE9" }}
+                    style={{ background: '#E9DAE9' }}
                     className="font-roboto font-medium"
                 >
                     Bộ lọc
@@ -125,7 +128,7 @@ export default function ManageExams() {
                 dataSource={filteredData}
                 rowKey={(record) => record?.id || -1}
                 pagination={{
-                    position: ["bottomCenter"],
+                    position: ['bottomCenter'],
                     pageSize: pageSize,
                     pageSizeOptions: [5, 10, 20, 50],
                     total: filteredData?.length || 0,
