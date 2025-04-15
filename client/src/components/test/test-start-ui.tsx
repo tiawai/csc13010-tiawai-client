@@ -277,14 +277,12 @@ export const PageLayout = memo(
 PageLayout.displayName = 'PageLayout';
 
 const QuestionCard = memo(({ question }: { question: Question }) => {
-    console.log('render question', question.questionOrder);
     const dispatch = useAppDispatch();
     const { answer } = useAppSelector(
         selectAnswerByQuestionOrder(question.questionOrder),
     );
 
     const handleAnswerChange = (e: RadioChangeEvent) => {
-        console.log('handleAnswerChange', question.questionOrder);
         const selectedAnswer = e.target.value as ChoicesType;
         dispatch(
             setAnswer({
