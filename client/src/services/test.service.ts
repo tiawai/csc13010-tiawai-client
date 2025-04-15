@@ -1,22 +1,24 @@
 import { appApi } from '@/services/config.service';
 import {
-    CreateToeicTestDto,
+    Test,
+    CreateTestDto,
     UploadImagesToeicDto,
     CreateToeicPart,
-    Test,
     UploadImagesToeicResponseDto,
     CreateNationalTestDto,
+    TestResponseDto,
 } from '@/types/test.type';
 
 const testApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         getTests: builder.query<Test[], void>({
-            query: () => ({
-                url: '/tests/admin',
-                method: 'GET',
-            }),
+            query: () => '/tests/admin',
             providesTags: ['Test'],
+        }),
+
+        getTestById: builder.query<TestResponseDto, string>({
+            query: (id) => `/tests/test/${id}`,
         }),
 
         // national test
@@ -30,7 +32,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         // toeic listening test
-        createToeicListeningTest: builder.mutation<Test, CreateToeicTestDto>({
+        createToeicListeningTest: builder.mutation<Test, CreateTestDto>({
             query: (body) => ({
                 url: '/tests/admin/toeic-listening-test',
                 method: 'POST',
@@ -91,7 +93,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         // toeic reading test
-        createToeicReadingTest: builder.mutation<Test, CreateToeicTestDto>({
+        createToeicReadingTest: builder.mutation<Test, CreateTestDto>({
             query: (body) => ({
                 url: '/tests/admin/toeic-reading-test',
                 method: 'POST',
@@ -139,6 +141,7 @@ const testApi = appApi.injectEndpoints({
 
 export const {
     useGetTestsQuery,
+    useGetTestByIdQuery,
 
     // National test hooks
     useCreateNationalTestMutation,
