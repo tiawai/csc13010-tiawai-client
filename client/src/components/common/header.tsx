@@ -38,8 +38,8 @@ const guestItems: MenuProps["items"] = [
 // prettier-ignore
 const studentItems: MenuProps["items"] = [
     { label: <Link href="/student/">Trang chủ</Link>, key: "home" },
-    { label: <Link href="/student/exam">Kỹ năng Toeic</Link>, key: "toeic" },
-    { label: <Link href="/student/exam">Ôn thi THPTQG</Link>, key: "thptqg" },
+    { label: <Link href="/student/test">Kỹ năng Toeic</Link>, key: "toeic" },
+    { label: <Link href="/student/test">Ôn thi THPTQG</Link>, key: "thptqg" },
     { label: <Link href="/student/flashcard">Flashcard</Link>, key: "flashcard" },
     { label: <Link href="/student/challenge">Challenge</Link>, key: "challenge" },
     { label: <Link href="/student/class">Lớp học</Link>, key: "class" },
