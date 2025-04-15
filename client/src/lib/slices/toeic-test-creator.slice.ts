@@ -1,14 +1,14 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Question, initListQuestions } from '@/types/question.type';
+import { Question, QuestionUtils } from '@/types/question.type';
 import type { SelectQuestionFieldById } from '@/types/question.type';
 
-const TOEIC_READING_PARTS = {
+export const TOEIC_READING_PARTS = {
     part5: 30,
     part6: 16,
     part7: 54,
 };
-const TOEIC_LISTENING_PARTS = {
+export const TOEIC_LISTENING_PARTS = {
     part1: 6,
     part2: 25,
     part3: 39,
@@ -19,7 +19,7 @@ export type ReadingPart = 'part5' | 'part6' | 'part7';
 export type ListeningPart = 'part1' | 'part2' | 'part3' | 'part4';
 export type ToeicTestType = 'reading' | 'listening';
 
-const testInfo: Record<
+export const toeicTestInfo: Record<
     ToeicTestType,
     {
         duration: number;
@@ -35,18 +35,18 @@ const testInfo: Record<
         lastPart: 'part7',
         parts: ['part5', 'part6', 'part7'],
         init: {
-            part5: initListQuestions({
-                length: TOEIC_READING_PARTS.part5,
-                offset: 0,
-            }),
-            part6: initListQuestions({
-                length: TOEIC_READING_PARTS.part6,
-                offset: TOEIC_READING_PARTS.part5,
-            }),
-            part7: initListQuestions({
-                length: TOEIC_READING_PARTS.part7,
-                offset: TOEIC_READING_PARTS.part5 + TOEIC_READING_PARTS.part6,
-            }),
+            part5: QuestionUtils.initListQuestions(
+                TOEIC_READING_PARTS.part5,
+                0,
+            ),
+            part6: QuestionUtils.initListQuestions(
+                TOEIC_READING_PARTS.part6,
+                TOEIC_READING_PARTS.part5,
+            ),
+            part7: QuestionUtils.initListQuestions(
+                TOEIC_READING_PARTS.part7,
+                TOEIC_READING_PARTS.part5 + TOEIC_READING_PARTS.part6,
+            ),
         },
     },
     listening: {
@@ -55,26 +55,24 @@ const testInfo: Record<
         lastPart: 'part4',
         parts: ['part1', 'part2', 'part3', 'part4'],
         init: {
-            part1: initListQuestions({
-                length: TOEIC_LISTENING_PARTS.part1,
-                offset: 0,
-            }),
-            part2: initListQuestions({
-                length: TOEIC_LISTENING_PARTS.part2,
-                offset: TOEIC_LISTENING_PARTS.part1,
-            }),
-            part3: initListQuestions({
-                length: TOEIC_LISTENING_PARTS.part3,
-                offset:
-                    TOEIC_LISTENING_PARTS.part1 + TOEIC_LISTENING_PARTS.part2,
-            }),
-            part4: initListQuestions({
-                length: TOEIC_LISTENING_PARTS.part4,
-                offset:
-                    TOEIC_LISTENING_PARTS.part1 +
+            part1: QuestionUtils.initListQuestions(
+                TOEIC_LISTENING_PARTS.part1,
+                0,
+            ),
+            part2: QuestionUtils.initListQuestions(
+                TOEIC_LISTENING_PARTS.part2,
+                TOEIC_LISTENING_PARTS.part1,
+            ),
+            part3: QuestionUtils.initListQuestions(
+                TOEIC_LISTENING_PARTS.part3,
+                TOEIC_LISTENING_PARTS.part1 + TOEIC_LISTENING_PARTS.part2,
+            ),
+            part4: QuestionUtils.initListQuestions(
+                TOEIC_LISTENING_PARTS.part4,
+                TOEIC_LISTENING_PARTS.part1 +
                     TOEIC_LISTENING_PARTS.part2 +
                     TOEIC_LISTENING_PARTS.part3,
-            }),
+            ),
         },
     },
 };
@@ -107,8 +105,8 @@ const initialState: ToeicTestCreatorState = {
     title: '',
     startDate: '',
     endDate: '',
-    duration: testInfo.reading.duration,
-    currentPart: testInfo.reading.firstPart,
+    duration: toeicTestInfo.reading.duration,
+    currentPart: toeicTestInfo.reading.firstPart,
     currentPartLength: TOEIC_READING_PARTS.part5,
     currentQuestionId: 1,
     isSelectBasic: true,
@@ -127,8 +125,8 @@ const initialState: ToeicTestCreatorState = {
         },
     },
     questions: {
-        ...testInfo.reading.init,
-        ...testInfo.listening.init,
+        ...toeicTestInfo.reading.init,
+        ...toeicTestInfo.listening.init,
     },
     totalQuestions: 100,
     isExporting: false,
@@ -141,12 +139,12 @@ const toeicTestCreatorSlice = createSlice({
         resetToeicTestCreator: () => initialState,
 
         resetQuestiionsByTestType: (state) => {
-            state.currentPart = testInfo[state.testType].firstPart;
+            state.currentPart = toeicTestInfo[state.testType].firstPart;
             state.currentPartLength = state.questions[state.currentPart].length;
             state.currentQuestionId = 1;
             state.questions = {
                 ...state.questions,
-                ...testInfo[state.testType].init,
+                ...toeicTestInfo[state.testType].init,
             };
         },
 
@@ -163,9 +161,9 @@ const toeicTestCreatorSlice = createSlice({
             state.startDate = state.basic[testType].startDate;
             state.endDate = state.basic[testType].endDate;
             state.isSelectBasic = state.basic[testType].isSelectBasic;
-            state.currentPart = testInfo[testType].firstPart;
+            state.currentPart = toeicTestInfo[testType].firstPart;
             state.currentPartLength = state.questions[state.currentPart].length;
-            state.duration = testInfo[testType].duration;
+            state.duration = toeicTestInfo[testType].duration;
             state.currentQuestionId = 1;
         },
 
@@ -390,7 +388,7 @@ export const selectPreviousPart = (state: {
     toeicTestCreator: ToeicTestCreatorState;
 }) => {
     const { currentPart, testType } = state.toeicTestCreator;
-    const parts = testInfo[testType].parts;
+    const parts = toeicTestInfo[testType].parts;
     const index = parts.indexOf(currentPart);
     return parts[index - 1] || currentPart;
 };
@@ -399,18 +397,18 @@ export const selectNextPart = (state: {
     toeicTestCreator: ToeicTestCreatorState;
 }) => {
     const { currentPart, testType } = state.toeicTestCreator;
-    const parts = testInfo[testType].parts;
+    const parts = toeicTestInfo[testType].parts;
     const index = parts.indexOf(currentPart);
     return parts[index + 1] || currentPart;
 };
 
 export const selectFirstPart = (state: {
     toeicTestCreator: ToeicTestCreatorState;
-}) => testInfo[state.toeicTestCreator.testType].firstPart;
+}) => toeicTestInfo[state.toeicTestCreator.testType].firstPart;
 
 export const selectLastPart = (state: {
     toeicTestCreator: ToeicTestCreatorState;
-}) => testInfo[state.toeicTestCreator.testType].lastPart;
+}) => toeicTestInfo[state.toeicTestCreator.testType].lastPart;
 
 export const selectCurrentQuestionId = (state: {
     toeicTestCreator: ToeicTestCreatorState;
