@@ -1,4 +1,4 @@
-import { appApi } from '@/services/config';
+import { appApi } from '@/services/config.service';
 
 const practiceApi = appApi.injectEndpoints({
     overrideExisting: true,
