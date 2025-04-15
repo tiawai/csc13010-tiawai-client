@@ -374,37 +374,56 @@ const ToeicTestQuestionsNav = ({
 
     return (
         <>
-            {Object.entries(TOEIC_PARTS).map(([key, value]) => (
-                <div key={key} className="mb-4">
-                    <CardTitle title={mapPart[key as keyof typeof mapPart]} />
-                    <div
-                        className="grid grid-cols-5 gap-1"
-                        style={{
-                            gridTemplateRows: `repeat(${Math.ceil(
-                                value / 5,
-                            )}, max-content)`,
-                        }}
-                    >
-                        {Array.from({ length: value }, (_, index) => (
-                            <Button
-                                key={index}
-                                type={
-                                    answers[index].answer
-                                        ? 'primary'
-                                        : 'default'
-                                }
-                                style={{ padding: '8px', height: '36px' }}
-                                href={`#${index}`}
-                                onClick={() =>
-                                    onNavigate(key as keyof typeof mapPart)
-                                }
-                            >
-                                {index + 1}
-                            </Button>
-                        ))}
-                    </div>
-                </div>
-            ))}
+            {
+                Object.entries(TOEIC_PARTS).reduce(
+                    ({ elements, offset }, [key, value]) => {
+                        const partElements = (
+                            <div key={key} className="mb-4">
+                                <CardTitle
+                                    title={mapPart[key as keyof typeof mapPart]}
+                                />
+                                <div className="grid grid-cols-5 gap-1">
+                                    {Array.from(
+                                        { length: value },
+                                        (_, index) => {
+                                            const globalIndex = offset + index;
+                                            return (
+                                                <Button
+                                                    key={globalIndex}
+                                                    type={
+                                                        answers[globalIndex]
+                                                            ?.answer
+                                                            ? 'primary'
+                                                            : 'default'
+                                                    }
+                                                    style={{
+                                                        padding: '8px',
+                                                        height: '36px',
+                                                    }}
+                                                    href={`#${globalIndex}`}
+                                                    onClick={() =>
+                                                        onNavigate(
+                                                            key as keyof typeof mapPart,
+                                                        )
+                                                    }
+                                                >
+                                                    {globalIndex + 1}
+                                                </Button>
+                                            );
+                                        },
+                                    )}
+                                </div>
+                            </div>
+                        );
+
+                        return {
+                            elements: [...elements, partElements],
+                            offset: offset + value,
+                        };
+                    },
+                    { elements: [] as JSX.Element[], offset: 0 },
+                ).elements
+            }
         </>
     );
 };
