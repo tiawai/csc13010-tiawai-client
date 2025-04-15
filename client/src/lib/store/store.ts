@@ -59,7 +59,7 @@ const persistConfig = {
     key: 'root',
     storage,
     stateReconciler: autoMergeLevel2,
-    whitelist: ['nationalTestCreator', 'toeicTestCreator'],
+    whitelist: ['test', 'nationalTestCreator', 'toeicTestCreator'],
     blacklist: ['auth'],
 };
 
