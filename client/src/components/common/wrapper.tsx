@@ -10,7 +10,8 @@ export const SessionWrapper = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
-            {status === 'loading' || !user || !accessToken ? (
+            {status === 'loading' ||
+            (session !== null && (!user || !accessToken)) ? (
                 <Loading />
             ) : (
                 <>{children}</>
