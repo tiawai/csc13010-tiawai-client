@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateSessionMutation } from '@/services/chat';
-import { useNotification } from '@/components/common/notification';
+import { useNotification } from '@/lib/hooks/use-notification';
 import { Form, Input, Typography } from 'antd';
 import { signIn, useSession } from 'next-auth/react';
 import { setAuthState, setChatSessionId } from '@/lib/slices/auth.slice';
