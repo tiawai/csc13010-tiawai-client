@@ -34,7 +34,7 @@ export interface CreateNationalTestDto {
     questions: CreateQuestionDto[];
 }
 
-export interface CreateToeicTestDto extends CreateTestDto {}
+export type CreateToeicTestDto = CreateTestDto;
 
 export interface UploadImagesToeicDto {
     testId: string;

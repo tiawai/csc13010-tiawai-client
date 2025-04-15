@@ -17,7 +17,7 @@ const FormSignUp = ({ role }: { role: Role }) => {
         const { agreement, ...userSignUpDto } = form.getFieldsValue();
         const res = await SignUp({ ...userSignUpDto, role });
 
-        if (!res.error) {
+        if (!res.error && agreement === true) {
             notify({
                 message: 'Đăng ký thành công',
                 description: 'Vui lòng đăng nhập để tiếp tục.',
