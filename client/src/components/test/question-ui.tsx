@@ -2,7 +2,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Upload, message } from 'antd';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import clsx from 'clsx';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useQuestionField } from '@/lib/hooks/use-question-field';
 import { Choices, ChoicesTypes, Question } from '@/types/question.type';
 import { FormLabel } from './form-ui';
@@ -74,11 +74,13 @@ export const QuestionContent = ({ getField, setField }: QuestionProps) => {
 const { Dragger } = Upload;
 export const QuestionImage = ({ getField, setField }: QuestionProps) => {
     const questionOrder = getField('questionOrder') as number;
-    const imageUrls = (getField('imageUrls') as string[]) || ([] as string[]);
+    const imageUrls = useMemo(() => {
+        return (getField('imageUrls') as string[]) || [];
+    }, [getField]);
     const subQuestions = getField('subQuestions') as number[];
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, setLocalImageUrls] = useState<string[]>(imageUrls);
+    const [, setLocalImageUrls] = useState<string[]>(imageUrls);
 
     useEffect(() => {
         setLocalImageUrls(imageUrls);
