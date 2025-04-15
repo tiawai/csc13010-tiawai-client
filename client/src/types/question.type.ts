@@ -7,6 +7,7 @@ export type ChoicesType = (typeof ChoicesTypes)[number];
 export type Choices = Record<ChoicesType, string>;
 
 export interface Question {
+    id?: string;
     questionOrder: number;
     paragraph?: string;
     hasParagraph?: boolean;
@@ -19,6 +20,11 @@ export interface Question {
     explanation?: string;
 }
 
+export interface Answer {
+    questionId: string;
+    answer: ChoicesType | null;
+}
+
 export interface CreateQuestionDto {
     paragraph?: string;
     content?: string;
@@ -29,29 +35,33 @@ export interface CreateQuestionDto {
     choices: Choices;
 }
 
-export const initQuestion = {
-    questionOrder: 1,
-    content: '',
-    choices: {
-        A: '',
-        B: '',
-        C: '',
-        D: '',
-    },
-};
+export class QuestionUtils {
+    static initQuestion(questionOrder = 1): Question {
+        return {
+            questionOrder: questionOrder,
+            content: '',
+            choices: {
+                A: '',
+                B: '',
+                C: '',
+                D: '',
+            },
+        };
+    }
 
-export const initListQuestions = ({
-    length,
-    offset = 0,
-}: {
-    length: number;
-    offset?: number;
-}): Question[] => {
-    return Array.from({ length }, (_, i) => ({
-        ...initQuestion,
-        questionOrder: offset + i + 1,
-    }));
-};
+    static initListQuestions(length: number, offset: number = 0): Question[] {
+        return Array.from({ length }, (_, i) =>
+            QuestionUtils.initQuestion(offset + i + 1),
+        );
+    }
+
+    static initListAnswers(questions: Question[]): Answer[] {
+        return questions.map((question) => ({
+            questionId: question.id || '',
+            answer: null,
+        }));
+    }
+}
 
 export type SelectQuestionFieldById = <T extends keyof Question>(
     state: {
