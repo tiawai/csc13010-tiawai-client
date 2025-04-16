@@ -70,7 +70,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, hasImages, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -78,7 +78,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart2TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, hasImages, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-2?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -123,7 +123,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TR: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, hasImages, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-reading-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,
