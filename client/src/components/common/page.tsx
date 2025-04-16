@@ -1,5 +1,6 @@
 import {
     BannerBackground,
+    BannerDescription,
     BannerLayout,
     BannerTitle,
 } from '@/components/common/banner';
@@ -12,11 +13,13 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
 
 const PageTitle = ({
     title,
+    description,
     imageSrc,
     imageAlt,
     imagePosition = 'left',
 }: {
     title: string;
+    description?: string;
     imageSrc: string | StaticImageData;
     imageAlt: string;
     imagePosition?: 'left' | 'right';
@@ -29,11 +32,14 @@ const PageTitle = ({
                 alt={imageAlt}
                 priority
                 className={twJoin(
-                    'h-auto w-[200px]',
+                    'h-[325px] w-auto',
                     imagePosition === 'left' ? 'order-first' : 'order-last',
                 )}
             />
-            <BannerTitle title={title} />
+            <div className="">
+                <BannerTitle title={title} />
+                {description && <BannerDescription title={description} />}
+            </div>
         </BannerLayout>
     );
 };
