@@ -2,7 +2,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Upload, message } from 'antd';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import clsx from 'clsx';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useQuestionField } from '@/lib/hooks/use-question-field';
 import { Choices, ChoicesTypes, Question } from '@/types/question.type';
 import { FormLabel } from './form-ui';
@@ -74,13 +74,11 @@ export const QuestionContent = ({ getField, setField }: QuestionProps) => {
 const { Dragger } = Upload;
 export const QuestionImage = ({ getField, setField }: QuestionProps) => {
     const questionOrder = getField('questionOrder') as number;
-    const imageUrls = useMemo(() => {
-        return (getField('imageUrls') as string[]) || [];
-    }, [getField]);
+    const imageUrls = getField('imageUrls') as string[];
     const subQuestions = getField('subQuestions') as number[];
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [, setLocalImageUrls] = useState<string[]>(imageUrls);
+    const [localImageUrls, setLocalImageUrls] = useState<string[]>(imageUrls);
+    const [imageTypes, setImageTypes] = useState<string[]>([]); // <-- NEW
 
     useEffect(() => {
         setLocalImageUrls(imageUrls);
@@ -96,9 +94,13 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
         reader.onload = () => {
             setLocalImageUrls((prev) => {
                 const updatedImages = [...prev, reader.result as string];
-                // updateQuestion("imageUrls", updatedImages);
                 setField('imageUrls', updatedImages);
                 return updatedImages;
+            });
+
+            setImageTypes((prev) => {
+                const ext = file.type.split('/')[1] || 'jpg';
+                return [...prev, ext];
             });
         };
         reader.readAsDataURL(file);
@@ -108,20 +110,25 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
     const onRemove = (file: UploadFile) => {
         setLocalImageUrls((prev) => {
             const updatedImages = prev.filter((url) => url !== file.url);
-            // updateQuestion("imageUrls", updatedImages);
             setField('imageUrls', updatedImages);
             return updatedImages;
+        });
+
+        setImageTypes((prev) => {
+            const index = localImageUrls.findIndex((url) => url === file.url);
+            if (index >= 0) {
+                const updatedTypes = [...prev];
+                updatedTypes.splice(index, 1);
+                return updatedTypes;
+            }
+            return prev;
         });
     };
 
     return (
         <>
             <Form.Item
-                label={
-                    <FormLabel
-                        label={`Hình ảnh câu hỏi hỏi ${questionOrder}`}
-                    />
-                }
+                label={`Hình ảnh câu hỏi ${questionOrder}`}
                 rules={[
                     {
                         required: true,
@@ -135,12 +142,15 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
                     listType="picture"
                     beforeUpload={beforeUpload}
                     onRemove={onRemove}
-                    fileList={imageUrls.map((url, idx) => ({
-                        uid: `${idx}`,
-                        name: `question-${String(questionOrder).padStart(3, '0')}${idx + 1}`,
-                        status: 'done',
-                        url,
-                    }))}
+                    fileList={localImageUrls.map((url, idx) => {
+                        const ext = imageTypes[idx] || 'jpg';
+                        return {
+                            uid: `${idx}`,
+                            name: `question-${String(questionOrder).padStart(3, '0')}${idx + 1}.${ext}`,
+                            status: 'done',
+                            url,
+                        };
+                    })}
                 >
                     <p className="ant-upload-drag-icon">
                         <UploadOutlined />
@@ -154,11 +164,7 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
                 </Dragger>
             </Form.Item>
 
-            <Form.Item
-                label={
-                    <FormLabel label="Số đáp án liên quan đến câu hỏi hình ảnh: " />
-                }
-            >
+            <Form.Item label="Số đáp án liên quan đến câu hỏi hình ảnh: ">
                 <Checkbox.Group
                     className="flex gap-8"
                     value={[subQuestions?.length ?? 0]}
