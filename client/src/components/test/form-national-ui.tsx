@@ -41,16 +41,13 @@ export const FormFooter = memo(() => {
             },
 
             questions: questions.map(
-                (_, idx): CreateQuestionDto => ({
-                    content: `Câu hỏi ${idx + 1}`,
+                (question): CreateQuestionDto => ({
+                    content: question?.content,
+                    paragraph: question?.paragraph,
+                    explanation: question?.explanation,
+                    correctAnswer: question.correctAnswer || 'A',
+                    choices: question.choices,
                     points: 0.25,
-                    correctAnswer: 'A',
-                    choices: {
-                        A: 'Đáp án A',
-                        B: 'Đáp án B',
-                        C: 'Đáp án C',
-                        D: 'Đáp án D',
-                    },
                 }),
             ),
         };

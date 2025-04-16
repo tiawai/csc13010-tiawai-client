@@ -74,8 +74,6 @@ export const FormToeicListening = memo(() => {
 
     if (!partMap[currentPart]) return null;
 
-    console.log('currentPart', isSelectbasic);
-
     return (
         <Form form={form} layout="vertical" size="large" onFinish={onFinish}>
             <div className="space-y-6">
