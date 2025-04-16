@@ -192,7 +192,6 @@ export const PageLayout = memo(
         }, [isSubmit]);
 
         const handleSubmit = async () => {
-            console.log(timeStart);
             const submitPayload = {
                 testId: testId,
                 timeConsumed: Math.floor(
@@ -214,7 +213,7 @@ export const PageLayout = memo(
                     message: 'Nộp bài thành công',
                     description: 'Bài thi của bạn đã được ghi nhận',
                 });
-                // router.push(`/test/${testId}/result/${res.data.id}`);
+                router.push(`/test/${testId}/result/${testId}`);
             } else {
                 setIsSubmit(false);
                 notify({

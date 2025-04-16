@@ -22,8 +22,6 @@ export const PageContent = () => {
 
     if (isLoading) return <Loading />;
 
-    console.log(data);
-
     const userInfo = {
         name: 'Tiawai',
         email: data?.email || '',
