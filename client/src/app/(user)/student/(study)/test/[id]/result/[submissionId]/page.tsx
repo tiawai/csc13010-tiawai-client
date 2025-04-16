@@ -1,6 +1,5 @@
 'use client';
-import { useState, useContext } from 'react';
-import { ExamContext } from '@/context/exam';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     Button,
@@ -18,6 +17,7 @@ import {
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { useGetExamResultQuery } from '@/services/exam';
 import { Question } from '@/types/exam';
+import { useAppSelector } from '@/lib/hooks/hook';
 
 const { Title, Text, Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -27,8 +27,8 @@ export default function ExamResultPage({
 }: {
     params: { id: number; submissionId: string };
 }) {
-    const exam = useContext(ExamContext);
     const router = useRouter();
+    const test = useAppSelector((state) => state.test.test);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState<Question>({
         question: '',
@@ -100,7 +100,7 @@ export default function ExamResultPage({
         <Row gutter={[16, 16]}>
             {/* header */}
             <Col span={24}>
-                <Title level={3}>Kết quả thi: {exam?.title}</Title>
+                <Title level={3}>Kết quả thi: {test?.title}</Title>
                 <Space>
                     <Button type="primary" size="large" shape="round">
                         Xem đáp án

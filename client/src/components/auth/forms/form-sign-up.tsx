@@ -1,8 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useSignUpMutation } from '@/services/auth.service';
-import { useNotification } from '@/components/common/notification';
 import { Form, Input, Checkbox } from 'antd';
+import { useSignUpMutation } from '@/services/auth.service';
+import { useNotification } from '@/lib/hooks/use-notification';
 import { FormButtonGradient } from '@/components/auth/ui/form';
 import { TermAndPolicy } from '@/components/auth/forms/term-and-policy';
 import { Role } from '@/types/user.type';
@@ -15,9 +15,18 @@ const FormSignUp = ({ role }: { role: Role }) => {
 
     const onFinish = async () => {
         const { agreement, ...userSignUpDto } = form.getFieldsValue();
+        if (!agreement) {
+            notify({
+                message: 'Chấp nhận điều khoản',
+                description: 'Vui lòng chấp nhận điều khoản và chính sách.',
+                notiType: 'error',
+            });
+            return;
+        }
+
         const res = await SignUp({ ...userSignUpDto, role });
 
-        if (!res.error && agreement === true) {
+        if (!res.error) {
             notify({
                 message: 'Đăng ký thành công',
                 description: 'Vui lòng đăng nhập để tiếp tục.',

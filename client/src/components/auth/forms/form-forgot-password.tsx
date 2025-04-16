@@ -2,7 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { Form, Input, Button } from 'antd';
 import { usePasswordRecoveryMutation } from '@/services/auth.service';
-import { useNotification } from '@/components/common/notification';
+import { useNotification } from '@/lib/hooks/use-notification';
 
 const FormForgotPassword = () => {
     const router = useRouter();
@@ -25,7 +25,7 @@ const FormForgotPassword = () => {
             notify({
                 message: 'Gửi OTP thất bại',
                 description: 'Có lỗi xảy ra khi gửi OTP.',
-                type: 'error',
+                notiType: 'error',
             });
         }
     };

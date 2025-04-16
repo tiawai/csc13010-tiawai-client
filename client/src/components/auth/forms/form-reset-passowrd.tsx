@@ -2,7 +2,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Form, Input, Button } from 'antd';
 import { useResetPasswordMutation } from '@/services/auth.service';
-import { useNotification } from '@/components/common/notification';
+import { useNotification } from '@/lib/hooks/use-notification';
 
 const FormResetPassword = () => {
     const params = useSearchParams();
@@ -19,7 +19,7 @@ const FormResetPassword = () => {
             notify({
                 message: 'Khôi phục mật khẩu thất bại',
                 description: 'URL không hợp lệ.',
-                type: 'error',
+                notiType: 'error',
             });
             return;
         }
@@ -42,7 +42,7 @@ const FormResetPassword = () => {
             notify({
                 message: 'Khôi phục mật khẩu thất bại',
                 description: 'Có lỗi xảy ra.',
-                type: 'error',
+                notiType: 'error',
             });
         }
     };

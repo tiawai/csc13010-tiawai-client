@@ -1,22 +1,27 @@
 import { appApi } from '@/services/config.service';
 import {
-    CreateToeicTestDto,
+    Test,
+    CreateTestDto,
     UploadImagesToeicDto,
     CreateToeicPart,
-    Test,
     UploadImagesToeicResponseDto,
     CreateNationalTestDto,
+    TestResponseDto,
+    UploadAudioToeicResponseDto,
+    UploadAudioToeicDto,
+    CreateToeicListeningTestDto,
 } from '@/types/test.type';
 
 const testApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
         getTests: builder.query<Test[], void>({
-            query: () => ({
-                url: '/tests/admin',
-                method: 'GET',
-            }),
+            query: () => '/tests/admin',
             providesTags: ['Test'],
+        }),
+
+        getTestById: builder.query<TestResponseDto, string>({
+            query: (id) => `/tests/test/${id}`,
         }),
 
         // national test
@@ -30,20 +35,26 @@ const testApi = appApi.injectEndpoints({
         }),
 
         // toeic listening test
-        createToeicListeningTest: builder.mutation<Test, CreateToeicTestDto>({
-            query: (body) => ({
-                url: '/tests/admin/toeic-listening-test',
+        createToeicListeningTest: builder.mutation<
+            Test,
+            CreateToeicListeningTestDto
+        >({
+            query: ({ audioUrl, test }) => ({
+                url: `/tests/admin/toeic-listening-test?audioUrl=${audioUrl}`,
                 method: 'POST',
-                body: body,
+                body: test,
             }),
             invalidatesTags: ['Test'],
         }),
 
-        uploadAudioTL: builder.mutation({
-            query: (body) => ({
+        uploadAudioTL: builder.mutation<
+            UploadAudioToeicResponseDto,
+            UploadAudioToeicDto
+        >({
+            query: ({ formData }) => ({
                 url: '/tests/admin/toeic-listening-test/audio',
                 method: 'POST',
-                body: body,
+                body: formData,
             }),
         }),
 
@@ -59,7 +70,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -67,7 +78,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart2TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-2?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -91,7 +102,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         // toeic reading test
-        createToeicReadingTest: builder.mutation<Test, CreateToeicTestDto>({
+        createToeicReadingTest: builder.mutation<Test, CreateTestDto>({
             query: (body) => ({
                 url: '/tests/admin/toeic-reading-test',
                 method: 'POST',
@@ -112,7 +123,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TR: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages: _, ...body }) => ({
                 url: `/tests/admin/toeic-reading-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -139,6 +150,7 @@ const testApi = appApi.injectEndpoints({
 
 export const {
     useGetTestsQuery,
+    useGetTestByIdQuery,
 
     // National test hooks
     useCreateNationalTestMutation,

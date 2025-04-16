@@ -1,4 +1,4 @@
-import { appApi } from '@/services/config';
+import { appApi } from '@/services/config.service';
 
 const chatApi = appApi.injectEndpoints({
     overrideExisting: true,

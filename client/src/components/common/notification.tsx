@@ -1,4 +1,5 @@
-import React, { createContext, useContext } from 'react';
+'use client';
+import React, { createContext } from 'react';
 import { notification } from 'antd';
 import type { NotificationArgsProps } from 'antd';
 
@@ -12,15 +13,14 @@ type NotificationContextType = {
     notify: (config: CustomNotificationArgsProps) => void;
 };
 
-const NotificationContext = createContext<NotificationContextType | undefined>(
-    undefined,
-);
+export const NotificationContext = createContext<
+    NotificationContextType | undefined
+>(undefined);
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [api, contextHolder] = notification.useNotification();
-
     const notify = (config: CustomNotificationArgsProps) => {
         api[config.notiType || 'success']({
             ...config,
@@ -36,14 +36,4 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
             {children}
         </NotificationContext.Provider>
     );
-};
-
-export const useNotification = () => {
-    const context = useContext(NotificationContext);
-    if (!context) {
-        throw new Error(
-            'useNotificationContext must be used within a NotificationProvider',
-        );
-    }
-    return context;
 };

@@ -1,4 +1,4 @@
-import { CreateQuestionDto } from './question.type';
+import { CreateQuestionDto, Question } from './question.type';
 
 export enum TestType {
     NATIONAL_TEST = 'National Test',
@@ -18,6 +18,13 @@ export interface Test {
     timeLength: number;
     audioUrl?: string | null;
     isGenerated: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export interface TestResponseDto {
+    test: Test;
+    questions: Question[];
 }
 
 export interface CreateTestDto {
@@ -34,8 +41,19 @@ export interface CreateNationalTestDto {
     questions: CreateQuestionDto[];
 }
 
-export type CreateToeicTestDto = CreateTestDto;
+export interface CreateToeicListeningTestDto {
+    audioUrl: string;
+    test: CreateTestDto;
+}
 
+export interface UploadAudioToeicDto {
+    formData: FormData;
+}
+
+export interface UploadAudioToeicResponseDto {
+    audioUrl: string;
+    message: string;
+}
 export interface UploadImagesToeicDto {
     testId: string;
     formData: FormData;

@@ -6,7 +6,7 @@ import bigTiawai2 from '@public/big-tiawai-2.svg';
 import { useGetExamsQuery } from '@/services/exam';
 const { Title } = Typography;
 
-const Exam = () => {
+export default function TestPage() {
     const { data, isLoading } = useGetExamsQuery();
     if (isLoading) return;
 
@@ -15,23 +15,26 @@ const Exam = () => {
             title: 'Bộ Đề Minh Họa THPTQG Mới Nhất',
             description:
                 'Bộ đề THPT Quốc gia môn Anh minh họa của Bộ Giáo dục và Đào tạo các năm gần đây. Ôn luyện để nắm vững format đề thi, các dạng bài thường xuyên xuất hiện.',
-            examData: data?.filter((exam) =>
-                exam.title?.toLocaleLowerCase().includes('minh họa'),
+            testData: data?.filter((test) =>
+                test.title?.toLocaleLowerCase().includes('minh họa'),
             ),
+            examData: undefined,
         },
         {
             title: 'Bộ Đề Thi Chính Thức Các Năm Mới Nhất',
             description:
                 'Luyện đề thi thực chiến các năm để nâng cao kiến thức, trau dồi vốn từ, luyện nhuần nhuyễn chiến thuật làm bài thông minh.',
-            examData: data?.filter((exam) =>
-                exam.title?.includes('chính thức'),
+            testData: data?.filter((test) =>
+                test.title?.includes('chính thức'),
             ),
+            examData: undefined,
         },
         {
             title: 'Bộ Đề Thi Thử Các Trường Nổi Tiếng Mới Nhất',
             description:
                 'Bộ đề thi THPT Quốc gia môn Anh được chọn lọc tỉ mỉ, công phu nhất. Ôn luyện để nắm chắc format đề thi, trau dồi đủ kiến thức, giúp các sĩ tử tự tin chinh phục điểm số mục tiêu.',
-            examData: data?.filter((exam) => exam.title?.includes('thử')),
+            testData: data?.filter((test) => test.title?.includes('thử')),
+            examData: undefined,
         },
     ];
 
@@ -70,6 +73,4 @@ const Exam = () => {
             </div>
         </div>
     );
-};
-
-export default Exam;
+}

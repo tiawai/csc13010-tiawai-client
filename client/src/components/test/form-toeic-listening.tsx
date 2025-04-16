@@ -30,6 +30,7 @@ import {
 import { BasicQuestion, QuestionNavigation } from './question-ui';
 import { useTestField } from '@/lib/hooks/use-test-field';
 import {
+    TestQuestionAudio,
     TestQuestionEndDate,
     TestQuestionStartDate,
     TestQuestionTitle,
@@ -72,8 +73,6 @@ export const FormToeicListening = memo(() => {
     }, [dispatch]);
 
     if (!partMap[currentPart]) return null;
-
-    console.log('currentPart', isSelectbasic);
 
     return (
         <Form form={form} layout="vertical" size="large" onFinish={onFinish}>
@@ -144,6 +143,10 @@ const FormBasic = memo(() => {
                     setField={setField}
                 />
             </div>
+            <TestQuestionAudio<'toeic'>
+                getField={getField}
+                setField={setField}
+            />
         </>
     );
 });

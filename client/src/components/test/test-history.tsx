@@ -33,7 +33,7 @@ const columns = [
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render: (submissionId: string, record: any) => {
             return (
-                <Link href={`/exam/${record.testId}/result/${submissionId}`}>
+                <Link href={`/test/${record.testId}/result/${submissionId}`}>
                     Xem chi tiết
                 </Link>
             );
@@ -41,7 +41,7 @@ const columns = [
     },
 ];
 
-export const ExamHistory = ({ id }: { id: number }) => {
+export const TestHistory = ({ id }: { id: string }) => {
     const { data, isLoading } = useGetSubmissionsQuery(id);
 
     return (
@@ -57,7 +57,11 @@ export const ExamHistory = ({ id }: { id: number }) => {
                     emptyText: (
                         <Empty
                             imageStyle={{ height: 60 }}
-                            description="Bạn chưa làm đề thi này"
+                            description={
+                                isLoading
+                                    ? 'Đang tải...'
+                                    : 'Bạn chưa làm đề thi này'
+                            }
                         />
                     ),
                 }}
