@@ -549,7 +549,7 @@ export default function Home() {
                                 loading="lazy"
                             />
                             <Image
-                                src="/home/star-in-polygon.svg"
+                                src="https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/star-in-polygon.svg"
                                 alt="star in polygon"
                                 width={40}
                                 height={40}
