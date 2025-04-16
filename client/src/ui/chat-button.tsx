@@ -1,6 +1,5 @@
 'use client';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     FloatButton,
     Form,
@@ -9,88 +8,96 @@ import {
     Typography,
     Flex,
     Avatar,
-    Skeleton,
 } from 'antd';
 import { SendOutlined, CloseOutlined, UserOutlined } from '@ant-design/icons';
 import chatIcon from '@public/chat-icon.svg';
 import logo from '@public/logo.svg';
-import {
-    useSendMessageMutation,
-    useGetBotAnswerMutation,
-    useGetMessagesBySessionQuery,
-} from '@/services/chat';
-import { useAppSelector } from '@/lib/hooks/hook';
-import { Message } from '@/types/chat';
 const { Title, Text } = Typography;
 import { ChatButtonTheme } from './chat-button-theme';
+import { useChat } from '@ai-sdk/react';
+import TypingEffect from './typing-effect';
+import Image from 'next/image';
 
-const initMessage: Message = {
-    content: 'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn ?',
-    isBot: true,
+const initMessage = {
+    id: 'welcome-message',
+    role: 'assistant' as const,
+    content: 'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn?',
+    parts: [
+        {
+            type: 'text' as const,
+            text: 'Xin chào! Mình là Tia. Mình có thể giúp được gì cho bạn?',
+        },
+    ],
 };
 
 const ChatButton = () => {
-    const user = useAppSelector((state) => state.auth.user);
-    const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
-    const { data: messages, isLoading: isMessagesLoading } =
-        useGetMessagesBySessionQuery(chatSessionId || '', {
-            skip: !chatSessionId,
-        });
+    const {
+        messages: chatMessages,
+        input,
+        status,
+        handleInputChange,
+        handleSubmit,
+    } = useChat();
+
     const [isOpen, setIsOpen] = useState(false);
+    const [showTypingForId, setShowTypingForId] = useState<string | null>(null);
+    const [allMessages, setAllMessages] = useState<typeof chatMessages>([]);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const [typingCompleted, setTypingCompleted] = useState<
+        Record<string, boolean>
+    >({});
 
-    const [sendMessage] = useSendMessageMutation();
+    // Track the previous status to prevent infinite loops
+    const prevStatusRef = useRef(status);
+    const lastProcessedMessageIdRef = useRef<string | null>(null);
 
-    const [getBotAnswer, { isLoading: isAnswering }] =
-        useGetBotAnswerMutation();
-    const [chatMessages, setChatMessages] = useState<Message[]>([initMessage]);
-
-    const [inputMessage, setInputMessage] = useState<string>('');
-    const [needBotAnswer, setNeedBotAnswer] = useState(false);
-
+    // Add initial welcome message if no messages exist
     useEffect(() => {
-        const getBotResponse = async () => {
-            try {
-                if (!chatSessionId) return;
-                const res = await getBotAnswer(chatSessionId).unwrap();
-                console.log(res);
-            } catch (error) {
-                console.error(error);
+        if (chatMessages.length === 0) {
+            setAllMessages([initMessage]);
+        } else {
+            setAllMessages(chatMessages);
+        }
+    }, [chatMessages]);
+
+    // Handle typing effect logic
+    useEffect(() => {
+        if (status !== prevStatusRef.current) {
+            prevStatusRef.current = status;
+
+            if (status === 'streaming') {
+                const lastAssistantMsg = [...chatMessages]
+                    .reverse()
+                    .find(
+                        (msg) =>
+                            msg.role === 'assistant' &&
+                            msg.id !== lastProcessedMessageIdRef.current,
+                    );
+
+                if (lastAssistantMsg) {
+                    lastProcessedMessageIdRef.current = lastAssistantMsg.id;
+                    setShowTypingForId(lastAssistantMsg.id);
+                    setTypingCompleted((prev) => ({
+                        ...prev,
+                        [lastAssistantMsg.id]: false,
+                    }));
+                }
             }
-        };
-
-        if (needBotAnswer) {
-            console.log('Getting bot response');
-            getBotResponse();
-            setNeedBotAnswer(false);
         }
-    }, [needBotAnswer, chatSessionId, getBotAnswer]);
+    }, [status, chatMessages]);
 
+    // Scroll to bottom when messages change
     useEffect(() => {
-        if (messages) {
-            setChatMessages((prev) => [prev[0], ...messages]);
-        }
-    }, [messages]);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [allMessages, status]);
 
     const toggleChat = () => {
         setIsOpen(!isOpen);
     };
 
-    const handleSendMessage = async () => {
-        if (!user) return;
-        try {
-            await sendMessage({
-                sessionId: chatSessionId,
-                content: inputMessage,
-                isBot: false,
-            }).unwrap();
-            setInputMessage('');
-            setNeedBotAnswer(true);
-        } catch (error) {
-            console.error(error);
-        }
+    const onTypingComplete = (msgId: string) => {
+        setTypingCompleted((prev) => ({ ...prev, [msgId]: true }));
     };
-
-    if (isMessagesLoading) return null;
 
     return (
         <ChatButtonTheme>
@@ -105,7 +112,7 @@ const ChatButton = () => {
                 }
                 type="primary"
                 badge={{
-                    count: 1,
+                    count: isOpen ? 0 : 1,
                     showZero: false,
                     offset: ['-1rem', '0.125rem'],
                 }}
@@ -113,7 +120,6 @@ const ChatButton = () => {
                 onClick={toggleChat}
             />
 
-            {/* Chat Box */}
             {isOpen && (
                 <div className="fixed bottom-24 right-24 z-50 flex h-[600px] max-h-[600px] w-[400px] flex-col overflow-clip rounded-xl bg-white shadow-xl">
                     {/* Header */}
@@ -136,7 +142,11 @@ const ChatButton = () => {
                                 </Title>
                                 <Text className="!m-0" type="success">
                                     <div className="mr-1 inline-block h-2 w-2 rounded-full bg-green-600"></div>
-                                    online
+                                    {status === 'submitted'
+                                        ? 'đang xử lý...'
+                                        : status === 'streaming'
+                                          ? 'đang nhập...'
+                                          : 'online'}
                                 </Text>
                             </Flex>
                         </Flex>
@@ -151,17 +161,19 @@ const ChatButton = () => {
 
                     {/* Chat Body */}
                     <div className="flex-1 overflow-y-auto p-3">
-                        {chatMessages.map((msg, index) => (
+                        {allMessages.map((msg) => (
                             <Flex
-                                key={index}
+                                key={msg.id}
                                 vertical
-                                align={msg.isBot ? 'start' : 'end'}
+                                align={
+                                    msg.role === 'assistant' ? 'start' : 'end'
+                                }
                                 className="mb-3"
                             >
                                 <Flex align="center">
                                     <Text
                                         className={`mb-1 max-w-[90%] rounded-xl p-2 text-justify ${
-                                            msg.isBot
+                                            msg.role === 'assistant'
                                                 ? 'ml-3 bg-[#E8EBF0]'
                                                 : 'mr-3 bg-[#D1E6F0]'
                                         }`}
@@ -170,15 +182,25 @@ const ChatButton = () => {
                                             wordBreak: 'break-word',
                                         }}
                                     >
-                                        {msg.content}
+                                        {msg.role === 'assistant' &&
+                                        showTypingForId === msg.id &&
+                                        !typingCompleted[msg.id] ? (
+                                            <TypingEffect
+                                                text={msg.content}
+                                                onComplete={() =>
+                                                    onTypingComplete(msg.id)
+                                                }
+                                            />
+                                        ) : (
+                                            msg.content
+                                        )}
                                     </Text>
                                 </Flex>
-
                                 <Flex gap={8}>
-                                    {msg.isBot ? (
+                                    {msg.role === 'assistant' ? (
                                         <Image
                                             className="h-auto rounded-full bg-[#5369A1]"
-                                            src={msg.isBot ? chatIcon : logo}
+                                            src={chatIcon}
                                             alt="Chat with us"
                                             width={36}
                                         />
@@ -195,39 +217,49 @@ const ChatButton = () => {
                                 </Flex>
                             </Flex>
                         ))}
-                        {isAnswering && (
+                        {status === 'submitted' && (
                             <Flex vertical align="start" className="mb-3">
-                                <Skeleton.Input
-                                    active
-                                    style={{ width: '90%' }}
-                                    className="!ml-2 !rounded-xl"
-                                />
-                                <Image
-                                    className="h-auto rounded-full bg-[#5369A1]"
-                                    src={chatIcon}
-                                    alt="Chat with us"
-                                    width={36}
-                                />
+                                <Flex align="center">
+                                    <Text className="mb-1 ml-3 max-w-[90%] rounded-xl bg-[#E8EBF0] p-2 text-justify">
+                                        <span className="animate-pulse">
+                                            Đang xử lý...
+                                        </span>
+                                    </Text>
+                                </Flex>
+                                <Flex gap={8}>
+                                    <Image
+                                        className="h-auto rounded-full bg-[#5369A1]"
+                                        src={chatIcon}
+                                        alt="Chat with us"
+                                        width={36}
+                                    />
+                                </Flex>
                             </Flex>
                         )}
+                        <div ref={messagesEndRef} />
                     </div>
 
                     {/* Input */}
-                    <Form onFinish={handleSendMessage} className="relative p-3">
+                    <Form
+                        onFinish={handleSubmit}
+                        style={{ display: 'flex' }}
+                        className="!m-3"
+                    >
                         <Input
-                            size="small"
                             name="content"
-                            disabled={isAnswering}
-                            value={inputMessage}
-                            onChange={(e) => setInputMessage(e.target.value)}
+                            disabled={status === 'streaming'}
+                            value={input}
+                            onChange={handleInputChange}
                             placeholder="Viết tin nhắn của bạn"
-                            style={{ borderRadius: '1.5rem' }}
-                            className="!rounded-xl !bg-[#E8EBF0] !pl-4 !pr-8 !placeholder-black/75"
+                            className="!mr-2 !rounded-xl !bg-[#E8EBF0] !pl-4 !pr-12 !placeholder-black/75"
+                            style={{ flex: 1 }}
                         />
-
-                        <SendOutlined
-                            onClick={handleSendMessage}
-                            className="absolute right-6 top-1/2 -translate-y-1/2"
+                        <Button
+                            type="text"
+                            htmlType="submit"
+                            disabled={status === 'streaming' || !input.trim()}
+                            icon={<SendOutlined />}
+                            style={{ border: 'none' }}
                         />
                     </Form>
                 </div>
