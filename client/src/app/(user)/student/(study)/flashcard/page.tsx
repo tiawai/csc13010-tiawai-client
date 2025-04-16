@@ -26,7 +26,7 @@ import heartImage from '@public/flashcard/heart.png';
 import { Banner, BannerDescription, BannerTitle } from '@/ui/components/banner';
 import { useState } from 'react';
 import {
-    useCreateFlashcardMutation,
+    useGenerateFlashcardMutation,
     useGetAllFlashcardTopicsQuery,
 } from '@/services/flashcard';
 import { Flashcard } from '@/types/flashcard';
@@ -65,8 +65,8 @@ const defaultTopics = [
 export default function FlashCardPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [text, setText] = useState('');
-    const [createFlashcard, { isLoading: isCreatingFlashcard }] =
-        useCreateFlashcardMutation();
+    const [generateFlashcard, { isLoading: isCreatingFlashcard }] =
+        useGenerateFlashcardMutation();
     const { data: topics, isLoading: isGettingTopics } =
         useGetAllFlashcardTopicsQuery({});
     console.log(topics);
@@ -78,7 +78,7 @@ export default function FlashCardPage() {
     const handleOk = async () => {
         if (text) {
             try {
-                await createFlashcard({ paragraph: text }).unwrap();
+                await generateFlashcard({ paragraph: text }).unwrap();
             } catch (error) {
                 console.log(error);
             }
@@ -111,12 +111,16 @@ export default function FlashCardPage() {
                 </Flex>
             </Banner>
 
-            <Row justify={'center'} gutter={[0, 40]}>
+            <Row justify={'center'} gutter={[0, 40]} className="mb-20">
                 <Button
-                    className="h-auto rounded-full bg-[#DBE3F8] py-0 font-roboto text-3xl font-medium transition-all duration-300 ease-in-out hover:scale-110"
+                    className="!h-12 overflow-clip rounded-full bg-[#DBE3F8] font-roboto text-3xl font-medium transition-all duration-300 ease-in-out hover:scale-110"
                     onClick={showModal}
                 >
-                    <Image src={generateBtnIcon} alt="generate button icon" />
+                    <Image
+                        src={generateBtnIcon}
+                        alt="generate button icon"
+                        className="-mt-3 size-16"
+                    />
                     <span className="-ml-1 font-montserrat text-2xl font-medium">
                         Nhập đoạn văn
                     </span>
@@ -150,7 +154,7 @@ export default function FlashCardPage() {
                                             (
                                                 <Link
                                                     className="relative m-auto aspect-[2/1.5] w-full max-w-xl grow content-center rounded-xl bg-[#DBE3F8] text-center"
-                                                    href={`/flashcard/${encodeURIComponent(topic.topic)}`}
+                                                    href={`/student/flashcard/${topic.id}`}
                                                     key={index}
                                                 >
                                                     <Title level={2}>
@@ -188,12 +192,12 @@ export default function FlashCardPage() {
                         {defaultTopics.map((topic, index) => (
                             <Link
                                 className={twMerge(
-                                    'relative m-auto aspect-[2/1.5] w-full max-w-xl grow content-center rounded-xl text-center',
+                                    'relative m-auto aspect-[2/1.5] w-full max-w-xl grow content-center rounded-xl text-center shadow-[0px_3.5701634883880615px_78.54359436035156px_0px_rgba(0,0,0,0.05)]',
                                     index % 2 == 0
                                         ? 'bg-[#E9DAE9]'
                                         : 'bg-[#DAE3E9]',
                                 )}
-                                href={`/flashcard/${encodeURIComponent(topic.title)}`}
+                                href={`/student/flashcard/${encodeURIComponent(topic.title)}`}
                                 key={index}
                             >
                                 <Title level={2}>{topic.title}</Title>
