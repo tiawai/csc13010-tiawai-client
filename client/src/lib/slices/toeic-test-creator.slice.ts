@@ -82,6 +82,7 @@ export interface ToeicTestCreatorState {
     title: string;
     startDate: string;
     endDate: string;
+    audioUrl?: string;
     duration: number;
     currentPart: string;
     currentPartLength: number;
