@@ -6,7 +6,7 @@ import { AdminBanner } from '@/components/common/banner';
 import { ColumnsType } from 'antd/es/table';
 import { Test } from '@/types/test.type';
 
-export const columns: ColumnsType<Test> = [
+const columns: ColumnsType<Test> = [
     {
         title: 'Tiêu đề',
         dataIndex: 'title',
