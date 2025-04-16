@@ -10,37 +10,37 @@ const { Title, Paragraph } = Typography;
 
 const mainFeatures = [
     {
-        src: '/home/home-1.png',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-1.png',
         alt: 'home icon 1',
         title: HOME_FEATURES[0].title,
         description: HOME_FEATURES[0].description,
     },
     {
-        src: '/home/home-2.svg',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-2.svg',
         alt: 'home icon 2',
         title: HOME_FEATURES[1].title,
         description: HOME_FEATURES[1].description,
     },
     {
-        src: '/home/home-3.svg',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-3.svg',
         alt: 'home icon 3',
         title: HOME_FEATURES[2].title,
         description: HOME_FEATURES[2].description,
     },
     {
-        src: '/home/home-4.png',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-4.png',
         alt: 'home icon 4',
         title: HOME_FEATURES[3].title,
         description: HOME_FEATURES[3].description,
     },
     {
-        src: '/home/home-5.svg',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-5.svg',
         alt: 'home icon 5',
         title: HOME_FEATURES[4].title,
         description: HOME_FEATURES[4].description,
     },
     {
-        src: '/home/home-6.svg',
+        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-6.svg',
         alt: 'home icon 6',
         title: HOME_FEATURES[5].title,
         description: HOME_FEATURES[5].description,

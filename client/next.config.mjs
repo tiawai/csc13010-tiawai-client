@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['tiawai-storage.sgp1.digitaloceanspaces.com'],
-    },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'tiawai-storage.sgp1.cdn.digitaloceanspaces.com',
+        pathname: '**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
