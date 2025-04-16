@@ -13,6 +13,7 @@ export interface Question {
     hasParagraph?: boolean;
     content: string;
     imageUrls?: string[];
+    images?: string[];
     choices: Choices;
     correctAnswer?: ChoicesType;
     subQuestions?: number[];
@@ -21,7 +22,7 @@ export interface Question {
 }
 
 export interface Answer {
-    questionId: string;
+    questionOrder: number;
     answer: ChoicesType | null;
 }
 
@@ -57,7 +58,7 @@ export class QuestionUtils {
 
     static initListAnswers(questions: Question[]): Answer[] {
         return questions.map((question) => ({
-            questionId: question.id || '',
+            questionOrder: question.questionOrder,
             answer: null,
         }));
     }
