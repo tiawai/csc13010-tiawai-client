@@ -26,6 +26,7 @@ import { useAppSelector } from '@/lib/hooks/hook';
 import { useSignOutMutation } from '@/services/auth.service';
 import { useDisableSessionMutation } from '@/services/chat';
 import { Role, UserUtils } from '@/types/user.type';
+import { TestType } from '@/types/test.type';
 
 const { Title, Paragraph } = Typography;
 
@@ -38,8 +39,12 @@ const guestItems: MenuProps["items"] = [
 // prettier-ignore
 const studentItems: MenuProps["items"] = [
     { label: <Link href="/student/">Trang chủ</Link>, key: "home" },
-    { label: <Link href="/student/test">Kỹ năng Toeic</Link>, key: "toeic" },
-    { label: <Link href="/student/test">Ôn thi THPTQG</Link>, key: "thptqg" },
+    { label: <Dropdown menu={{ items: [
+        { key: '1', label: <Link href={`/student/test?type=${TestType.TOEIC_LISTENING}`}>Đề thi TOEIC Listening</Link> },
+        { key: '2', label: <Link href={`/student/test?type=${TestType.TOEIC_READING}`}>Đề thi TOEIC Reading</Link> }
+      ]}}><span>Kỹ năng Toeic <DownOutlined /></span></Dropdown>, key: "toeic"
+    },
+    { label: <Link href={`/student/test?type=${TestType.NATIONAL_TEST}`}>Ôn thi THPTQG</Link>, key: "thptqg" },
     { label: <Link href="/student/flashcard">Flashcard</Link>, key: "flashcard" },
     { label: <Link href="/student/challenge">Challenge</Link>, key: "challenge" },
     { label: <Link href="/student/class">Lớp học</Link>, key: "class" },
