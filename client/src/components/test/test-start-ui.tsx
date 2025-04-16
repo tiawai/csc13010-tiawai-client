@@ -15,7 +15,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { ChoicesType } from '@/types/exam';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
-import { useSubmitExamMutation } from '@/services/exam';
 import { useNotification } from '@/lib/hooks/use-notification';
 import { ChoicesTypes, Question } from '@/types/question.type';
 import clsx from 'clsx';
@@ -32,6 +31,8 @@ import {
     selectAnswerByQuestionOrder,
     setAnswer,
 } from '@/lib/slices/test.slice';
+import Image from 'next/image';
+import { useSubmitTestByIdMutation } from '@/services/test.service';
 
 const { Title, Paragraph } = Typography;
 const { Sider, Content } = Layout;
@@ -88,6 +89,10 @@ export const StartToeicTest = () => {
     const toeicType = (
         testType === TestType.TOEIC_LISTENING ? 'listening' : 'reading'
     ) as ToeicTestType;
+    const mapPart =
+        testType === TestType.TOEIC_LISTENING
+            ? mapPartListening
+            : mapPartReading;
 
     const testInfo = toeicTestInfo[toeicType];
     const [currentPart, setCurrentPart] = useState<string>(testInfo.firstPart);
@@ -111,7 +116,7 @@ export const StartToeicTest = () => {
 
     const items: TabsProps['items'] = parts.map((part) => ({
         key: part,
-        label: `${mapPartReading[part as keyof typeof mapPartReading]}`,
+        label: `${mapPart[part as keyof typeof mapPart]}`,
         children: generatePartQuestions(part),
     }));
 
@@ -121,7 +126,6 @@ export const StartToeicTest = () => {
                 <Tabs
                     activeKey={currentPart}
                     onChange={(key) => setCurrentPart(key)}
-                    centered
                     type="card"
                     size="large"
                     items={items}
@@ -155,16 +159,16 @@ export const PageLayout = memo(
         formQuestionNav: React.ReactNode;
     }) => {
         const router = useRouter();
-        const user = useAppSelector((state) => state.auth.user);
         const {
             id: testId,
             title,
             timeLength,
         } = useAppSelector((state) => state.test.test);
         const answers = useAppSelector((state) => state.test.answers);
+        const audioUrl = useAppSelector((state) => state.test.test.audioUrl);
         const [timeStart, setTimeStart] = useState<string>('');
         const [isSubmit, setIsSubmit] = useState<boolean>(false);
-        const [submitExam, { isLoading }] = useSubmitExamMutation();
+        const [submitTest, { isLoading }] = useSubmitTestByIdMutation();
         const { notify } = useNotification();
 
         useEffect(() => {
@@ -188,14 +192,20 @@ export const PageLayout = memo(
         }, [isSubmit]);
 
         const handleSubmit = async () => {
-            const submission = {
+            console.log(timeStart);
+            const submitPayload = {
                 testId: testId,
-                userId: user.id,
-                answers,
-                timeStart,
+                timeConsumed: Math.floor(
+                    (new Date().getTime() - new Date(timeStart).getTime()) /
+                        1000,
+                ),
+                answers: answers.map((answer) => ({
+                    ...answer,
+                    answer: answer?.answer || 'A',
+                })),
             };
 
-            const res = await submitExam(submission);
+            const res = await submitTest(submitPayload);
 
             if (!res.error) {
                 setIsSubmit(true);
@@ -204,7 +214,7 @@ export const PageLayout = memo(
                     message: 'Nộp bài thành công',
                     description: 'Bài thi của bạn đã được ghi nhận',
                 });
-                router.push(`/test/${testId}/result/${res.data.id}`);
+                // router.push(`/test/${testId}/result/${res.data.id}`);
             } else {
                 setIsSubmit(false);
                 notify({
@@ -221,7 +231,27 @@ export const PageLayout = memo(
                     {title}
                 </Title>
                 <Layout className="!scroll-smooth p-4 !shadow-xl">
-                    <Content className="mr-4 space-y-4">{formQuestion}</Content>
+                    <Content className="mr-4 space-y-4">
+                        {audioUrl && (
+                            <Card>
+                                <audio
+                                    controls
+                                    className="w-full"
+                                    src={audioUrl}
+                                    preload="auto"
+                                >
+                                    <track
+                                        kind="captions"
+                                        srcLang="en"
+                                        src={audioUrl}
+                                    />
+                                    Your browser does not support the audio
+                                    element.
+                                </audio>
+                            </Card>
+                        )}
+                        {formQuestion}
+                    </Content>
 
                     <Sider
                         width={250}
@@ -301,8 +331,21 @@ const QuestionCard = memo(({ question }: { question: Question }) => {
             {question.paragraph && (
                 <Title level={5}>{question.paragraph}</Title>
             )}
+
+            {question.images &&
+                question.images.map((url) => (
+                    <Image
+                        key={url}
+                        src={url}
+                        alt="question-image"
+                        height={512}
+                        width={512}
+                        className="mb-2 w-full object-cover"
+                    />
+                ))}
+
             <CardTitle
-                title={`${question.questionOrder}. ${question.content}`}
+                title={`${question.questionOrder}. ${question?.content || ''}`}
             />
 
             <Radio.Group onChange={handleAnswerChange} value={answer}>
@@ -311,7 +354,7 @@ const QuestionCard = memo(({ question }: { question: Question }) => {
                         ([key, value]) =>
                             ChoicesTypes.includes(key as ChoicesType) && (
                                 <Radio key={key} value={key}>
-                                    {value}
+                                    {`${key}${value ? `. ${value}` : ''}`}
                                 </Radio>
                             ),
                     )}

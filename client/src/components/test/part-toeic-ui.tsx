@@ -287,9 +287,18 @@ export const PartNavigationFooter = memo(
                     paragraph: question?.paragraph,
                     content: question?.content,
                     explanation: question?.explanation,
-                    correctAnswer: question.correctAnswer || 'A',
                     choices: question.choices,
+                    correctAnswer: question.correctAnswer || 'A',
                     points: 4.5,
+                    // paragraph: `Đoạn văn - Câu ${question.questionOrder}`,
+                    // content: `Câu ${question.questionOrder}`,
+                    // explanation: `Giải thích - Câu ${question.questionOrder}`,
+                    // choices: {
+                    //     A: 'Đáp án A',
+                    //     B: 'Đáp án B',
+                    //     C: 'Đáp án C',
+                    //     D: 'Đáp án D',
+                    // },
                 }),
             );
 
@@ -331,6 +340,15 @@ export const PartNavigationFooter = memo(
                     correctAnswer: question.correctAnswer || 'A',
                     choices: question.choices,
                     points: 4.5,
+                    // paragraph: `Đoạn văn - Câu ${question.questionOrder}`,
+                    // content: `Câu ${question.questionOrder}`,
+                    // explanation: `Giải thích - Câu ${question.questionOrder}`,
+                    // choices: {
+                    //     A: 'Đáp án A',
+                    //     B: 'Đáp án B',
+                    //     C: 'Đáp án C',
+                    //     D: 'Đáp án D',
+                    // },
                 }),
             );
 
@@ -350,6 +368,16 @@ export const PartNavigationFooter = memo(
 
         const handleSaveTest = async () => {
             setIsLoading(true);
+
+            const testPayload = {
+                title: title,
+                type: testTypeMap[testType],
+                startDate: new Date(startDate).toISOString(),
+                endDate: new Date(endDate).toISOString(),
+                totalQuestions: 100,
+                timeLength: duration,
+            };
+
             if (testType === 'listening') {
                 let resAudioUrl = '';
                 if (audioUrl) {
@@ -363,15 +391,6 @@ export const PartNavigationFooter = memo(
                     if (resAudio.error) return setIsLoading(false);
                     resAudioUrl = resAudio.data.audioUrl;
                 }
-
-                const testPayload = {
-                    title: title,
-                    type: testTypeMap[testType],
-                    startDate: new Date(startDate).toISOString(),
-                    endDate: new Date(endDate).toISOString(),
-                    totalQuestions: 100,
-                    timeLength: duration,
-                };
 
                 const encodedAudioUrl = encodeURIComponent(resAudioUrl);
                 const res = await createToeicListeningTest({
@@ -390,15 +409,6 @@ export const PartNavigationFooter = memo(
                 ]);
             }
             if (testType === 'reading') {
-                const testPayload = {
-                    title: title,
-                    type: testTypeMap[testType],
-                    startDate: new Date(startDate).toISOString(),
-                    endDate: new Date(endDate).toISOString(),
-                    totalQuestions: 100,
-                    timeLength: duration,
-                };
-
                 const res = await createToeicReadingTest(testPayload);
                 if (res.error) return setIsLoading(false);
                 const testId = res.data.id;
