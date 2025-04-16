@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import FlashcardSlider from './flashcard-slider';
 import { CarryOutOutlined, LeftOutlined } from '@ant-design/icons';
-import { useParams } from 'next/navigation';
 import { Row, Col, Skeleton } from 'antd';
 import {
     flashcardsScience,
@@ -13,7 +12,7 @@ import {
     flashcardsLiterature,
     flashcardsCulture,
 } from './flashcards';
-import { useGetFlashcardsByTopicQuery } from '@/services/flashcard';
+import { useGetFlashcardsByIdQuery } from '@/services/flashcard';
 
 const data = [
     {
@@ -42,14 +41,15 @@ const data = [
     },
 ];
 
-export default function FlashCardItemPage() {
-    const { id } = useParams();
-    const { data: userFlashcards, isLoading } = useGetFlashcardsByTopicQuery(
-        id,
-        {
-            skip: !id,
-        },
-    );
+export default function FlashCardItemPage({
+    params,
+}: {
+    params: { id: string };
+}) {
+    const id = params.id;
+    const { data: userFlashcards, isLoading } = useGetFlashcardsByIdQuery(id, {
+        skip: !id,
+    });
 
     const decodedId = id
         ? decodeURIComponent(Array.isArray(id) ? id[0] : id)
@@ -68,11 +68,11 @@ export default function FlashCardItemPage() {
             <Col offset={2}>
                 <Link
                     className="flex items-center gap-2 rounded-full bg-[#e9dae9] px-4 py-3 text-black"
-                    href="/flashcard"
+                    href="/student/flashcard"
                 >
                     <LeftOutlined />
                     <span className="text-xl font-bold">
-                        Flashcard {decodedId}
+                        Flashcard {userFlashcards.topic}
                     </span>
                     <div className="rounded-full bg-[#f4edf4] px-4 py-1">
                         <CarryOutOutlined className="text-[#4d2c5e]" />
