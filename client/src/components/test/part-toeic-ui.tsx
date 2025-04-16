@@ -284,17 +284,12 @@ export const PartNavigationFooter = memo(
 
             const questionsDto = partQuestions.map(
                 (question): CreateQuestionDto => ({
-                    paragraph: question.paragraph,
-                    content: `Câu hỏi ${question.questionOrder}`,
-                    correctAnswer: 'A',
-                    explanation: question.explanation,
+                    paragraph: question?.paragraph,
+                    content: question?.content,
+                    explanation: question?.explanation,
+                    correctAnswer: question.correctAnswer || 'A',
+                    choices: question.choices,
                     points: 4.5,
-                    choices: {
-                        A: 'Đáp án A',
-                        B: 'Đáp án B',
-                        C: 'Đáp án C',
-                        D: 'Đáp án D',
-                    },
                 }),
             );
 
@@ -330,17 +325,12 @@ export const PartNavigationFooter = memo(
 
             const questionsDto = partQuestions.map(
                 (question): CreateQuestionDto => ({
-                    paragraph: question.paragraph,
-                    content: `Câu hỏi ${question.questionOrder}`,
-                    correctAnswer: 'A',
-                    explanation: question.explanation,
+                    paragraph: question?.paragraph,
+                    content: question?.content,
+                    explanation: question?.explanation,
+                    correctAnswer: question.correctAnswer || 'A',
+                    choices: question.choices,
                     points: 4.5,
-                    choices: {
-                        A: 'Đáp án A',
-                        B: 'Đáp án B',
-                        C: 'Đáp án C',
-                        D: 'Đáp án D',
-                    },
                 }),
             );
 
