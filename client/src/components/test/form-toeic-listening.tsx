@@ -30,6 +30,7 @@ import {
 import { BasicQuestion, QuestionNavigation } from './question-ui';
 import { useTestField } from '@/lib/hooks/use-test-field';
 import {
+    TestQuestionAudio,
     TestQuestionEndDate,
     TestQuestionStartDate,
     TestQuestionTitle,
@@ -144,6 +145,10 @@ const FormBasic = memo(() => {
                     setField={setField}
                 />
             </div>
+            <TestQuestionAudio<'toeic'>
+                getField={getField}
+                setField={setField}
+            />
         </>
     );
 });
