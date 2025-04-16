@@ -1,8 +1,9 @@
-import { Form, Input } from 'antd';
+import { Form, Input, message, Upload, UploadFile } from 'antd';
 import { FormLabel } from './form-ui';
 import { NationalTestCreatorState } from '@/lib/slices/national-test-creator.slice';
 import { ToeicTestCreatorState } from '@/lib/slices/toeic-test-creator.slice';
 import type { TestType } from '@/lib/hooks/use-test-field';
+import { InboxOutlined } from '@ant-design/icons';
 
 export interface TestQuestionProps<T extends TestType> {
     getField: <
@@ -169,6 +170,100 @@ export const TestQuestionDuration = <T extends TestType>({
                 min={1}
                 onChange={(e) => setField('duration', +e.target.value)}
             />
+        </Form.Item>
+    );
+};
+
+export const TestQuestionAudio = <T extends 'toeic'>({
+    getField,
+    setField,
+}: TestQuestionProps<T>) => {
+    const audioUrl = getField('audioUrl');
+
+    const mimeToExt = (mime: string): string => {
+        const map: Record<string, string> = {
+            'audio/mpeg': 'mp3',
+            'audio/wav': 'wav',
+            'audio/ogg': 'ogg',
+            'audio/mp4': 'mp4',
+        };
+        return map[mime] || 'mp3';
+    };
+
+    function base64ToFile(base64: string): File {
+        const arr = base64.split(',');
+        const mime = arr[0].match(/:(.*?);/)?.[1] || 'audio/mpeg';
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+
+        const ext = mimeToExt(mime);
+        return new File([u8arr], `audio.${ext}`, { type: mime });
+    }
+
+    const handleBeforeUpload = (file: File) => {
+        const isAudio = file.type.startsWith('audio/');
+        if (!isAudio) {
+            message.error('Chỉ cho phép file âm thanh');
+            return Upload.LIST_IGNORE;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const audioFileUrl = reader.result as string;
+            setField('audioUrl', audioFileUrl);
+        };
+        reader.readAsDataURL(file);
+
+        return false;
+    };
+
+    const fileList: UploadFile[] = audioUrl
+        ? [
+              {
+                  uid: '-1',
+                  name: base64ToFile(audioUrl).name,
+                  status: 'done',
+                  url: URL.createObjectURL(base64ToFile(audioUrl)),
+              },
+          ]
+        : [];
+
+    return (
+        <Form.Item
+            label={<FormLabel label="Audio" />}
+            name="audio"
+            extra="Chọn file âm thanh cho phần thi Listening (Part 1, Part 2, Part 3, Part 4)"
+            rules={[
+                {
+                    required: true,
+                    message: 'Audio không được bỏ trống',
+                },
+            ]}
+        >
+            <Upload.Dragger
+                accept="audio/*"
+                beforeUpload={handleBeforeUpload}
+                fileList={fileList}
+                onRemove={() => {
+                    setField('audioUrl', '');
+                }}
+                maxCount={1}
+            >
+                <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                    Kéo thả hoặc bấm để chọn file âm thanh
+                </p>
+                <p className="ant-upload-hint">
+                    Chỉ chấp nhận 1 file âm thanh (.mp3, .wav...)
+                </p>
+            </Upload.Dragger>
         </Form.Item>
     );
 };

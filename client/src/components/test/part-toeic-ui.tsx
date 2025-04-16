@@ -19,7 +19,7 @@ import {
 import {
     // Listening test hooks
     useCreateToeicListeningTestMutation,
-    // useUploadAudioTLMutation,
+    useUploadAudioTLMutation,
     useUploadImagesTLMutation,
     useCreatePart1TLMutation,
     useCreatePart2TLMutation,
@@ -124,12 +124,15 @@ export const PartNavigationFooter = memo(
         const questions = useAppSelector(
             (state) => state.toeicTestCreator.questions,
         );
+        const audioUrl = useAppSelector(
+            (state) => state.toeicTestCreator.audioUrl,
+        );
         const [isLoading, setIsLoading] = useState<boolean>(false);
 
         // Listening test hooks
         const [createToeicListeningTest] =
             useCreateToeicListeningTestMutation();
-        // const [uploadAudioTL] = useUploadAudioTLMutation();
+        const [uploadAudioTL] = useUploadAudioTLMutation();
         const [uploadImagesTL] = useUploadImagesTLMutation();
         const [createPart1TL] = useCreatePart1TLMutation();
         const [createPart2TL] = useCreatePart2TLMutation();
@@ -155,7 +158,11 @@ export const PartNavigationFooter = memo(
         function base64ToFile(base64: string, filename: string): File {
             const arr = base64.split(',');
             const mimeMatch = arr[0].match(/:(.*?);/);
-            const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+            const mime = mimeMatch
+                ? mimeMatch[1]
+                    ? 'image/png'
+                    : 'audio/mpeg'
+                : '';
             const bstr = atob(arr[1]);
             let n = bstr.length;
             const u8arr = new Uint8Array(n);
@@ -165,21 +172,93 @@ export const PartNavigationFooter = memo(
             return new File([u8arr], filename, { type: mime });
         }
 
+        const mimeToExt = (mime: string): string => {
+            const map: Record<string, string> = {
+                'audio/mpeg': 'mp3',
+                'audio/wav': 'wav',
+                'audio/ogg': 'ogg',
+                'audio/mp4': 'mp4',
+            };
+            return map[mime] || 'mp3';
+        };
+
+        function base64ToAudioFile(base64: string): File {
+            const arr = base64.split(',');
+            const mime = arr[0].match(/:(.*?);/)?.[1] || 'audio/mpeg';
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+
+            const ext = mimeToExt(mime);
+            return new File([u8arr], `audio.${ext}`, { type: mime });
+        }
+
         const generateFormDataFromImages = (
             questions: Question[],
         ): FormData => {
             const formData = new FormData();
-            questions.forEach((question, questionIdx) => {
+
+            questions.forEach((question) => {
                 question?.imageUrls?.forEach(
                     (base64: string, imageIdx: number) => {
-                        const filename = `question-${String(questionIdx + 1).padStart(3, '0')}${imageIdx + 1}`;
+                        const extMatch = base64.match(
+                            /^data:image\/(jpeg|png|jpg|webp);base64,/i,
+                        );
+                        const ext = extMatch
+                            ? `.${extMatch[1].toLowerCase()}`
+                            : '.jpg';
+                        const filename = `question-${String(question.questionOrder).padStart(3, '0')}${imageIdx + 1}${ext}`;
+
                         const file = base64ToFile(base64, filename);
                         formData.append('images', file);
                     },
                 );
             });
+
             return formData;
         };
+
+        function createBatchesFromQuestions(
+            partQuestions: Question[],
+        ): number[] {
+            const batches: number[] = [];
+            if (partQuestions.length === 0) return batches;
+
+            let currentBatchCount = 0;
+            let currentParent = partQuestions[0]?.parentQuestion;
+
+            for (let i = 0; i < partQuestions.length; i++) {
+                const question = partQuestions[i];
+                const imageCount = question?.imageUrls?.length || 0;
+
+                if (imageCount && !question.parentQuestion) {
+                    batches.push(1);
+                    currentBatchCount = 0;
+                    currentParent = question.parentQuestion;
+                } else if (
+                    i === 0 ||
+                    question.parentQuestion !== currentParent
+                ) {
+                    if (currentBatchCount > 0) {
+                        batches.push(currentBatchCount);
+                    }
+                    currentBatchCount = 1;
+                    currentParent = question.parentQuestion;
+                } else {
+                    currentBatchCount++;
+                }
+            }
+
+            if (currentBatchCount > 0) {
+                batches.push(currentBatchCount);
+            }
+
+            return batches;
+        }
 
         const handlePartTL = async (
             partKey: 'part1' | 'part2' | 'part3' | 'part4',
@@ -192,6 +271,7 @@ export const PartNavigationFooter = memo(
         ) => {
             const partQuestions = questions[partKey] || [];
             const formData = generateFormDataFromImages(partQuestions);
+            const batch = createBatchesFromQuestions(partQuestions);
 
             let imageRes = undefined;
             if (formData.has('images')) {
@@ -203,10 +283,9 @@ export const PartNavigationFooter = memo(
             }
 
             const questionsDto = partQuestions.map(
-                (question, index): CreateQuestionDto => ({
+                (question): CreateQuestionDto => ({
                     paragraph: question.paragraph,
-                    content: `Câu hỏi ${index + 1}`,
-                    images: question.imageUrls,
+                    content: `Câu hỏi ${question.questionOrder}`,
                     correctAnswer: 'A',
                     explanation: question.explanation,
                     points: 4.5,
@@ -221,6 +300,7 @@ export const PartNavigationFooter = memo(
 
             await createFn({
                 testId,
+                batch: batch,
                 hasImages: !!formData.has('images'),
                 imageUrls: imageRes?.data.imageUrls || [],
                 questions: questionsDto,
@@ -237,6 +317,7 @@ export const PartNavigationFooter = memo(
         ) => {
             const partQuestions = questions[partKey] || [];
             const formData = generateFormDataFromImages(partQuestions);
+            const batch = createBatchesFromQuestions(partQuestions);
 
             let imageRes = undefined;
             if (formData.has('images')) {
@@ -248,10 +329,9 @@ export const PartNavigationFooter = memo(
             }
 
             const questionsDto = partQuestions.map(
-                (question, index): CreateQuestionDto => ({
+                (question): CreateQuestionDto => ({
                     paragraph: question.paragraph,
-                    content: `Câu hỏi ${index + 1}`,
-                    images: question.imageUrls,
+                    content: `Câu hỏi ${question.questionOrder}`,
                     correctAnswer: 'A',
                     explanation: question.explanation,
                     points: 4.5,
@@ -266,6 +346,7 @@ export const PartNavigationFooter = memo(
 
             await createFn({
                 testId,
+                batch: batch,
                 hasImages: !!formData.has('images'),
                 imageUrls: imageRes?.data.imageUrls || [],
                 questions: questionsDto,
@@ -279,17 +360,35 @@ export const PartNavigationFooter = memo(
 
         const handleSaveTest = async () => {
             setIsLoading(true);
-            const testPayload = {
-                title: title,
-                type: testTypeMap[testType],
-                startDate: new Date(startDate).toISOString(),
-                endDate: new Date(endDate).toISOString(),
-                totalQuestions: 100,
-                timeLength: duration,
-            };
-
             if (testType === 'listening') {
-                const res = await createToeicListeningTest(testPayload);
+                let resAudioUrl = '';
+                if (audioUrl) {
+                    const audio = base64ToAudioFile(audioUrl);
+                    const formData = new FormData();
+                    const ext = mimeToExt(audio.type);
+                    const filename = `audio.${ext}`;
+                    formData.append('audio', audio, filename);
+
+                    const resAudio = await uploadAudioTL({ formData });
+                    if (resAudio.error) return setIsLoading(false);
+                    resAudioUrl = resAudio.data.audioUrl;
+                }
+
+                const testPayload = {
+                    title: title,
+                    type: testTypeMap[testType],
+                    startDate: new Date(startDate).toISOString(),
+                    endDate: new Date(endDate).toISOString(),
+                    totalQuestions: 100,
+                    timeLength: duration,
+                };
+
+                const encodedAudioUrl = encodeURIComponent(resAudioUrl);
+                const res = await createToeicListeningTest({
+                    audioUrl: encodedAudioUrl,
+                    test: testPayload,
+                });
+
                 if (res.error) return setIsLoading(false);
                 const testId = res.data.id;
 
@@ -301,6 +400,15 @@ export const PartNavigationFooter = memo(
                 ]);
             }
             if (testType === 'reading') {
+                const testPayload = {
+                    title: title,
+                    type: testTypeMap[testType],
+                    startDate: new Date(startDate).toISOString(),
+                    endDate: new Date(endDate).toISOString(),
+                    totalQuestions: 100,
+                    timeLength: duration,
+                };
+
                 const res = await createToeicReadingTest(testPayload);
                 if (res.error) return setIsLoading(false);
                 const testId = res.data.id;
