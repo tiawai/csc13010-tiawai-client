@@ -33,10 +33,12 @@ export default function FlashcardSlider({
                 gutter={16}
             >
                 <Col span={8} className="!pr-20">
-                    <FlipCard
-                        flashcard={flashcards[Math.max(currentIndex - 1, 0)]}
-                        isFlippable={false}
-                    />
+                    {currentIndex > 0 && (
+                        <FlipCard
+                            flashcard={flashcards[currentIndex - 1]}
+                            isFlippable={false}
+                        />
+                    )}
                 </Col>
 
                 <Col span={8}>
@@ -46,14 +48,14 @@ export default function FlashcardSlider({
                         isFlippable={true}
                     />
                     <Button
-                        className="!absolute !left-0 !top-1/2 !h-12 !w-12 !-translate-x-1/2 !-translate-y-1/2"
+                        className="!absolute !left-0 !top-1/2 z-10 !h-12 !w-12 !-translate-x-1/2 !-translate-y-1/2"
                         size="large"
                         icon={<LeftOutlined />}
                         onClick={handlePrev}
                         disabled={currentIndex === 0}
                     />
                     <Button
-                        className="!absolute !right-0 !top-1/2 !h-12 !w-12 !-translate-y-1/2 !translate-x-1/2"
+                        className="!absolute !right-0 !top-1/2 z-10 !h-12 !w-12 !-translate-y-1/2 !translate-x-1/2"
                         size="large"
                         icon={<RightOutlined />}
                         onClick={handleNext}
@@ -61,18 +63,13 @@ export default function FlashcardSlider({
                     />
                 </Col>
 
-                <Col span={8} className="-z-10 !pl-20">
-                    <FlipCard
-                        flashcard={
-                            flashcards[
-                                Math.min(
-                                    currentIndex + 1,
-                                    flashcards.length - 1,
-                                )
-                            ]
-                        }
-                        isFlippable={false}
-                    />
+                <Col span={8} className="!pl-20">
+                    {currentIndex < flashcards.length - 1 && (
+                        <FlipCard
+                            flashcard={flashcards[currentIndex + 1]}
+                            isFlippable={false}
+                        />
+                    )}
                 </Col>
             </Row>
             <Progress

@@ -74,11 +74,11 @@ export const QuestionContent = ({ getField, setField }: QuestionProps) => {
 const { Dragger } = Upload;
 export const QuestionImage = ({ getField, setField }: QuestionProps) => {
     const questionOrder = getField('questionOrder') as number;
-    const imageUrls = getField('imageUrls') as string[];
+    const imageUrls = (getField('imageUrls') as string[]) || [];
     const subQuestions = getField('subQuestions') as number[];
 
     const [localImageUrls, setLocalImageUrls] = useState<string[]>(imageUrls);
-    const [imageTypes, setImageTypes] = useState<string[]>([]); // <-- NEW
+    const [imageTypes, setImageTypes] = useState<string[]>([]);
 
     useEffect(() => {
         setLocalImageUrls(imageUrls);
