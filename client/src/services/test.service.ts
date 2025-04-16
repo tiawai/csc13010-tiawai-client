@@ -7,6 +7,9 @@ import {
     UploadImagesToeicResponseDto,
     CreateNationalTestDto,
     TestResponseDto,
+    UploadAudioToeicResponseDto,
+    UploadAudioToeicDto,
+    CreateToeicListeningTestDto,
 } from '@/types/test.type';
 
 const testApi = appApi.injectEndpoints({
@@ -32,20 +35,26 @@ const testApi = appApi.injectEndpoints({
         }),
 
         // toeic listening test
-        createToeicListeningTest: builder.mutation<Test, CreateTestDto>({
-            query: (body) => ({
-                url: '/tests/admin/toeic-listening-test',
+        createToeicListeningTest: builder.mutation<
+            Test,
+            CreateToeicListeningTestDto
+        >({
+            query: ({ audioUrl, test }) => ({
+                url: `/tests/admin/toeic-listening-test?audioUrl=${audioUrl}`,
                 method: 'POST',
-                body: body,
+                body: test,
             }),
             invalidatesTags: ['Test'],
         }),
 
-        uploadAudioTL: builder.mutation({
-            query: (body) => ({
+        uploadAudioTL: builder.mutation<
+            UploadAudioToeicResponseDto,
+            UploadAudioToeicDto
+        >({
+            query: ({ formData }) => ({
                 url: '/tests/admin/toeic-listening-test/audio',
                 method: 'POST',
-                body: body,
+                body: formData,
             }),
         }),
 
@@ -61,7 +70,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -69,7 +78,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart2TL: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages, ...body }) => ({
                 url: `/tests/admin/toeic-listening-test/part-2?testId=${testId}`,
                 method: 'POST',
                 body: body,
@@ -114,7 +123,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         createPart1TR: builder.mutation<void, CreateToeicPart>({
-            query: ({ testId, ...body }) => ({
+            query: ({ testId, hasImages, ...body }) => ({
                 url: `/tests/admin/toeic-reading-test/part-1?testId=${testId}`,
                 method: 'POST',
                 body: body,

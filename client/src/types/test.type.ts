@@ -41,6 +41,19 @@ export interface CreateNationalTestDto {
     questions: CreateQuestionDto[];
 }
 
+export interface CreateToeicListeningTestDto {
+    audioUrl: string;
+    test: CreateTestDto;
+}
+
+export interface UploadAudioToeicDto {
+    formData: FormData;
+}
+
+export interface UploadAudioToeicResponseDto {
+    audioUrl: string;
+    message: string;
+}
 export interface UploadImagesToeicDto {
     testId: string;
     formData: FormData;
