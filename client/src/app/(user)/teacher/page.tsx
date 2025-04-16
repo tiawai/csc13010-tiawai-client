@@ -9,10 +9,18 @@ import TiaMascot from '@public/mascot/full.webp';
 const { Title } = Typography;
 
 const features = [
-    { title: 'Tạo Lớp Học', color: 'bg-[#DAE3E9]', link: '#' },
-    { title: 'Quản Lý Lớp Học', color: 'bg-[#E9DAE9]', link: '#' },
-    { title: 'Tạo Đề Thi/ Bài Học', color: 'bg-[#E9DAE9]', link: '#' },
-    { title: 'Quản Lý Đề Thi/ Bài Học', color: 'bg-[#DAE3E9]', link: '#' },
+    { title: 'Tạo lớp học', color: 'bg-[#DAE3E9]', link: '#' },
+    {
+        title: 'Quản lý lớp học',
+        color: 'bg-[#E9DAE9]',
+        link: '/teacher/classroom',
+    },
+    { title: 'Tạo đề thi/bài học', color: 'bg-[#E9DAE9]', link: '#' },
+    {
+        title: 'Quản lý đề thi/bài học',
+        color: 'bg-[#DAE3E9]',
+        link: '/teacher/exam',
+    },
 ];
 
 const benefits = [

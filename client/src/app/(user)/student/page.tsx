@@ -15,6 +15,7 @@ import homeDots from '@public/home/home-dots.png';
 import { twMerge } from 'tailwind-merge';
 import ClassFrame from '@/ui/home/class-frame';
 import FindClassInput from '@/ui/components/find-class-input';
+import { useRouter } from 'next/navigation';
 const { Title, Paragraph } = Typography;
 
 export interface ExamData {
@@ -245,6 +246,8 @@ export default function Home() {
     //     },
     // ];
 
+    const router = useRouter();
+
     return (
         <main className="flex select-none flex-col items-center justify-center">
             <div
@@ -386,7 +389,8 @@ export default function Home() {
                     <Button
                         variant="solid"
                         size="large"
-                        className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold capitalize text-white"
+                        className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold text-white"
+                        onClick={() => router.push('/student/class')}
                     >
                         Khám phá thêm lớp học
                         <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
@@ -612,7 +616,8 @@ export default function Home() {
                         <Button
                             variant="solid"
                             size="large"
-                            className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold capitalize text-white"
+                            className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold text-white"
+                            onClick={() => router.push('/student/challenge')}
                         >
                             Tham gia challenge ngay!
                             <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
