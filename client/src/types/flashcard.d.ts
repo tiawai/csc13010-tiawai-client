@@ -5,6 +5,7 @@ export interface Word {
 }
 
 export interface Flashcard {
+    id: string;
     topic: string;
     words: Word[];
 }
