@@ -10,6 +10,7 @@ import {
     UploadAudioToeicResponseDto,
     UploadAudioToeicDto,
     CreateToeicListeningTestDto,
+    SubmitTestDto,
 } from '@/types/test.type';
 
 const testApi = appApi.injectEndpoints({
@@ -22,6 +23,15 @@ const testApi = appApi.injectEndpoints({
 
         getTestById: builder.query<TestResponseDto, string>({
             query: (id) => `/tests/test/${id}`,
+        }),
+
+        submitTestById: builder.mutation<void, SubmitTestDto>({
+            query: ({ testId, ...body }) => ({
+                url: `/tests/test/${testId}/submission`,
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['Test'],
         }),
 
         // national test
@@ -151,6 +161,7 @@ const testApi = appApi.injectEndpoints({
 export const {
     useGetTestsQuery,
     useGetTestByIdQuery,
+    useSubmitTestByIdMutation,
 
     // National test hooks
     useCreateNationalTestMutation,

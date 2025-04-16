@@ -1,4 +1,4 @@
-import { CreateQuestionDto, Question } from './question.type';
+import { Answer, CreateQuestionDto, Question } from './question.type';
 
 export enum TestType {
     NATIONAL_TEST = 'National Test',
@@ -70,4 +70,10 @@ export interface CreateToeicPart {
     batch?: number[];
     imageUrls: string[];
     questions: CreateQuestionDto[];
+}
+
+export interface SubmitTestDto {
+    testId: string;
+    timeConsumed: number;
+    answers: Answer[];
 }
