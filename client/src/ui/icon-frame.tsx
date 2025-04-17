@@ -1,14 +1,14 @@
-import Image from "next/image";
-import { twMerge } from "tailwind-merge";
+import Image from 'next/image';
+import { twMerge } from 'tailwind-merge';
 
 const IconFrame = ({
     src,
     alt,
-    bgColor = "#4D2C5E",
+    bgColor = '#4D2C5E',
     width = 48,
     height = 48,
-    frameSize = "6rem",
-    className = "",
+    frameSize = '6rem',
+    className = '',
     lazy = false,
 }: Readonly<{
     src: string;
@@ -23,7 +23,7 @@ const IconFrame = ({
     return (
         <div
             className={twMerge(
-                "flex place-content-center rounded-3xl",
+                'flex place-content-center rounded-3xl',
                 className,
             )}
             style={{
@@ -38,7 +38,7 @@ const IconFrame = ({
                 width={width}
                 height={height}
                 className="h-auto w-auto self-center"
-                loading={lazy ? "lazy" : "eager"}
+                loading={lazy ? 'lazy' : 'eager'}
             />
         </div>
     );

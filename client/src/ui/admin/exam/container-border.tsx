@@ -1,6 +1,6 @@
-"use client";
+'use client';
 export default function ContainerBorder({
-    className = "",
+    className = '',
     children,
 }: {
     className?: string;

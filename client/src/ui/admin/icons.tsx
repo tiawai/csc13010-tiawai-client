@@ -1,12 +1,12 @@
-import { IconProps } from "@/types/icon";
+import { IconProps } from '@/types/icon';
 
 export const FilterIcon = ({ width, height, fill, className }: IconProps) => {
     return (
         <svg
-            width={width ?? "24"}
-            height={height ?? "21"}
+            width={width ?? '24'}
+            height={height ?? '21'}
             viewBox="0 0 24 21"
-            fill={fill ?? "none"}
+            fill={fill ?? 'none'}
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >

@@ -1,78 +1,78 @@
-import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Flex } from "antd";
-import Link from "next/link";
-import React from "react";
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Card, Flex } from 'antd';
+import Link from 'next/link';
+import React from 'react';
 
 const exams = [
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
     {
-        name: "Đề thi minh họa THPT Quốc Gia 2023",
-        pracitce: "Đề luyện tập số 1",
-        category: "Phát âm",
-        time: "60 phút",
+        name: 'Đề thi minh họa THPT Quốc Gia 2023',
+        pracitce: 'Đề luyện tập số 1',
+        category: 'Phát âm',
+        time: '60 phút',
         attempts: 100,
-        uploadedAt: "22/12/2024",
-        by: "admin",
+        uploadedAt: '22/12/2024',
+        by: 'admin',
     },
 ];
 
 const ExamsCard = ({
-    type = "default",
-}: Readonly<{ type?: "default" | "practice" }>) => {
+    type = 'default',
+}: Readonly<{ type?: 'default' | 'practice' }>) => {
     return (
         <Card
             className="font-roboto"
             style={{
-                borderRadius: "32px",
-                borderWidth: "2px",
-                borderColor: "black",
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                paddingTop: "10px",
+                borderRadius: '32px',
+                borderWidth: '2px',
+                borderColor: 'black',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                paddingTop: '10px',
             }}
             bordered={true}
             title="Kho đề thi"
@@ -86,8 +86,8 @@ const ExamsCard = ({
             }
             styles={{
                 header: {
-                    border: "none",
-                    fontSize: "24px",
+                    border: 'none',
+                    fontSize: '24px',
                 },
             }}
         >
@@ -100,9 +100,9 @@ const ExamsCard = ({
                         gap={20}
                     >
                         <div className="font-roboto text-base font-medium">
-                            {type === "practice" ? exam.pracitce : exam.name}
+                            {type === 'practice' ? exam.pracitce : exam.name}
                         </div>
-                        {type === "practice" && (
+                        {type === 'practice' && (
                             <div className="font-roboto text-base font-medium">
                                 {exam.category}
                             </div>
