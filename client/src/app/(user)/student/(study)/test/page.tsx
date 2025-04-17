@@ -201,7 +201,10 @@ const TestFrame = ({
     test: Test;
 }>) => {
     const router = useRouter();
-    const iconSrc = theme === 'pink' ? '/home/home-8.svg' : '/home/home-4.png';
+    const iconSrc =
+        theme === 'pink'
+            ? '/home/home-8.svg'
+            : 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-4.png';
     const iconAlt = theme === 'pink' ? 'home icon 8' : 'home icon 4';
     const bgColor = theme === 'pink' ? '#E9DAE9' : '#DAE3E9';
     const objColor = theme === 'pink' ? '#4D2C5E' : '#2C2F5E';

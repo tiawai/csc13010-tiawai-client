@@ -1,6 +1,6 @@
-import { Flex } from "antd";
-import adminTiawai from "@public/admin/admin-tiawai.webp";
-import Image from "next/image";
+import { Flex } from 'antd';
+import adminTiawai from '@public/admin/admin-tiawai.webp';
+import Image from 'next/image';
 
 const Banner = ({ children }: { children: React.ReactNode }) => {
     return (

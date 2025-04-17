@@ -1,44 +1,44 @@
-import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Flex } from "antd";
-import Link from "next/link";
-import React from "react";
+import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Card, Flex } from 'antd';
+import Link from 'next/link';
+import React from 'react';
 
 const users = [
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
     {
-        username: "@admin",
+        username: '@admin',
     },
 ];
 
@@ -48,12 +48,12 @@ const UsersCard = () => {
             className="font-roboto"
             style={{
                 width: 375,
-                borderRadius: "32px",
-                borderWidth: "2px",
-                borderColor: "black",
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                paddingTop: "10px",
+                borderRadius: '32px',
+                borderWidth: '2px',
+                borderColor: 'black',
+                paddingLeft: '16px',
+                paddingRight: '16px',
+                paddingTop: '10px',
             }}
             bordered={true}
             title="Người dùng"
@@ -67,8 +67,8 @@ const UsersCard = () => {
             }
             styles={{
                 header: {
-                    border: "none",
-                    fontSize: "24px",
+                    border: 'none',
+                    fontSize: '24px',
                 },
             }}
         >
@@ -80,7 +80,7 @@ const UsersCard = () => {
                                 size={42}
                                 icon={<UserOutlined />}
                                 style={{
-                                    borderRadius: "19px",
+                                    borderRadius: '19px',
                                 }}
                             />
                             <div className="font-roboto text-base font-bold">
