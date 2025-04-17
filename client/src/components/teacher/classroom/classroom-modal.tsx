@@ -1,3 +1,4 @@
+// @/components/teacher/classroom/classroom-modal.tsx
 'use client';
 import { useEffect, useState } from 'react';
 import {
@@ -11,6 +12,7 @@ import {
     Image,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import type { UploadFile } from 'antd';
 import {
     useCreateClassroomMutation,
     useUpdateClassroomMutation,
@@ -30,6 +32,7 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
 }) => {
     const [form] = Form.useForm();
     const [previewImage, setPreviewImage] = useState<string | null>(null);
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [createClassroom, { isLoading: isCreating }] =
         useCreateClassroomMutation();
     const [updateClassroom, { isLoading: isUpdating }] =
@@ -44,9 +47,11 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
                 description: classroom.description,
             });
             setPreviewImage(classroom.backgroundImage);
+            setFileList([]);
         } else {
             form.resetFields();
             setPreviewImage(null);
+            setFileList([]);
         }
     }, [classroom, form]);
 
@@ -54,6 +59,15 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
         const reader = new FileReader();
         reader.onload = () => setPreviewImage(reader.result as string);
         reader.readAsDataURL(file);
+    };
+
+    const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
+        setFileList(fileList);
+        if (fileList.length > 0 && fileList[0].originFileObj) {
+            handlePreviewImage(fileList[0].originFileObj);
+        } else {
+            setPreviewImage(null);
+        }
     };
 
     const onFinish = async (values: CreateClassroomDto) => {
@@ -64,13 +78,8 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
         if (values.price !== undefined && values.price !== null) {
             formData.append('price', values.price.toString());
         }
-        if (values.image?.file) {
-            formData.append('image', values.image.file);
-        }
-
-        // Log FormData để debug
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+        if (fileList.length > 0 && fileList[0].originFileObj) {
+            formData.append('image', fileList[0].originFileObj);
         }
 
         try {
@@ -85,14 +94,15 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
             }
             form.resetFields();
             setPreviewImage(null);
+            setFileList([]);
             onClose();
-        } catch (error) {
+        } catch (error: unknown) {
             notification.error({
                 message: classroom
                     ? 'Cập nhật lớp học thất bại'
                     : 'Tạo lớp học thất bại',
                 description:
-                    error?.data?.message ||
+                    (error as { data: { message: string } })?.data?.message ||
                     'Lỗi không xác định. Vui lòng thử lại.',
             });
         }
@@ -138,7 +148,7 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
                     <InputNumber
                         min={1}
                         step={1}
-                        precision={0} // Chỉ cho phép số nguyên
+                        precision={0}
                         placeholder="Ví dụ: 30"
                         style={{ width: '100%' }}
                     />
@@ -166,10 +176,9 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
                 </Form.Item>
                 <Form.Item name="image" label="Hình nền lớp học">
                     <Upload
-                        beforeUpload={(file) => {
-                            handlePreviewImage(file);
-                            return false;
-                        }}
+                        fileList={fileList}
+                        beforeUpload={() => false} // Prevent auto-upload
+                        onChange={handleUploadChange}
                         maxCount={1}
                         accept="image/*"
                     >

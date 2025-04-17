@@ -8,6 +8,7 @@ const ignoreEndpoints = [
     'uploadImagesTR',
     'createClassroom',
     'updateClassroom',
+    'createLesson',
 ];
 
 const baseQuery = fetchBaseQuery({
@@ -39,5 +40,6 @@ export const appApi = createApi({
         'Flashcard',
         'Payment',
         'Classroom',
+        'Lesson',
     ],
 });

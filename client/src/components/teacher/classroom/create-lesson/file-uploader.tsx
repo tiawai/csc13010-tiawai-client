@@ -1,123 +1,76 @@
 'use client';
-import { useState } from 'react';
-import { Upload, Modal, message } from 'antd';
-import Image from 'next/image';
-import { PlusOutlined, FileOutlined, FilePdfOutlined } from '@ant-design/icons';
+import { Upload, Button, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd';
+import { useState } from 'react';
 
 interface FileUploaderProps {
     fileList: UploadFile[];
-    setFileList: React.Dispatch<React.SetStateAction<UploadFile[]>>;
+    setFileList: (fileList: UploadFile[]) => void;
 }
 
 const FileUploader: React.FC<FileUploaderProps> = ({
     fileList,
     setFileList,
 }) => {
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
-    const [previewTitle, setPreviewTitle] = useState('');
-
-    const getBase64 = (file: File): Promise<string> =>
-        new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = (error) => reject(error);
-        });
-
-    const handlePreview = async (file: UploadFile) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as File);
-        }
-
-        setPreviewImage(file.url || (file.preview as string));
-        setPreviewOpen(true);
-        setPreviewTitle(
-            file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1),
-        );
-    };
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange: UploadProps['onChange'] = ({
         fileList: newFileList,
     }) => {
-        setFileList(newFileList);
+        const validFiles = newFileList.filter((file) => {
+            const isValidType =
+                file.type === 'application/pdf' ||
+                file.type ===
+                    'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+            if (!isValidType && file.status !== 'removed') {
+                message.error(`${file.name} không phải là file PDF hoặc PPTX`);
+                return false;
+            }
+            return true;
+        });
+
+        if (validFiles.length > 10) {
+            message.error('Chỉ được upload tối đa 10 file');
+            setFileList(validFiles.slice(0, 10));
+        } else {
+            setFileList(validFiles);
+        }
+        setError(null);
     };
 
-    const handleCancel = () => setPreviewOpen(false);
-
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div style={{ marginTop: 8 }}>Thêm file</div>
-        </div>
-    );
+    const beforeUpload = (file: UploadFile) => {
+        const isValidType =
+            file.type === 'application/pdf' ||
+            file.type ===
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+        if (!isValidType) {
+            setError(`${file.name} không phải là file PDF hoặc PPTX`);
+            return false;
+        }
+        if (fileList.length >= 10) {
+            setError('Chỉ được upload tối đa 10 file');
+            return false;
+        }
+        return true;
+    };
 
     return (
-        <div className="mb-6">
+        <div className="mb-4">
             <label className="block text-xl font-medium">
-                Nội dung bài học
+                Tài liệu đính kèm
             </label>
-            <p className="my-3 text-lg text-gray-500">
-                Chọn file ảnh, pdf, word
-            </p>
-
-            <div className="mb-6">
-                <Upload
-                    listType="picture-card"
-                    fileList={fileList}
-                    onPreview={handlePreview}
-                    onChange={handleChange}
-                    beforeUpload={(file) => {
-                        const isValidType =
-                            file.type.includes('image') ||
-                            file.type.includes('pdf') ||
-                            file.type.includes('word') ||
-                            file.type.includes('document');
-
-                        if (!isValidType) {
-                            message.error(
-                                'Chỉ cho phép upload file ảnh, PDF hoặc Word!',
-                            );
-                            return Upload.LIST_IGNORE;
-                        }
-                        return false; // Ngăn chặn upload tự động
-                    }}
-                    multiple
-                >
-                    {fileList.length >= 8 ? null : uploadButton}
-                </Upload>
-
-                <Modal
-                    open={previewOpen}
-                    title={previewTitle}
-                    footer={null}
-                    onCancel={handleCancel}
-                >
-                    {previewImage && previewImage.includes('image') ? (
-                        <Image
-                            src={previewImage}
-                            alt="preview"
-                            width={300}
-                            height={200}
-                        />
-                    ) : (
-                        <div className="p-8 text-center">
-                            <p className="mb-3 text-xl font-medium">
-                                {previewTitle}
-                            </p>
-                            {previewTitle.endsWith('.pdf') ? (
-                                <FilePdfOutlined style={{ fontSize: 48 }} />
-                            ) : (
-                                <FileOutlined style={{ fontSize: 48 }} />
-                            )}
-                            <p className="mt-3">
-                                Xem trước không khả dụng cho loại file này
-                            </p>
-                        </div>
-                    )}
-                </Modal>
-            </div>
+            <Upload
+                fileList={fileList}
+                onChange={handleChange}
+                beforeUpload={beforeUpload}
+                multiple
+                accept=".pdf,.pptx"
+                maxCount={10}
+            >
+                <Button icon={<UploadOutlined />}>Chọn file (PDF, PPTX)</Button>
+            </Upload>
+            {error && <p className="mt-2 text-red-500">{error}</p>}
         </div>
     );
 };

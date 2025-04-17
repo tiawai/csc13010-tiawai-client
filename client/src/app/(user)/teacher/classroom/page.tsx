@@ -24,8 +24,7 @@ const ClassroomPage = () => {
         isLoading,
         error,
     } = useGetTeacherClassroomsQuery();
-    const [deleteClassroom, { isLoading: isDeleting }] =
-        useDeleteClassroomMutation();
+    const [deleteClassroom] = useDeleteClassroomMutation();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedClassroom, setSelectedClassroom] = useState<
         Classroom | undefined
@@ -34,7 +33,7 @@ const ClassroomPage = () => {
     const [classroomToDelete, setClassroomToDelete] = useState<string | null>(
         null,
     );
-    const [searchTerm, setSearchTerm] = useState<string>(''); // State cho từ khóa tìm kiếm
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
     const handleOpenModal = (classroom?: Classroom) => {
         setSelectedClassroom(classroom);
@@ -62,8 +61,12 @@ const ClassroomPage = () => {
             await deleteClassroom(classroomToDelete).unwrap();
             notification.success({ message: 'Xóa lớp học thành công!' });
             handleCloseConfirmModal();
-        } catch (error) {
-            notification.error({ message: 'Xóa lớp học thất bại' });
+        } catch (error: unknown) {
+            const err = error as Error;
+            notification.error({
+                message: 'Xóa lớp học thất bại',
+                description: err.message,
+            });
         }
     };
 
@@ -127,6 +130,7 @@ const ClassroomPage = () => {
                         {filteredClassrooms.map((classroom) => (
                             <Col key={classroom.id} xs={24} sm={12} md={8}>
                                 <Course
+                                    id={classroom.id}
                                     title={classroom.className}
                                     image={classroom.backgroundImage}
                                     star={Math.round(classroom.avgRating)}
