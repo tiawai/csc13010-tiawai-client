@@ -24,16 +24,17 @@ const nextConfig = {
     ];
   },
   // Increase API timeout for production
-  serverRuntimeConfig: {
-    // Will only be available on the server side
-    apiTimeout: 30000, // 30 seconds
-  },
-  // Enable CORS properly
   async rewrites() {
     return [
+      // Keep the NextAuth routes intact
+      {
+        source: '/api/auth/:path*',
+        destination: '/api/auth/:path*',
+      },
+      // Forward all other API requests to the backend
       {
         source: '/api/:path*',
-        destination: `${process.env.BACKEND_URL}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL}/:path*`,
       },
     ];
   },
