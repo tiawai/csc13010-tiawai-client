@@ -1,4 +1,5 @@
-import { Card, Dropdown, MenuProps } from 'antd';
+'use client';
+import { Card, Dropdown } from 'antd';
 import {
     StarFilled,
     UserOutlined,
@@ -7,15 +8,17 @@ import {
     EditOutlined,
     DeleteOutlined,
 } from '@ant-design/icons';
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
 
 interface CourseProps {
     title: string;
-    image: StaticImageData;
+    image: string;
     star: number;
     rating: number;
     price: string;
     students: string;
+    onEdit: () => void;
+    onDelete: () => void;
 }
 
 const Course: React.FC<CourseProps> = ({
@@ -25,13 +28,17 @@ const Course: React.FC<CourseProps> = ({
     rating,
     price,
     students,
+    onEdit,
+    onDelete,
 }) => {
-    // Menu của Dropdown chứa các hành động
-    const menuItems: MenuProps['items'] = [
+    const menuItems = [
         {
             key: 'edit',
             label: (
-                <span className="flex cursor-pointer items-center gap-2 p-2 font-semibold hover:bg-gray-100">
+                <span
+                    className="flex cursor-pointer items-center gap-2 p-2 font-semibold hover:bg-gray-100"
+                    onClick={onEdit}
+                >
                     <EditOutlined />
                     Sửa lớp
                 </span>
@@ -40,7 +47,10 @@ const Course: React.FC<CourseProps> = ({
         {
             key: 'delete',
             label: (
-                <span className="flex cursor-pointer items-center gap-2 p-2 font-semibold text-red-500 hover:bg-gray-100">
+                <span
+                    className="flex cursor-pointer items-center gap-2 p-2 font-semibold text-red-500 hover:bg-gray-100"
+                    onClick={onDelete}
+                >
                     <DeleteOutlined />
                     Xoá lớp
                 </span>
@@ -67,11 +77,13 @@ const Course: React.FC<CourseProps> = ({
                     <StarFilled
                         key={index}
                         className={
-                            index < star ? 'text-[#FF3000]' : 'text-gray-300'
+                            index < star ? '!text-[#FF3000]' : '!text-gray-300'
                         }
                     />
                 ))}
-                <span className="ml-2 font-semibold">{rating}k</span>
+                <span className="ml-2 font-semibold">
+                    {isNaN(Number(rating)) ? '0' : Number(rating).toFixed(1)}
+                </span>
             </div>
 
             <h3 className="my-2 text-xl font-bold">{title}</h3>
@@ -84,7 +96,6 @@ const Course: React.FC<CourseProps> = ({
                 </span>
             </div>
 
-            {/* Dropdown cho More Options */}
             <div className="flex justify-end">
                 <Dropdown
                     menu={{ items: menuItems }}
