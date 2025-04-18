@@ -12,6 +12,7 @@ import {
     CreateToeicListeningTestDto,
     SubmitTestDto,
 } from '@/types/test.type';
+import { get } from 'lodash';
 
 const testApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -155,6 +156,45 @@ const testApi = appApi.injectEndpoints({
                 body: body,
             }),
         }),
+
+        // create test for teacher
+        createNationalTestTeacher: builder.mutation<
+            Test,
+            CreateNationalTestDto
+        >({
+            query: ({ classroomId, ...body }) => ({
+                url: `/tests/teacher/national-test/${classroomId}`,
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        createToeicListeningTestTeacher: builder.mutation<
+            Test,
+            CreateToeicListeningTestDto
+        >({
+            query: ({ classroomId, audioUrl, test }) => ({
+                url: `/tests/teacher/toeic-listening-test/${classroomId}?audioUrl=${audioUrl}`,
+                method: 'POST',
+                body: test,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        createToeicReadingTestTeacher: builder.mutation<Test, CreateTestDto>({
+            query: ({ classroomId, ...body }) => ({
+                url: `/tests/teacher/toeic-reading-test/${classroomId}`,
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        getTestByClassroomId: builder.query<Test[], string>({
+            query: (classroomId) => `/tests/teacher/classroom/${classroomId}`,
+            providesTags: ['Test'],
+        }),
     }),
 });
 
@@ -181,4 +221,10 @@ export const {
     useCreatePart1TRMutation,
     useCreatePart2TRMutation,
     useCreatePart3TRMutation,
+
+    // Teacher test hooks
+    useCreateNationalTestTeacherMutation,
+    useCreateToeicListeningTestTeacherMutation,
+    useCreateToeicReadingTestTeacherMutation,
+    useGetTestByClassroomIdQuery,
 } = testApi;
