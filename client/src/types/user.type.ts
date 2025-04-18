@@ -11,6 +11,9 @@ export interface User {
     email: string;
     role: Role;
     profileImage?: string;
+    balance?: number;
+    birthdate?: string;
+    phone?: string;
 }
 
 export class UserUtils {

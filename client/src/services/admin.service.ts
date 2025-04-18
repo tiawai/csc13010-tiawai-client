@@ -5,14 +5,6 @@ import { User } from '@/types/user.type';
 const adminApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
-        getUsers: builder.query<User[], void>({
-            query: () => ({
-                url: '/user/users',
-                method: 'GET',
-            }),
-            providesTags: ['Auth'],
-        }),
-
         createExam: builder.mutation({
             query: (exam) => ({
                 url: '/exam',
@@ -41,7 +33,6 @@ const adminApi = appApi.injectEndpoints({
 });
 
 export const {
-    useGetUsersQuery,
     useCreateExamMutation,
     useGetExamsQuery,
     useDeleteExamByIdMutation,
