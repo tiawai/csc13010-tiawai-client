@@ -7,6 +7,7 @@ import { CardBorder } from '@/components/common/card';
 import { PageTitle } from '@/components/common/page';
 import { Test, TestType } from '@/types/test.type';
 import IconFrame from '@/ui/icon-frame';
+import { useState, useMemo } from 'react';
 
 const { Text, Title } = Typography;
 
@@ -111,7 +112,17 @@ const mockData: Test[] = [
 export default function TestPage() {
     const params = useSearchParams();
     const type = (params.get('type') as TestType) || TestType.NATIONAL_TEST;
-    const testData = mockData.filter((test) => test.type === type);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredTests = useMemo(() => {
+        return mockData.filter((test) => {
+            const matchesType = test.type === type;
+            const matchesSearch =
+                searchQuery === '' ||
+                test.title.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchesType && matchesSearch;
+        });
+    }, [type, searchQuery]);
 
     return (
         <div className="space-y-8">
@@ -133,12 +144,12 @@ export default function TestPage() {
                         <Title level={4}>Tìm kiếm</Title>
                         <Input.Search
                             placeholder="Tìm kiếm đề thi..."
-                            // enterButton="Tìm kiếm"
                             onSearch={(value) => {
-                                console.log('Search value:', value);
+                                setSearchQuery(value);
                             }}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            value={searchQuery}
                             allowClear
-                            // icon in the left
                             size="large"
                         />
                     </CardBorder>
@@ -162,17 +173,25 @@ export default function TestPage() {
                     </CardBorder>
                 </div>
                 <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
-                    {testData.map((test, index) => (
-                        <TestFrame
-                            key={index}
-                            theme={
-                                type === TestType.TOEIC_LISTENING
-                                    ? 'blue'
-                                    : 'pink'
-                            }
-                            test={test}
-                        />
-                    ))}
+                    {filteredTests.length > 0 ? (
+                        filteredTests.map((test, index) => (
+                            <TestFrame
+                                key={index}
+                                theme={
+                                    type === TestType.TOEIC_LISTENING
+                                        ? 'blue'
+                                        : 'pink'
+                                }
+                                test={test}
+                            />
+                        ))
+                    ) : (
+                        <div className="col-span-3 py-8 text-center">
+                            <Text className="text-lg">
+                                Không tìm thấy đề thi phù hợp
+                            </Text>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
