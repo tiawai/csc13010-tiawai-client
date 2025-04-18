@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Select, message } from 'antd';
 import { useRouter } from 'next/navigation';
-import { useCreatePaymentMutation } from '@/services/payment';
+import { useCreatePaymentMutation } from '@/services/payment.service';
 import { PaymentType, CreatePayment } from '@/types/payment.type';
 import { Classroom } from '@/types/classroom';
 
