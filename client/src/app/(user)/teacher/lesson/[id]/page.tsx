@@ -66,8 +66,8 @@ const ViewLesson = () => {
             notification.error({
                 message: 'Lỗi',
                 description:
-                    error?.data?.message ||
-                    'Xóa bài học thất bại. Vui lòng thử lại sau.',
+                    (error as { data: { message: string } })?.data?.message ||
+                    'Lỗi không xác định',
                 placement: 'topRight',
             });
         }
