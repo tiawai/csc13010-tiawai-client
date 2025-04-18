@@ -1,8 +1,21 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, Col, Divider, Row, Space, Tabs, Radio } from 'antd';
-import { CheckCircleOutlined } from '@ant-design/icons';
+import {
+    Button,
+    Card,
+    Col,
+    Divider,
+    Row,
+    Space,
+    Tabs,
+    Radio,
+    Modal,
+    Form,
+    Input,
+    Tooltip,
+} from 'antd';
+import { CheckCircleOutlined, FlagOutlined } from '@ant-design/icons';
 import { TestHistory } from '@/components/test/test-history';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import { useGetTestByIdQuery } from '@/services/test.service';
@@ -15,6 +28,8 @@ export default function TestPage({ params }: { params: { id: string } }) {
     const dispatch = useAppDispatch();
     const { refetch, data, isLoading } = useGetTestByIdQuery(params.id);
     const { test } = useAppSelector((state) => state.test);
+    const [isReportModalVisible, setIsReportModalVisible] = useState(false);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (data) {
@@ -33,10 +48,25 @@ export default function TestPage({ params }: { params: { id: string } }) {
         refetch();
     }, [refetch, params.id]);
 
-    // const [mode, setMode] = useState<'1' | '2'>('1');
-    // const onChange = (e: RadioChangeEvent) => {
-    //     setMode(e.target.value);
-    // };
+    const showReportModal = () => {
+        setIsReportModalVisible(true);
+    };
+
+    const handleReportCancel = () => {
+        setIsReportModalVisible(false);
+        form.resetFields();
+    };
+
+    const handleReportSubmit = () => {
+        form.validateFields().then((values) => {
+            console.log('Report submitted:', values);
+
+            // api call
+
+            setIsReportModalVisible(false);
+            form.resetFields();
+        });
+    };
 
     if (isLoading) {
         return <Loading />;
@@ -45,10 +75,23 @@ export default function TestPage({ params }: { params: { id: string } }) {
     return (
         <Card className="!shadow-xl">
             <Space direction="vertical" style={{ width: '100%' }}>
-                <Title level={4}>
-                    {test.title}{' '}
-                    <CheckCircleOutlined style={{ color: 'green' }} />
-                </Title>
+                <div className="flex items-center justify-between">
+                    <Title level={4} style={{ marginBottom: 0 }}>
+                        {test.title}{' '}
+                        <CheckCircleOutlined style={{ color: 'green' }} />
+                    </Title>
+                    <Tooltip title="Báo cáo đề thi">
+                        <Button
+                            icon={<FlagOutlined />}
+                            onClick={showReportModal}
+                            danger
+                            type="text"
+                            size="large"
+                        >
+                            Báo cáo
+                        </Button>
+                    </Tooltip>
+                </div>
 
                 <Radio.Group
                     size="large"
@@ -113,6 +156,42 @@ export default function TestPage({ params }: { params: { id: string } }) {
                         },
                     ]}
                 ></Tabs>
+
+                <Modal
+                    title="Báo cáo đề thi"
+                    open={isReportModalVisible}
+                    onCancel={handleReportCancel}
+                    footer={[
+                        <Button key="cancel" onClick={handleReportCancel}>
+                            Hủy
+                        </Button>,
+                        <Button
+                            key="submit"
+                            type="primary"
+                            onClick={handleReportSubmit}
+                        >
+                            Gửi báo cáo
+                        </Button>,
+                    ]}
+                >
+                    <Form form={form}>
+                        <Form.Item
+                            name="reason"
+                            label="Lý do báo cáo"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập lý do báo cáo!',
+                                },
+                            ]}
+                        >
+                            <Input.TextArea
+                                rows={4}
+                                placeholder="Nhập lý do báo cáo đề thi này..."
+                            />
+                        </Form.Item>
+                    </Form>
+                </Modal>
             </Space>
         </Card>
     );
