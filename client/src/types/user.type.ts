@@ -12,8 +12,19 @@ export interface User {
     role: Role;
     profileImage?: string;
     balance?: number;
-    birthdate?: string;
     phone?: string;
+    birthdate?: string;
+    gender?: 'male' | 'female' | null;
+    address?: string;
+}
+
+export interface UpdateUserDto {
+    username?: string;
+    email?: string;
+    phone?: string;
+    birthdate?: string;
+    gender?: 'male' | 'female' | null;
+    address?: string;
 }
 
 export class UserUtils {
