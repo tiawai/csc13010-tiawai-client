@@ -20,7 +20,7 @@ const config: Config = {
                 'tia-alice-blue': '#EDF6FF',
             },
             fontFamily: {
-                chango: ['Chango', 'sans-serif'],
+                chango: ['var(--font-chango)'],
                 roboto: ['var(--font-roboto)'],
                 instrument: ['Instrument Serif', 'serif'],
                 nunitosans: ['Nunito Sans', 'serif'],
