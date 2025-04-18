@@ -1,18 +1,20 @@
 'use client';
-import { Form, Input } from 'antd';
+import { Form, Input, Select } from 'antd';
 import { CardButton } from '@/components/common/card';
-import { Select } from 'antd';
-import { useUpdateBankAccountMutation } from '@/services/payment.service';
+//import { useUpdateBankAccountMutation } from '@/services/payment.service';
+import { useUpdateUserProfileMutation } from '@/services/user.service';
+import { useChangePasswordMutation } from '@/services/auth.service';
 import { useNotification } from '@/lib/hooks/use-notification';
+import { Role, UpdateUserDto } from '@/types/user.type';
 
 const { Option } = Select;
 
 const keyMap: { [key: string]: string } = {
-    name: 'Họ và tên',
+    username: 'Họ và tên',
     email: 'Email',
     gender: 'Giới tính',
     phone: 'Số điện thoại',
-    birthday: 'Ngày sinh',
+    birthdate: 'Ngày sinh',
     address: 'Địa chỉ',
     examTaken: 'Số đề thi đã làm',
     practiceTaken: 'Số chuyên đề đã tạo',
@@ -23,44 +25,120 @@ const UserUpdateInfoForm = ({
     props,
 }: {
     props: { [key: string]: string | number | boolean | undefined };
-}) => (
-    <Form
-        name="user-info"
-        labelCol={{ span: 12 }}
-        labelAlign="left"
-        wrapperCol={{ span: 12 }}
-        initialValues={{ remember: true }}
-        autoComplete="off"
-        variant="borderless"
-        size="small"
-        colon={false}
-    >
-        {Object.entries(props)
-            .filter(([key]) => key !== 'title' && key !== 'isUpdatingInfo')
-            .map(([key, value]) => (
-                <Form.Item
-                    className="mb-[1rem] h-7"
-                    key={key}
-                    name={key}
-                    label={
-                        <span className="font-roboto text-lg">
-                            {keyMap[key] || key}
-                        </span>
-                    }
-                >
-                    <Input
-                        className="font-roboto font-bold"
-                        placeholder={value?.toString() || ''}
-                    />
-                </Form.Item>
-            ))}
-        <CardButton
-            className="m-auto"
-            text="Cập nhật thông tin"
-            onClick={() => {}}
-        />
-    </Form>
-);
+}) => {
+    const [form] = Form.useForm();
+    const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation();
+    const { notify } = useNotification();
+
+    const onFinish = async (values: UpdateUserDto) => {
+        try {
+            if (values.birthdate) {
+                const [day, month, year] = values.birthdate.split('/');
+                values.birthdate = new Date(
+                    `${year}-${month}-${day}`,
+                ).toISOString();
+            }
+            await updateUserProfile(values).unwrap();
+            notify({
+                message: 'Cập nhật thông tin thành công',
+                description: 'Thông tin cá nhân đã được cập nhật.',
+            });
+        } catch (error: unknown) {
+            const err = error as Error;
+            notify({
+                message: 'Cập nhật thông tin thất bại',
+                description: err.message || 'Vui lòng thử lại sau',
+                notiType: 'error',
+            });
+        }
+    };
+
+    return (
+        <Form
+            form={form}
+            name="user-info"
+            labelCol={{ span: 12 }}
+            labelAlign="left"
+            wrapperCol={{ span: 12 }}
+            initialValues={{
+                username: props.username,
+                email: props.email,
+                gender: props.gender === 'Chưa cập nhật' ? null : props.gender,
+                phone: props.phone === 'Chưa cập nhật' ? '' : props.phone,
+                birthdate:
+                    props.birthdate === 'Chưa cập nhật' ? '' : props.birthdate,
+                address: props.address === 'Chưa cập nhật' ? '' : props.address,
+            }}
+            onFinish={onFinish}
+            autoComplete="off"
+            variant="borderless"
+            size="small"
+            colon={false}
+        >
+            {Object.entries(props)
+                .filter(([key]) => key !== 'title' && key !== 'isUpdatingInfo')
+                .map(([key]) => (
+                    <Form.Item
+                        className="mb-[1rem] h-7"
+                        key={key}
+                        name={key}
+                        label={
+                            <span className="font-roboto text-lg">
+                                {keyMap[key] || key}
+                            </span>
+                        }
+                        rules={
+                            key === 'email'
+                                ? [
+                                      {
+                                          type: 'email',
+                                          message: 'Email không hợp lệ',
+                                      },
+                                      {
+                                          required: true,
+                                          message: 'Vui lòng nhập email',
+                                      },
+                                  ]
+                                : key === 'username'
+                                  ? [
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng nhập họ và tên',
+                                        },
+                                    ]
+                                  : []
+                        }
+                    >
+                        {key === 'gender' ? (
+                            <Select
+                                className="font-roboto font-bold"
+                                placeholder="Chọn giới tính"
+                                allowClear
+                            >
+                                <Option value="male">Nam</Option>
+                                <Option value="female">Nữ</Option>
+                            </Select>
+                        ) : key === 'birthdate' ? (
+                            <Input
+                                className="font-roboto font-bold"
+                                placeholder="dd/mm/yyyy"
+                            />
+                        ) : (
+                            <Input
+                                className="font-roboto font-bold"
+                                placeholder={props[key]?.toString() || ''}
+                            />
+                        )}
+                    </Form.Item>
+                ))}
+            <CardButton
+                className="m-auto"
+                text="Cập nhật thông tin"
+                isLoading={isLoading}
+            />
+        </Form>
+    );
+};
 
 const FormLabel = ({ text }: { text: string }) => (
     <span className="font-roboto text-lg">{text}</span>
@@ -109,12 +187,51 @@ type UpdatePasswordFieldType = {
 };
 
 const UserUpdatePasswordForm = () => {
-    const onFinish = (values: UpdatePasswordFieldType) => {
-        console.log('Success:', values);
+    const [form] = Form.useForm();
+    const [changePassword, { isLoading }] = useChangePasswordMutation();
+    const { notify } = useNotification();
+
+    const onFinish = async (values: UpdatePasswordFieldType) => {
+        try {
+            const { oldPassword, newPassword, confirmPassword } = values;
+
+            // Validate password confirmation
+            if (newPassword !== confirmPassword) {
+                notify({
+                    message: 'Xác nhận mật khẩu không khớp',
+                    description:
+                        'Mật khẩu mới và xác nhận mật khẩu phải giống nhau',
+                    notiType: 'error',
+                });
+                return;
+            }
+
+            await changePassword({
+                oldPassword,
+                newPassword,
+                confirmPassword,
+            }).unwrap();
+
+            notify({
+                message: 'Cập nhật mật khẩu thành công',
+                description: 'Mật khẩu của bạn đã được cập nhật thành công.',
+            });
+
+            // Reset form after successful update
+            form.resetFields();
+        } catch (error: unknown) {
+            const err = error as Error;
+            notify({
+                message: 'Cập nhật mật khẩu thất bại',
+                description: err.message || 'Vui lòng thử lại sau',
+                notiType: 'error',
+            });
+        }
     };
 
     return (
         <Form
+            form={form}
             name="password"
             labelCol={{ span: 12 }}
             labelAlign="left"
@@ -138,7 +255,7 @@ const UserUpdatePasswordForm = () => {
             <CardButton
                 className="m-auto"
                 text="Cập nhật mật khẩu"
-                onClick={() => {}}
+                isLoading={isLoading}
             />
         </Form>
     );
@@ -246,31 +363,31 @@ export const UpdateBankAccountFormItems = [
 
 export const UserUpdateBankAccountForm = () => {
     const [form] = Form.useForm();
-    const [updateBankAcount, { isLoading }] = useUpdateBankAccountMutation();
+    // const [updateBankAcount, { isLoading }] = useUpdateBankAccountMutation();
     const { notify } = useNotification();
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
         const { accountNumber, accountHolderName, bankName } = values;
-        const res = await updateBankAcount({
-            accountNumber,
-            accountHolderName,
-            bankName,
-        });
+        // const res = await updateBankAcount({
+        //     accountNumber,
+        //     accountHolderName,
+        //     bankName,
+        // });
 
-        if (res.error) {
-            notify({
-                message: 'Cập nhật tài thất bại',
-                description:
-                    'Đã có lỗi xảy ra khi cập nhật tài khoản ngân hàng.',
-                notiType: 'error',
-            });
-        } else {
-            notify({
-                message: 'Cập nhật tài thành công',
-                description: 'Tài khoản ngân hàng đã được cập nhật thành công.',
-            });
-        }
+        // if (res.error) {
+        //     notify({
+        //         message: 'Cập nhật tài thất bại',
+        //         description:
+        //             'Đã có lỗi xảy ra khi cập nhật tài khoản ngân hàng.',
+        //         notiType: 'error',
+        //     });
+        // } else {
+        //     notify({
+        //         message: 'Cập nhật tài thành công',
+        //         description: 'Tài khoản ngân hàng đã được cập nhật thành công.',
+        //     });
+        // }
     };
 
     return (
@@ -296,11 +413,11 @@ export const UserUpdateBankAccountForm = () => {
                     {item.component}
                 </Form.Item>
             ))}
-            <CardButton
+            {/* <CardButton
                 className="m-auto"
                 text="Cập nhật tài khoản ngân hàng"
                 isLoading={isLoading}
-            />
+            /> */}
         </Form>
     );
 };

@@ -97,13 +97,12 @@ const ClassroomModal: React.FC<ClassroomModalProps> = ({
             setFileList([]);
             onClose();
         } catch (error: unknown) {
+            const err = error as Error;
             notification.error({
                 message: classroom
                     ? 'Cập nhật lớp học thất bại'
                     : 'Tạo lớp học thất bại',
-                description:
-                    (error as { data: { message: string } })?.data?.message ||
-                    'Lỗi không xác định. Vui lòng thử lại.',
+                description: err.message || 'Vui lòng thử lại sau',
             });
         }
     };

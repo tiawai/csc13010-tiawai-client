@@ -73,9 +73,11 @@ const EditLesson = () => {
                 router.push('/');
             }
         } catch (error: unknown) {
+            const err = error as Error;
             notification.error({
                 message: 'Cập nhật bài học thất bại',
-                description: error?.data?.message || 'Lỗi không xác định',
+                description:
+                    err.message || 'Lỗi không xác định. Vui lòng thử lại.',
             });
         }
     };
