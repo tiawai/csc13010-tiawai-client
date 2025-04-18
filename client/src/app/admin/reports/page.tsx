@@ -114,6 +114,7 @@ export default function AdminReportsPage() {
                 render: (record: Report) => (
                     <Flex justify="start" gap={10}>
                         <Select
+                            className="grow"
                             loading={isLoadingUpdate}
                             disabled={isLoadingUpdate}
                             value={record.status}
