@@ -13,7 +13,6 @@ const services = [
     { name: 'Kỹ Năng IELTS', link: '/' },
     { name: 'Ôn Thi THPTQG', link: '/' },
     { name: 'Flashcard', link: '/' },
-    { name: 'Challenge', link: '/' },
     { name: 'Lớp Học', link: '/' },
 ];
 
@@ -43,17 +42,17 @@ const Footer = () => {
                 <Row gutter={[32, 32]}>
                     <Col xs={24} md={8}>
                         <Link href="/" className="flex items-center gap-3">
-                            <div className="rounded-full bg-[#5369A1] p-2">
+                            <div className="min-h-max min-w-max items-center rounded-full bg-[#5369A1] px-[9px] py-[3px]">
                                 <Image
+                                    className="h-auto w-auto"
                                     src={logo}
                                     alt="logo"
-                                    width={40}
-                                    height={40}
+                                    priority
                                 />
                             </div>
-                            <h4 className="font-chango text-lg font-normal text-black">
+                            <div className="!font-chango text-xl !font-normal text-black">
                                 tiawai
-                            </h4>
+                            </div>
                         </Link>
                         <p className="mt-2 text-xl font-bold">
                             Nền tảng học Tiếng Anh với AI

@@ -46,7 +46,6 @@ const studentItems: MenuProps["items"] = [
     },
     { label: <Link href={`/student/test?type=${TestType.NATIONAL_TEST}`}>Ôn thi THPTQG</Link>, key: "thptqg" },
     { label: <Link href="/student/flashcard">Flashcard</Link>, key: "flashcard" },
-    { label: <Link href="/student/challenge">Challenge</Link>, key: "challenge" },
     { label: <Link href="/student/class">Lớp học</Link>, key: "class" },
     { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
     // { label: <Link href="/student/exam">Đề thi</Link>, key: "exam" },
@@ -71,7 +70,6 @@ const adminItems: MenuProps["items"] = [
     { label: <Link href="/admin/tests">Quản lý đề thi</Link>, key: "tests" },
     { label: <Link href="/admin/reports">Quản lý báo cáo</Link>, key: "reports" },
     { label: <Link href="/admin/payments">Quản lý giao dịch</Link>, key: "payments" },
-    { label: <Link href="/admin/challenges">Quản lý challenge</Link>, key: "challenges" },
 ];
 
 // prettier-ignore
