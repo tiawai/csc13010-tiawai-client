@@ -16,6 +16,7 @@ import { twMerge } from 'tailwind-merge';
 import ClassFrame from '@/ui/home/class-frame';
 import FindClassInput from '@/ui/components/find-class-input';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 const { Title, Paragraph } = Typography;
 
 export interface ExamData {
@@ -155,43 +156,49 @@ const examData: ExamData[] = [
 
 const classData = [
     {
-        image: '',
-        rating: 4.8,
+        id: '1',
+        className: 'Lớp học 1',
+        description: 'Mô tả lớp học 1',
+        backgroundImage:
+            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-1.jpg',
+        maxStudent: 150,
         price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
+        avgRating: 4.8,
+        totalLessons: 15,
+        classCode: 'CLASS001',
+        teacherId: 'teacher1',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
     },
     {
-        image: '',
-        rating: 4.8,
+        id: '2',
+        className: 'Lớp học 2',
+        description: 'Mô tả lớp học 2',
+        backgroundImage:
+            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-2.jpg',
+        maxStudent: 150,
         price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
+        avgRating: 4.8,
+        totalLessons: 15,
+        classCode: 'CLASS002',
+        teacherId: 'teacher2',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
     },
     {
-        image: '',
-        rating: 4.8,
+        id: '3',
+        className: 'Lớp học 3',
+        description: 'Mô tả lớp học 3',
+        backgroundImage:
+            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-3.jpg',
+        maxStudent: 150,
         price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
+        avgRating: 4.8,
+        totalLessons: 15,
+        classCode: 'CLASS003',
+        teacherId: 'teacher3',
+        createdAt: '2023-01-01',
+        updatedAt: '2023-01-01',
     },
 ];
 
@@ -247,6 +254,11 @@ export default function Home() {
     // ];
 
     const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleClassSearch = (value: string) => {
+        setSearchQuery(value);
+    };
 
     return (
         <main className="flex select-none flex-col items-center justify-center">
@@ -377,7 +389,10 @@ export default function Home() {
                                 {HOME_HEADERS[1].description}
                             </Description>
                         </div>
-                        <FindClassInput className="-mt-10 flex-[0.4]" />
+                        <FindClassInput
+                            className="-mt-10 flex-[0.4]"
+                            onSearch={handleClassSearch}
+                        />
                     </Flex>
                     <Row gutter={[40, 24]} className="mb-10">
                         {classData.map((classItem, index) => (
