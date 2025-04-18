@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Roboto, Nunito_Sans } from 'next/font/google';
+import { Roboto, Nunito_Sans, Chango } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import NextAuthWrapper from '@/next-auth-wrapper';
 import ThemeProvider from './theme';
@@ -20,6 +20,13 @@ const nunitoSans = Nunito_Sans({
     variable: '--font-nunito-sans',
 });
 
+const chango = Chango({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: ['400'],
+    variable: '--font-chango',
+});
+
 export const metadata: Metadata = {
     title: 'tiawai',
     description: 'Nền tảng luyện thi  THPTQG môn Tiếng Anh cùng với AI',
@@ -33,7 +40,7 @@ export default function RootLayout({
     return (
         <html lang="vn">
             <body
-                className={`${roboto.variable} ${nunitoSans.variable} bg-white antialiased`}
+                className={`${roboto.variable} ${nunitoSans.variable} ${chango.variable} bg-white antialiased`}
             >
                 <ThemeProvider>
                     <StoreProvider>
