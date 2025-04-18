@@ -1,5 +1,5 @@
 'use client';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { DownOutlined } from '@ant-design/icons';
 import {
     Table,
@@ -10,6 +10,7 @@ import {
     Dropdown,
     Spin,
     Empty,
+    notification,
 } from 'antd';
 import type { MenuProps } from 'antd';
 import {
@@ -23,19 +24,14 @@ import { useState } from 'react';
 import LessonCard from '@/components/teacher/exam/lessonCard';
 import TestCard from '@/components/teacher/exam/testCard';
 import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
+import ConfirmModal from '@/components/common/confirm-modal';
 import {
     useGetClassroomByIdQuery,
     useGetLessonsQuery,
+    useGetClassroomStudentsQuery,
+    useRemoveStudentFromClassroomMutation,
 } from '@/services/classroom';
-
-interface Student {
-    key: string;
-    username: string;
-    avatar: string;
-    email: string;
-    phone: string;
-}
+import { Student } from '@/types/classroom.type';
 
 const examList = [
     { id: 1, title: 'Đề Thi Toán 2023', duration: 90, attempts: 150 },
@@ -44,43 +40,13 @@ const examList = [
     { id: 4, title: 'Đề Thi Tiếng Anh 2023', duration: 45, attempts: 80 },
 ];
 
-const students: Student[] = [
-    {
-        key: '1',
-        username: '@leon_pwrr',
-        avatar: 'https://via.placeholder.com/40',
-        email: 'leon@gmail.com',
-        phone: '0123 456 789',
-    },
-    {
-        key: '2',
-        username: '@john_doe',
-        avatar: 'https://via.placeholder.com/40',
-        email: 'john@gmail.com',
-        phone: '0987 654 321',
-    },
-    {
-        key: '3',
-        username: '@jane_smith',
-        avatar: 'https://via.placeholder.com/40',
-        email: 'jane@gmail.com',
-        phone: '0345 678 901',
-    },
-    {
-        key: '4',
-        username: '@emma_watson',
-        avatar: 'https://via.placeholder.com/40',
-        email: 'emma@gmail.com',
-        phone: '0765 432 109',
-    },
-];
-
 const columns: TableColumnsType<Student> = [
     {
         title: 'STT',
-        dataIndex: 'key',
-        key: 'key',
+        dataIndex: 'id',
+        key: 'id',
         align: 'center',
+        render: (_, __, index) => index + 1,
     },
     {
         title: 'Người dùng',
@@ -89,7 +55,7 @@ const columns: TableColumnsType<Student> = [
         align: 'center',
         render: (text: string, record: Student) => (
             <div className="ml-3 flex items-center gap-2">
-                <Avatar src={record.avatar} />
+                <Avatar src={record.profileImage} />
                 <span>{text}</span>
             </div>
         ),
@@ -101,31 +67,72 @@ const columns: TableColumnsType<Student> = [
         align: 'center',
     },
     {
-        title: 'Số điện thoại',
-        dataIndex: 'phone',
-        key: 'phone',
-        align: 'center',
-    },
-    {
         title: 'Tác vụ',
         key: 'actions',
         align: 'center',
-        render: () => (
-            <div className="flex items-center justify-center gap-2">
-                <Button size="small" className="bg-gray-200">
-                    <EyeOutlined /> Xem
-                </Button>
-                <Button size="small" danger>
-                    <DeleteOutlined /> Xoá
-                </Button>
-            </div>
+        render: (_, record: Student) => (
+            <StudentActions studentId={record.id} />
         ),
     },
 ];
 
+const StudentActions: React.FC<{ studentId: string }> = ({ studentId }) => {
+    const { id: classId } = useParams();
+    const [removeStudent, { isLoading: isRemoving }] =
+        useRemoveStudentFromClassroomMutation();
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    const handleDelete = async () => {
+        try {
+            await removeStudent({
+                classId: classId as string,
+                studentId,
+            }).unwrap();
+            notification.success({
+                message: 'Xóa học sinh khỏi lớp thành công!',
+            });
+            setIsConfirmModalOpen(false);
+        } catch (error: unknown) {
+            notification.error({
+                message: 'Xóa học sinh thất bại',
+                description: error?.data?.message || 'Lỗi không xác định',
+            });
+        }
+    };
+
+    return (
+        <>
+            <div className="flex items-center justify-center gap-2">
+                <Button
+                    size="small"
+                    className="bg-gray-200"
+                    onClick={() => {}}
+                    disabled={isRemoving}
+                >
+                    <EyeOutlined /> Xem
+                </Button>
+                <Button
+                    size="small"
+                    danger
+                    onClick={() => setIsConfirmModalOpen(true)}
+                    disabled={isRemoving}
+                >
+                    <DeleteOutlined /> Xóa
+                </Button>
+            </div>
+            <ConfirmModal
+                open={isConfirmModalOpen}
+                content="Bạn có chắc chắn muốn xóa học sinh này khỏi lớp học không?"
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmModalOpen(false)}
+            />
+        </>
+    );
+};
+
 const ClassManagement = () => {
     const router = useRouter();
-    const { id } = useParams(); // Lấy classroomId từ URL
+    const { id } = useParams();
     const [activeTab, setActiveTab] = useState('students');
     const [activeTable, setActiveTable] = useState('lessons');
 
@@ -140,6 +147,12 @@ const ClassManagement = () => {
         isLoading: isLessonsLoading,
         error: lessonsError,
     } = useGetLessonsQuery({ classId: id as string });
+
+    const {
+        data: students,
+        isLoading: isStudentsLoading,
+        error: studentsError,
+    } = useGetClassroomStudentsQuery(id as string);
 
     const handleMenuClick = (key: string) => {
         if (key === '1') {
@@ -271,17 +284,27 @@ const ClassManagement = () => {
                         )}
                     </div>
                     {activeTab === 'students' ? (
-                        <Table
-                            size="small"
-                            dataSource={students}
-                            columns={columns}
-                            bordered
-                            pagination={{
-                                position: ['bottomCenter'],
-                                pageSize: 20,
-                            }}
-                            className="student-table"
-                        />
+                        isStudentsLoading ? (
+                            <div className="flex justify-center">
+                                <Spin size="large" />
+                            </div>
+                        ) : studentsError ? (
+                            <Empty description="Lỗi khi tải danh sách học sinh" />
+                        ) : students && students.length > 0 ? (
+                            <Table
+                                size="small"
+                                dataSource={students}
+                                columns={columns}
+                                bordered
+                                pagination={{
+                                    position: ['bottomCenter'],
+                                    pageSize: 20,
+                                }}
+                                className="student-table"
+                            />
+                        ) : (
+                            <Empty description="Không có học sinh nào" />
+                        )
                     ) : (
                         <div className="grid grid-cols-1 place-items-center gap-4 p-2 sm:grid-cols-2">
                             {activeTable === 'lessons' ? (

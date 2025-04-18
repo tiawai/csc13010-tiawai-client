@@ -4,16 +4,23 @@ import { SearchOutlined } from '@ant-design/icons';
 
 interface SearchFormProps {
     onSearch: (value: string) => void;
+    title?: string;
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearch }) => {
+const SearchForm: React.FC<SearchFormProps> = ({
+    onSearch,
+    title = 'Tìm kiếm',
+}) => {
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+        onSearch(e.target.value);
+    };
+
     return (
         <Input
-            size="large"
-            placeholder="Tìm kiếm lớp học"
+            placeholder={title}
+            className="-right-1 !mb-8 !w-[35rem] !rounded-full !border-2 !border-black"
             prefix={<SearchOutlined />}
-            onChange={(e) => onSearch(e.target.value)}
-            className="-right-1 mb-8 w-[35rem] rounded-full border-2 border-black"
+            onChange={handleSearch}
         />
     );
 };

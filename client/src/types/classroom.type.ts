@@ -37,3 +37,10 @@ export interface CreateLessonDto {
     content: string;
     files?: File[];
 }
+
+export interface Student {
+    id: string;
+    username: string;
+    email: string;
+    profileImage: string;
+}

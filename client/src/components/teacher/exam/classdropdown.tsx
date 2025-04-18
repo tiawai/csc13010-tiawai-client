@@ -1,32 +1,38 @@
+// @/components/teacher/exam/classdropdown.tsx
 'use client';
-import { Dropdown, Button, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
+import { Select, Spin } from 'antd';
+import { Classroom } from '@/types/classroom.type';
 
-const ClassDropdown = () => {
-    const handleMenuClick: MenuProps['onClick'] = (e) => {
-        console.log('Selected class:', e.key);
-    };
+interface ClassDropdownProps {
+    classrooms: Classroom[];
+    onSelect: (classId: string | undefined) => void;
+    loading: boolean;
+}
 
-    const items: MenuProps['items'] = [
-        { label: 'Lớp 1', key: '1' },
-        { label: 'Lớp 2', key: '2' },
-        { label: 'Lớp 3', key: '3', danger: true },
-        { label: 'Lớp 4', key: '4', danger: true, disabled: true },
-    ];
-
+const ClassDropdown: React.FC<ClassDropdownProps> = ({
+    classrooms,
+    onSelect,
+    loading,
+}) => {
     return (
-        <Dropdown menu={{ items, onClick: handleMenuClick }}>
-            <Button
-                size="large"
-                className="mb-8 w-52 rounded-full border-2 border-black shadow-md"
+        <div className="mb-8 w-52 overflow-hidden rounded-full border-2 border-black shadow-md">
+            <Select
+                placeholder="Chọn lớp học"
+                onChange={(value) => onSelect(value || undefined)}
+                loading={loading}
+                className="w-full !text-black"
+                allowClear
             >
-                <Space size="large">
-                    Chọn lớp
-                    <DownOutlined />
-                </Space>
-            </Button>
-        </Dropdown>
+                <Select.Option key="all" value="">
+                    Tất cả
+                </Select.Option>
+                {classrooms.map((classroom) => (
+                    <Select.Option key={classroom.id} value={classroom.id}>
+                        {classroom.className}
+                    </Select.Option>
+                ))}
+            </Select>
+        </div>
     );
 };
 

@@ -1,5 +1,5 @@
 import { appApi } from '@/services/config.service';
-import { Classroom, Lesson } from '@/types/classroom.type';
+import { Classroom, Lesson, Student } from '@/types/classroom.type';
 
 const classroomApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -17,6 +17,13 @@ const classroomApi = appApi.injectEndpoints({
                 method: 'GET',
             }),
             providesTags: (result, error, id) => [{ type: 'Classroom', id }],
+        }),
+        getClassroomStudents: builder.query<Student[], string>({
+            query: (classId) => ({
+                url: `/classrooms/${classId}/students`,
+                method: 'GET',
+            }),
+            providesTags: ['Student'],
         }),
         getLessons: builder.query<Lesson[], { classId?: string }>({
             query: ({ classId }) => ({
@@ -85,12 +92,23 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Lesson'],
         }),
+        removeStudentFromClassroom: builder.mutation<
+            void,
+            { classId: string; studentId: string }
+        >({
+            query: ({ classId, studentId }) => ({
+                url: `/classrooms/${classId}/student/${studentId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Student'],
+        }),
     }),
 });
 
 export const {
     useGetTeacherClassroomsQuery,
     useGetClassroomByIdQuery,
+    useGetClassroomStudentsQuery,
     useGetLessonsQuery,
     useGetLessonByIdQuery,
     useCreateClassroomMutation,
@@ -99,4 +117,5 @@ export const {
     useCreateLessonMutation,
     useUpdateLessonMutation,
     useDeleteLessonMutation,
+    useRemoveStudentFromClassroomMutation,
 } = classroomApi;

@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import videoIcon from '@public/teacher/video.svg';
 import { useDeleteLessonMutation } from '@/services/classroom';
+import { useState } from 'react';
+import ConfirmModal from '@/components/common/confirm-modal';
 
 interface LessonCardProps {
     id: string;
@@ -15,6 +17,7 @@ interface LessonCardProps {
 const LessonCard: React.FC<LessonCardProps> = ({ id, title }) => {
     const router = useRouter();
     const [deleteLesson, { isLoading: isDeleting }] = useDeleteLessonMutation();
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const handleView = () => {
         router.push(`/teacher/lesson/${id}`);
@@ -28,6 +31,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ id, title }) => {
         try {
             await deleteLesson(id).unwrap();
             notification.success({ message: 'Xóa bài học thành công!' });
+            setIsConfirmModalOpen(false);
         } catch (error: unknown) {
             notification.error({
                 message: 'Xóa bài học thất bại',
@@ -54,7 +58,7 @@ const LessonCard: React.FC<LessonCardProps> = ({ id, title }) => {
             label: (
                 <span
                     className="flex cursor-pointer items-center gap-2 font-semibold text-red-500 hover:bg-gray-100"
-                    onClick={handleDelete}
+                    onClick={() => setIsConfirmModalOpen(true)}
                 >
                     <DeleteOutlined />
                     Xóa bài học
@@ -92,6 +96,12 @@ const LessonCard: React.FC<LessonCardProps> = ({ id, title }) => {
                     </Dropdown>
                 </div>
             </div>
+            <ConfirmModal
+                open={isConfirmModalOpen}
+                content="Bạn có chắc chắn muốn xóa bài học này không?"
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmModalOpen(false)}
+            />
         </div>
     );
 };
