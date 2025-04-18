@@ -11,6 +11,10 @@ const keyMap: { [key: string]: string } = {
     examTaken: 'Số đề thi đã làm',
     practiceTaken: 'Số chuyên đề đã tạo',
     vocabularies: 'Số từ vựng đã học',
+
+    accountNumber: 'Số tài khoản',
+    accountName: 'Tên tài khoản',
+    bankName: 'Tên ngân hàng',
 };
 
 interface UserInfoDisplayProps {
@@ -27,7 +31,7 @@ const UserInfoDisplay = ({ props }: { props: UserInfoDisplayProps }) => (
                         {keyMap[key] || key}
                     </Col>
                     <Col span={12} className="font-roboto text-lg font-bold">
-                        {value?.toString() || ''}
+                        {value?.toString() || 'Chưa cập nhật'}
                     </Col>
                 </Row>
             ))}

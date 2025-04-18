@@ -3,6 +3,8 @@ import { Button, Empty, Table, Tag } from 'antd';
 import {
     useGetAllPaymentsQuery,
     useLazyGetPayoutQuery,
+    useProcessPayoutMutation,
+    useUpdatePayoutSuccessMutation,
 } from '@/services/payment.service';
 import { AdminBanner } from '@/components/common/banner';
 import { ColumnsType } from 'antd/es/table';
@@ -75,12 +77,17 @@ const columns: ColumnsType<Payment> = [
 ];
 
 export default function AdminPaymentsPage() {
-    const { data: payments, isLoading } = useGetAllPaymentsQuery();
-    const [getPayout, { data: payoutData, isLoading: isLoadingPayout }] =
-        useLazyGetPayoutQuery();
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { notify } = useNotification();
+
+    const { data: payments, isLoading } = useGetAllPaymentsQuery();
+    const [getPayout, { data: payoutData, isLoading: isLoadingPayout }] =
+        useLazyGetPayoutQuery();
+    const [processPayout, { isLoading: isLoadingProcess }] =
+        useProcessPayoutMutation();
+    const [updatePayoutSuccess, { isLoading: isLoadingSuccess }] =
+        useUpdatePayoutSuccessMutation();
 
     const searchFn = (payment: Payment, query: string) => {
         const value = query.toLowerCase();
@@ -103,7 +110,9 @@ export default function AdminPaymentsPage() {
 
     const handleCopy = () => {
         const text =
-            payoutData?.map((item) => JSON.stringify(item)).join('\n') ?? '';
+            payoutData?.payouts
+                .map((item) => JSON.stringify(item))
+                .join('\n') ?? '';
         navigator.clipboard.writeText(text);
         notify({
             message: 'Đã sao chép vào clipboard',
@@ -112,16 +121,18 @@ export default function AdminPaymentsPage() {
     };
 
     const handleDownloadCSV = () => {
-        if (!payoutData || payoutData.length === 0) return;
-        const header = Object.keys(payoutData[0]).join(',');
-        const rows = payoutData.map((obj) => Object.values(obj).join(','));
+        if (!payoutData || payoutData.payouts.length === 0) return;
+        const header = Object.keys(payoutData.payouts[0]).join(',');
+        const rows = payoutData.payouts.map((obj) =>
+            Object.values(obj).join(','),
+        );
         const csv = [header, ...rows].join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
         saveAs(blob, 'danh_sach_payout.csv');
     };
 
     const handleDownload = () => {
-        if (payoutData && payoutData.length > 0) {
+        if (payoutData && payoutData.payouts.length > 0) {
             handleDownloadCSV();
         } else {
             notify({
@@ -134,40 +145,63 @@ export default function AdminPaymentsPage() {
     return (
         <>
             <div className="space-y-4">
-                <AdminBanner text="Quản lý thanh toán" />
+                <AdminBanner text="Quản lý giao dịch" />
                 <div className="flex items-center justify-between gap-4">
                     <TableInputSearch
-                        placeholder="Tìm kiếm đề thi"
+                        placeholder="Tìm kiếm giao dịch"
                         value={searchText}
                         onChange={handleSearch}
                     />
-                    <Button
-                        onClick={async () => {
-                            try {
-                                const res = await getPayout().unwrap();
-                                if (res && res.length > 0) {
-                                    setIsModalOpen(true);
-                                } else {
+                    <div className="flex gap-4">
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    const res = await getPayout().unwrap();
+                                    if (res && res.payouts.length > 0) {
+                                        setIsModalOpen(true);
+                                    } else {
+                                        notify({
+                                            message: 'Không có dữ liệu payout',
+                                            description:
+                                                'Không có dữ liệu payout để hiển thị.',
+                                        });
+                                    }
+                                } catch (err) {
                                     notify({
-                                        message: 'Không có dữ liệu payout',
+                                        message: 'Lỗi khi lấy dữ liệu payout',
                                         description:
-                                            'Không có dữ liệu payout để hiển thị.',
+                                            'Đã có lỗi xảy ra khi lấy dữ liệu payout.',
+                                        notiType: 'error',
                                     });
                                 }
-                            } catch (err) {
-                                notify({
-                                    message: 'Lỗi khi lấy dữ liệu payout',
-                                    description:
-                                        'Đã có lỗi xảy ra khi lấy dữ liệu payout.',
-                                    notiType: 'error',
-                                });
-                                console.error(err);
-                            }
-                        }}
-                        loading={isLoadingPayout}
-                    >
-                        Xuất Payout
-                    </Button>
+                            }}
+                            loading={isLoadingPayout}
+                        >
+                            Xuất Payout
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                                try {
+                                    await updatePayoutSuccess().unwrap();
+                                    notify({
+                                        message: 'Cập nhật thành công',
+                                        description:
+                                            'Cập nhật trạng thái payout thành công.',
+                                    });
+                                } catch (err) {
+                                    notify({
+                                        message: 'Lỗi khi cập nhật trạng thái',
+                                        description:
+                                            'Đã có lỗi xảy ra khi cập nhật trạng thái payout.',
+                                        notiType: 'error',
+                                    });
+                                }
+                            }}
+                            loading={isLoadingSuccess}
+                        >
+                            Kết thúc Payout hiện tại
+                        </Button>
+                    </div>
                 </div>
                 <Table
                     rowKey={(record) => record.id}
@@ -210,6 +244,18 @@ export default function AdminPaymentsPage() {
                     <Button key="download" onClick={handleDownload}>
                         Tải xuống
                     </Button>,
+                    <Button
+                        key="confirm"
+                        onClick={async () => {
+                            await processPayout({
+                                payments: payoutData?.payments || [],
+                            });
+                            setIsModalOpen(false);
+                        }}
+                        loading={isLoadingProcess}
+                    >
+                        Xác nhận Payout
+                    </Button>,
                     <Button key="close" onClick={() => setIsModalOpen(false)}>
                         Đóng
                     </Button>,
@@ -217,7 +263,7 @@ export default function AdminPaymentsPage() {
             >
                 <pre className="max-h-[300px] overflow-auto text-sm">
                     {payoutData &&
-                        payoutData
+                        payoutData.payouts
                             .map((item) => JSON.stringify(item, null, 2))
                             .join('\n')}
                 </pre>
