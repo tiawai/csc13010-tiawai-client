@@ -1,10 +1,17 @@
 import { appApi } from '@/services/config.service';
 import { UserHistoryExam } from '@/types/exam';
-import { User } from '@/types/user.type';
+import { Role, User } from '@/types/user.type';
 
 const userApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
+        getUsers: builder.query<User[], Role>({
+            query: (role) => ({
+                url: `/users?role=${role}`,
+                method: 'GET',
+            }),
+        }),
+
         getMyProfile: builder.query<User, void>({
             query: () => ({
                 url: '/users/user',
@@ -46,6 +53,7 @@ const userApi = appApi.injectEndpoints({
 });
 
 export const {
+    useGetUsersQuery,
     useGetMyProfileQuery,
     useGetMyStatisticsQuery,
     useGetHistoryExamsQuery,
