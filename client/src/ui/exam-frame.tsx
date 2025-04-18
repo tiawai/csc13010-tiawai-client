@@ -2,30 +2,27 @@
 import { useRouter } from 'next/navigation';
 import { Flex, Space, Button, Typography } from 'antd';
 import IconFrame from './icon-frame';
-import { Exam } from '@/types/exam';
-import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+    ClockCircleOutlined,
+    DownloadOutlined,
+    QuestionCircleOutlined,
+} from '@ant-design/icons';
 const { Text, Title } = Typography;
-
-const examInfo: {
-    unit: string;
-    icon: React.ReactNode;
-}[] = [
-    {
-        unit: 'phút',
-        icon: <ClockCircleOutlined />,
-    },
-    {
-        unit: 'lượt làm',
-        icon: <DownloadOutlined />,
-    },
-];
 
 const ExamFrame = ({
     theme = 'pink',
-    examData,
+    id,
+    title,
+    duration,
+    totalAttempts,
+    isTest = false,
 }: Readonly<{
     theme?: 'pink' | 'blue';
-    examData: Exam;
+    id?: string | number;
+    title?: string;
+    duration?: number;
+    totalAttempts?: number;
+    isTest?: boolean;
 }>) => {
     const router = useRouter();
     const iconSrc =
@@ -36,7 +33,14 @@ const ExamFrame = ({
     const bgColor = theme === 'pink' ? '#E9DAE9' : '#DAE3E9';
     const objColor = theme === 'pink' ? '#4D2C5E' : '#2C2F5E';
     const size = theme === 'pink' ? 100 : 62;
-    const { title, duration, totalAttempts } = examData;
+
+    const onExamClick = () => {
+        if (isTest) {
+            router.push(`/student/test/${id}`);
+        } else {
+            router.push(`/exam/${id}`);
+        }
+    };
 
     return (
         <Flex
@@ -64,25 +68,36 @@ const ExamFrame = ({
                 </Title>
                 <Flex justify="space-between">
                     <Space size="large">
-                        {examInfo.map((info, index) => (
-                            <Flex align="center" key={index} gap={4}>
-                                {info.icon}
+                        <Flex align="center" gap={4}>
+                            <ClockCircleOutlined />
+                            <Text className="!text-nowrap !font-roboto !font-medium !text-[#ACACAC]">
+                                {duration} phút
+                            </Text>
+                        </Flex>
+                        {!isTest ? (
+                            <Flex align="center" gap={4}>
+                                <DownloadOutlined />
                                 <Text className="!text-nowrap !font-roboto !font-medium !text-[#ACACAC]">
-                                    {info.unit === 'phút'
-                                        ? `${duration} phút`
-                                        : `${totalAttempts} lượt làm`}
+                                    {totalAttempts} lượt làm
                                 </Text>
                             </Flex>
-                        ))}
+                        ) : (
+                            <Flex align="center" gap={4}>
+                                <QuestionCircleOutlined />
+                                <Text className="!text-nowrap !font-roboto !font-medium !text-[#ACACAC]">
+                                    {totalAttempts} câu hỏi
+                                </Text>
+                            </Flex>
+                        )}
                     </Space>
                 </Flex>
                 <div>
                     <Button
                         shape="round"
                         type="primary"
-                        className={`${theme === 'pink' ? 'bg-primary-button' : 'bg-secondary-button'}`}
+                        className={`${theme === 'pink' ? '!bg-primary-button' : '!bg-secondary-button'}`}
                         size="small"
-                        onClick={() => router.push(`/exam/${examData.id}`)}
+                        onClick={onExamClick}
                     >
                         Xem đề thi
                     </Button>

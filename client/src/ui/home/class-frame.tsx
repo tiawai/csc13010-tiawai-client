@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { Typography } from 'antd';
 import { Classroom } from '@/types/classroom.type';
+import { useRouter } from 'next/navigation';
 const { Title } = Typography;
 
 const durationFormatter = (duration: number) => {
@@ -42,6 +43,12 @@ const ClassFrame: React.FC<{
     className?: string;
     class: Classroom;
 }> = ({ className, class: classData }) => {
+    const router = useRouter();
+
+    const handleJoinClass = () => {
+        router.push(`/student/class/${classData.id}`);
+    };
+
     return (
         <Flex
             className={twMerge(
@@ -104,6 +111,7 @@ const ClassFrame: React.FC<{
             <Button
                 variant="solid"
                 className="w-full !bg-secondary-button !font-montserrat !text-white"
+                onClick={handleJoinClass}
             >
                 Tham gia
             </Button>
