@@ -14,7 +14,6 @@ const Class = () => {
         useGetClassroomsQuery();
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Filter classes based on search query and get top rated ones
     const popularClasses = useMemo(() => {
         if (!classData || classData.length === 0) return [];
 
@@ -23,7 +22,6 @@ const Class = () => {
             .slice(0, 3);
     }, [classData]);
 
-    // Filter classes based on search query
     const filteredClasses = useMemo(() => {
         if (!classData || classData.length === 0) return [];
         if (!searchQuery.trim()) return classData;
@@ -35,7 +33,6 @@ const Class = () => {
         );
     }, [classData, searchQuery]);
 
-    // Handle search input changes
     const handleSearch = (value: string) => {
         setSearchQuery(value);
     };
