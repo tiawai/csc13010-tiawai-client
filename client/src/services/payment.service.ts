@@ -9,9 +9,19 @@ import {
 const paymentApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
+        getAllPayments: builder.query<Payment[], void>({
+            query: () => '/payments',
+            providesTags: ['Payment'],
+        }),
+
+        getPaymentById: builder.query<Payment, string>({
+            query: (id) => `/payments/${id}`,
+            providesTags: ['Payment'],
+        }),
+
         createPayment: builder.mutation<Payment, CreatePayment>({
             query: (body) => ({
-                url: 'payments',
+                url: '/payments',
                 method: 'POST',
                 body,
             }),
@@ -20,7 +30,7 @@ const paymentApi = appApi.injectEndpoints({
 
         verifyPayment: builder.mutation<Payment, PaymentVerify>({
             query: (body) => ({
-                url: 'payments/verify',
+                url: '/payments/verify',
                 method: 'POST',
                 body,
             }),
@@ -29,29 +39,26 @@ const paymentApi = appApi.injectEndpoints({
 
         paymentWebhook: builder.mutation<PaymentWebhook, void>({
             query: (body) => ({
-                url: 'payments/webhook',
+                url: '/payments/webhook',
                 method: 'POST',
                 body,
             }),
             invalidatesTags: ['Payment'],
         }),
 
-        getAllPayments: builder.query<Payment[], void>({
-            query: () => '/payment',
-            providesTags: ['Auth', 'Payment'],
-        }),
-
-        getPaymentById: builder.query<Payment, string>({
-            query: (id) => `/payment/${id}`,
-            providesTags: ['Auth', 'Payment'],
+        getPayout: builder.query<Payment[], void>({
+            query: () => '/payments/payout',
+            providesTags: ['Payment'],
         }),
     }),
 });
 
 export const {
+    useGetAllPaymentsQuery,
+    useGetPaymentByIdQuery,
     useCreatePaymentMutation,
     useVerifyPaymentMutation,
     usePaymentWebhookMutation,
-    useGetAllPaymentsQuery,
-    useGetPaymentByIdQuery,
+    useLazyGetPayoutQuery,
+    useGetPayoutQuery,
 } = paymentApi;

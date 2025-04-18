@@ -17,7 +17,7 @@ const flashcardApi = appApi.injectEndpoints({
             providesTags: ['Auth', 'Flashcard'],
         }),
 
-        getFlashcardsById: builder.query({
+        getFlashcardById: builder.query({
             query: (id) => `/flashcards/${id}`,
             providesTags: ['Auth', 'Flashcard'],
         }),
@@ -26,6 +26,15 @@ const flashcardApi = appApi.injectEndpoints({
             query: (body) => ({
                 url: '/flashcards/extract',
                 method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Flashcard'],
+        }),
+
+        updateFlashcard: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `/flashcards/${id}`,
+                method: 'PATCH',
                 body,
             }),
             invalidatesTags: ['Flashcard'],
@@ -44,7 +53,8 @@ const flashcardApi = appApi.injectEndpoints({
 export const {
     useCreateFlashcardMutation,
     useGetAllFlashcardTopicsQuery,
-    useGetFlashcardsByIdQuery,
+    useGetFlashcardByIdQuery,
     useGenerateFlashcardMutation,
+    useUpdateFlashcardMutation,
     useDeleteFlashcardMutation,
 } = flashcardApi;
