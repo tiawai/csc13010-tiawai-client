@@ -70,7 +70,7 @@ const adminItems: MenuProps["items"] = [
     { label: <Link href="/admin/assignments">Quản lý bài tập</Link>, key: "assignments" },
     { label: <Link href="/admin/tests">Quản lý đề thi</Link>, key: "tests" },
     { label: <Link href="/admin/reports">Quản lý báo cáo</Link>, key: "reports" },
-    { label: <Link href="/admin/transactions">Quản lý giao dịch</Link>, key: "transactions" },
+    { label: <Link href="/admin/payments">Quản lý giao dịch</Link>, key: "payments" },
     { label: <Link href="/admin/challenges">Quản lý challenge</Link>, key: "challenges" },
 ];
 
