@@ -2,13 +2,13 @@
 import {
     ClockCircleFilled,
     FileTextFilled,
-    StarFilled,
     UserOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Flex } from 'antd';
+import { Button, Flex, Rate } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { Typography } from 'antd';
+import { Classroom } from '@/types/classroom.type';
 const { Title } = Typography;
 
 const durationFormatter = (duration: number) => {
@@ -40,19 +40,7 @@ const priceFormatter = (price: number) => {
 
 const ClassFrame: React.FC<{
     className?: string;
-    class: {
-        image: string;
-        rating: number;
-        price: number;
-        title: string;
-        lessons: number;
-        students: number;
-        duration: number;
-        teacher: {
-            name: string;
-            image?: string;
-        };
-    };
+    class: Classroom;
 }> = ({ className, class: classData }) => {
     return (
         <Flex
@@ -64,7 +52,7 @@ const ClassFrame: React.FC<{
             gap={20}
         >
             <Image
-                src={classData.image}
+                src={classData.backgroundImage || ''}
                 width={412}
                 height={250}
                 alt="cover image"
@@ -72,24 +60,29 @@ const ClassFrame: React.FC<{
             />
             <Flex justify="space-between" align="center">
                 <Flex align="center" gap={4}>
-                    <span>
-                        <StarFilled style={{ color: '#FF3000' }} />
-                        <StarFilled style={{ color: '#FF3000' }} />
-                        <StarFilled style={{ color: '#FF3000' }} />
-                        <StarFilled style={{ color: '#FF3000' }} />
-                        <StarFilled style={{ color: '#FF3000' }} />
-                    </span>
-                    <span className="text-xs font-medium">
-                        {classData.rating}
+                    <Rate
+                        value={classData.avgRating || 0}
+                        disabled
+                        allowHalf
+                        style={{ fontSize: 16, color: '#FF3000' }}
+                    />
+                    <span className="ml-1 text-xs font-medium">
+                        {classData.avgRating || '0.0'}
                     </span>
                 </Flex>
                 <span className="font-bold text-secondary">
-                    {priceFormatter(classData.price)}
+                    {priceFormatter(classData.price || 0)}
                 </span>
             </Flex>
-            <Title className="uppercase" level={4}>
-                {classData.title}
-            </Title>
+            <div className="h-[60px] overflow-hidden">
+                <Title
+                    className="!mb-0 line-clamp-2 uppercase"
+                    level={4}
+                    ellipsis={{ rows: 2, tooltip: classData.className }}
+                >
+                    {classData.className}
+                </Title>
+            </div>
             <Flex
                 className="rounded-md bg-white p-5 text-secondary"
                 align="center"
@@ -97,36 +90,23 @@ const ClassFrame: React.FC<{
             >
                 <Flex align="center" gap={4}>
                     <FileTextFilled />
-                    <span>{classData.lessons} bài học</span>
+                    <span>{classData.totalLessons || 0} bài học</span>
                 </Flex>
                 <Flex align="center" gap={4}>
                     <ClockCircleFilled />
-                    <span>{durationFormatter(classData.duration)}</span>
+                    <span>{durationFormatter(0)}</span>
                 </Flex>
                 <Flex align="baseline" gap={4}>
                     <UserOutlined />
-                    <span>{userFormatter(classData.students)}</span>
+                    <span>{userFormatter(classData.maxStudent || 0)}</span>
                 </Flex>
             </Flex>
-            <Flex justify="space-between">
-                <Flex align="center" gap={10}>
-                    <Avatar
-                        className="border-2 border-secondary-button bg-secondary-button"
-                        src={classData.teacher.image}
-                        alt="teacher avatar"
-                        icon={<UserOutlined />}
-                    />
-                    <span className="font-medium text-secondary">
-                        {classData.teacher.name}
-                    </span>
-                </Flex>
-                <Button
-                    variant="solid"
-                    className="rounded-[40px] bg-secondary-button text-white"
-                >
-                    Tham gia
-                </Button>
-            </Flex>
+            <Button
+                variant="solid"
+                className="w-full !bg-secondary-button !font-montserrat !text-white"
+            >
+                Tham gia
+            </Button>
         </Flex>
     );
 };
