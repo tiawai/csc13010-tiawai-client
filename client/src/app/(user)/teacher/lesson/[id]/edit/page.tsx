@@ -75,7 +75,9 @@ const EditLesson = () => {
         } catch (error: unknown) {
             notification.error({
                 message: 'Cập nhật bài học thất bại',
-                description: error?.data?.message || 'Lỗi không xác định',
+                description:
+                    (error as { data: { message: string } })?.data?.message ||
+                    'Lỗi không xác định',
             });
         }
     };
