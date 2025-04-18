@@ -12,6 +12,7 @@ import { useGetMyProfileQuery } from '@/services/user.service';
 import { Loading } from '@/components/common/loading';
 import { Role } from '@/types/user.type';
 import { useAppSelector } from '@/lib/hooks/hook';
+import { useGetBankAccountQuery } from '@/services/payment.service';
 
 const userStudyingInfo = {
     examTaken: 0,
@@ -23,6 +24,7 @@ export default function ProfilePage() {
     const { data, isLoading, error } = useGetMyProfileQuery();
     const [navigationIndex, setNavigationIndex] = useState<number>(0);
     const userRole = useAppSelector((state) => state.auth.user.role);
+    const { data: bankAccount } = useGetBankAccountQuery();
 
     if (isLoading) return <Loading />;
     if (error || !data) return <div>Lỗi khi tải thông tin cá nhân</div>;
@@ -53,7 +55,14 @@ export default function ProfilePage() {
                     )}
                     {userRole === Role.TEACHER && (
                         <UserInfoCard title="Thông tin ngân hàng">
-                            {/* Thông tin ngân hàng sẽ hiển thị ở đây nếu có */}
+                            <UserInfoDisplay
+                                props={{
+                                    accountNumber: bankAccount?.accountNumber,
+                                    accountHolderName:
+                                        bankAccount?.accountHolderName,
+                                    bankName: bankAccount?.bankName,
+                                }}
+                            />
                         </UserInfoCard>
                     )}
                 </>
