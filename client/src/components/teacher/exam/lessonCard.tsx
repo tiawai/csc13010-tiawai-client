@@ -35,7 +35,9 @@ const LessonCard: React.FC<LessonCardProps> = ({ id, title }) => {
         } catch (error: unknown) {
             notification.error({
                 message: 'Xóa bài học thất bại',
-                description: error?.data?.message || 'Lỗi không xác định',
+                description:
+                    (error as { data: { message: string } })?.data?.message ||
+                    'Lỗi không xác định',
             });
         }
     };
