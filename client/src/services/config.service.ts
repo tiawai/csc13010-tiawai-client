@@ -43,5 +43,6 @@ export const appApi = createApi({
         'Report',
         'Classroom',
         'Lesson',
+        'Student',
     ],
 });
