@@ -28,6 +28,7 @@ export interface TestResponseDto {
 }
 
 export interface CreateTestDto {
+    classroomId?: string;
     title: string;
     type: TestType;
     startDate: string;
@@ -37,11 +38,13 @@ export interface CreateTestDto {
 }
 
 export interface CreateNationalTestDto {
+    classroomId?: string;
     test: CreateTestDto;
     questions: CreateQuestionDto[];
 }
 
 export interface CreateToeicListeningTestDto {
+    classroomId?: string;
     audioUrl: string;
     test: CreateTestDto;
 }
@@ -76,4 +79,12 @@ export interface SubmitTestDto {
     testId: string;
     timeConsumed: number;
     answers: Answer[];
+}
+
+export interface TestResult {
+    submissionId: string;
+    score: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    emptyAnswers: number;
 }

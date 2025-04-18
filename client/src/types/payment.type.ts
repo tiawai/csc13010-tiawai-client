@@ -66,6 +66,7 @@ export interface PaymentContent {
 
 export interface PayoutDto {
     payouts: {
+        index: number;
         accountNumber: string;
         accountHolderName: string;
         bankName: string;

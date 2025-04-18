@@ -21,6 +21,16 @@ import { Modal } from 'antd';
 import { saveAs } from 'file-saver';
 import { useState } from 'react';
 import { useNotification } from '@/lib/hooks/use-notification';
+import * as XLSX from 'xlsx';
+
+interface PayoutData {
+    index: number;
+    accountNumber: string;
+    accountHolderName: string;
+    bankName: string;
+    amount: number;
+    message: string;
+}
 
 const columns: ColumnsType<Payment> = [
     {
@@ -120,20 +130,53 @@ export default function AdminPaymentsPage() {
         });
     };
 
-    const handleDownloadCSV = () => {
-        if (!payoutData || payoutData.payouts.length === 0) return;
-        const header = Object.keys(payoutData.payouts[0]).join(',');
-        const rows = payoutData.payouts.map((obj) =>
-            Object.values(obj).join(','),
-        );
-        const csv = [header, ...rows].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-        saveAs(blob, 'danh_sach_payout.csv');
+    const handleDownloadCSV = async (payouts: PayoutData[]) => {
+        const response = await fetch('/templates/payout-template.xlsx');
+        const arrayBuffer = await response.arrayBuffer();
+
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+
+        const dataRows = payouts.map((p) => [
+            p.index,
+            p.accountNumber,
+            p.accountHolderName,
+            p.bankName,
+            p.amount,
+            p.message,
+        ]);
+
+        const startRow = 3;
+        dataRows.forEach((row, rowIdx) => {
+            row.forEach((cell, colIdx) => {
+                const cellAddress = XLSX.utils.encode_cell({
+                    c: colIdx,
+                    r: startRow - 1 + rowIdx,
+                });
+                worksheet[cellAddress] = { t: 's', v: String(cell) };
+            });
+        });
+
+        // Cập nhật lại phạm vi (range) nếu cần
+        const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+        range.e.r = Math.max(range.e.r, startRow - 1 + dataRows.length - 1);
+        worksheet['!ref'] = XLSX.utils.encode_range(range);
+
+        // Xuất file
+        const newWorkbook = XLSX.write(workbook, {
+            type: 'array',
+            bookType: 'xlsx',
+        });
+        const blob = new Blob([newWorkbook], {
+            type: 'application/octet-stream',
+        });
+        saveAs(blob, 'danh_sach_payout.xlsx');
     };
 
     const handleDownload = () => {
         if (payoutData && payoutData.payouts.length > 0) {
-            handleDownloadCSV();
+            handleDownloadCSV(payoutData.payouts);
         } else {
             notify({
                 message: 'Không có dữ liệu để tải xuống',

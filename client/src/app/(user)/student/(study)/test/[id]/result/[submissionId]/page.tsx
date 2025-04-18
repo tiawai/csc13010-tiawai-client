@@ -15,33 +15,23 @@ import {
     Flex,
 } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { useGetExamResultQuery } from '@/services/exam';
-import { Question } from '@/types/exam';
+import { ChoicesType, ChoicesTypes, Question } from '@/types/question.type';
 import { useAppSelector } from '@/lib/hooks/hook';
 
 const { Title, Text, Paragraph } = Typography;
 const { Panel } = Collapse;
 
-export default function ExamResultPage({
-    params,
-}: {
-    params: { id: number; submissionId: string };
-}) {
-    const router = useRouter();
+export default function TestResultPage() {
     const test = useAppSelector((state) => state.test.test);
+    const questions = useAppSelector((state) => state.test.questions);
+    const answers = useAppSelector((state) => state.test.answers);
+    const result = useAppSelector((state) => state.test.result);
+
+    const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [currentQuestion, setCurrentQuestion] = useState<Question>({
-        question: '',
-        content: '',
-        hasParagraph: false,
-        choices: { A: '', B: '', C: '', D: '' },
-        answer: null,
-        correctAnswer: null,
-        isCorrect: false,
-        points: 0,
-        explanation: '',
-        isAnswered: false,
-    });
+    const [currentQuestion, setCurrentQuestion] = useState<Question>(
+        questions[0],
+    );
 
     const showModal = (question: Question) => {
         setCurrentQuestion(question);
@@ -56,12 +46,12 @@ export default function ExamResultPage({
         setIsModalOpen(false);
     };
 
-    const { data: result, isLoading } = useGetExamResultQuery({
-        id: +params.id,
-        submissionId: params.submissionId,
-    });
+    // const { data: result, isLoading } = useGetExamResultQuery({
+    //     id: +params.id,
+    //     submissionId: params.submissionId,
+    // });
 
-    if (isLoading) {
+    if (result === undefined) {
         return (
             <Space className="!w-full" size={16} direction="vertical">
                 <Skeleton.Node className="!h-12 !w-full" active />
@@ -122,19 +112,18 @@ export default function ExamResultPage({
                         <Card>
                             <Title level={4}>Kết quả làm bài</Title>
                             <Title level={2}>
-                                {result?.correctAnswers}/
-                                {result?.totalQuestions}
+                                {result?.correctAnswers}/{test?.totalQuestions}
                             </Title>
                             <Paragraph>
                                 Số điểm:{' '}
                                 {result?.score !== undefined &&
-                                result?.totalQuestions !== undefined
+                                test?.totalQuestions !== undefined
                                     ? (result?.score).toFixed(1)
                                     : 0}
                                 /10
                             </Paragraph>
                             <Paragraph>
-                                Thời gian hoàn thành: {result?.timeConsumed}
+                                {/* Thời gian hoàn thành: {result?.timeConsumed} */}
                             </Paragraph>
                         </Card>
                     </Col>
@@ -169,7 +158,7 @@ export default function ExamResultPage({
                                 Bỏ qua
                             </Title>
                             <Title className="!text-[#8c8c8c]" level={2}>
-                                {result?.skippedQuestions}
+                                {result.emptyAnswers}
                             </Title>
                             <Text>câu hỏi</Text>
                         </Card>
@@ -189,22 +178,23 @@ export default function ExamResultPage({
 
             <Col span={20}>
                 <Row gutter={[8, 8]}>
-                    {result?.questions.map((question, index) => (
+                    {questions.map((question, index) => (
                         <Col key={index}>
                             <Button
                                 danger={
-                                    question.answer !== question.correctAnswer
+                                    answers[index].answer !==
+                                    question.correctAnswer
                                 }
                                 style={{
                                     width: 40,
                                     height: 40,
                                     backgroundColor:
-                                        question.answer !==
+                                        answers[index].answer !==
                                         question.correctAnswer
                                             ? '#f87171'
                                             : '#E9DAE9',
                                     color:
-                                        question.answer !==
+                                        answers[index].answer !==
                                         question.correctAnswer
                                             ? 'white'
                                             : '',
@@ -222,7 +212,7 @@ export default function ExamResultPage({
             <Title level={4}>Part</Title>
             <Col span={24}>
                 <Row gutter={[16, 16]}>
-                    {result?.questions.map((question, index) => (
+                    {questions.map((question, index) => (
                         <Col span={12} key={index}>
                             <Space align="center">
                                 <div
@@ -238,10 +228,10 @@ export default function ExamResultPage({
                                 </div>
                                 <Text>
                                     {question.correctAnswer}:{' '}
-                                    {question.answer ===
+                                    {answers[index].answer ===
                                     question.correctAnswer ? (
                                         <>
-                                            {question.answer}
+                                            {answers[index].answer}
                                             <CheckOutlined
                                                 style={{
                                                     fontSize: 16,
@@ -252,7 +242,7 @@ export default function ExamResultPage({
                                         </>
                                     ) : (
                                         <>
-                                            <del>{question.answer}</del>
+                                            <del>{answers[index].answer}</del>
                                             <CloseOutlined
                                                 size={40}
                                                 style={{
@@ -284,14 +274,15 @@ export default function ExamResultPage({
             >
                 <Title level={5}>Câu hỏi:</Title>
                 <Paragraph className="px-4">
-                    {currentQuestion.question}
+                    {currentQuestion.content}
                 </Paragraph>
                 {Object.entries(currentQuestion.choices).map(
-                    ([key, value], index) => (
-                        <Paragraph className="px-4" key={index}>
-                            <Text strong>{key}.</Text> {value}
-                        </Paragraph>
-                    ),
+                    ([key, value], index) =>
+                        ChoicesTypes.includes(key as ChoicesType) && (
+                            <Paragraph className="px-4" key={index}>
+                                <Text strong>{key}.</Text> {value}
+                            </Paragraph>
+                        ),
                 )}
 
                 <Divider />

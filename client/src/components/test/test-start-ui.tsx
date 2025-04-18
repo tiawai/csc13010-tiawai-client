@@ -30,6 +30,7 @@ import { toeicTestInfo } from '@/lib/slices/toeic-test-creator.slice';
 import {
     selectAnswerByQuestionOrder,
     setAnswer,
+    setResults,
 } from '@/lib/slices/test.slice';
 import Image from 'next/image';
 import { useSubmitTestByIdMutation } from '@/services/test.service';
@@ -164,6 +165,7 @@ export const PageLayout = memo(
             title,
             timeLength,
         } = useAppSelector((state) => state.test.test);
+        const dispatch = useAppDispatch();
         const answers = useAppSelector((state) => state.test.answers);
         const audioUrl = useAppSelector((state) => state.test.test.audioUrl);
         const [timeStart, setTimeStart] = useState<string>('');
@@ -200,7 +202,7 @@ export const PageLayout = memo(
                 ),
                 answers: answers.map((answer) => ({
                     ...answer,
-                    answer: answer?.answer || 'A',
+                    answer: answer?.answer,
                 })),
             };
 
@@ -213,7 +215,10 @@ export const PageLayout = memo(
                     message: 'Nộp bài thành công',
                     description: 'Bài thi của bạn đã được ghi nhận',
                 });
-                router.push(`/test/${testId}/result/${testId}`);
+                const { data } = res;
+                const submissionId = data.submissionId;
+                dispatch(setResults(data));
+                router.push(`result/${submissionId}`);
             } else {
                 setIsSubmit(false);
                 notify({
