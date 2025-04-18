@@ -7,7 +7,8 @@ import { CardBorder } from '@/components/common/card';
 import { PageTitle } from '@/components/common/page';
 import { Test, TestType } from '@/types/test.type';
 import IconFrame from '@/ui/icon-frame';
-import { useState, useMemo } from 'react';
+import { useGetTestsAnyoneQuery } from '@/services/test.service';
+import { useSearch } from '@/lib/hooks/use-search';
 
 const { Text, Title } = Typography;
 
@@ -40,89 +41,28 @@ const testContent: Record<
     },
 };
 
-const mockData: Test[] = [
-    {
-        id: '586fc810-8149-4c4d-acb0-4d84b104d1b8',
-        title: 'toeic listening',
-        timeLength: 45,
-        author: '',
-        type: TestType.TOEIC_LISTENING,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 100,
-        isGenerated: false,
-    },
-    {
-        id: '79fc17e9-8097-4666-b753-545a009551c9',
-        title: 'national',
-        timeLength: 120,
-        author: '',
-        type: TestType.NATIONAL_TEST,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 50,
-        isGenerated: false,
-    },
-    {
-        id: '379a593b-972e-4f9e-9be3-709f0d88b479',
-        title: 'national',
-        timeLength: 120,
-        author: '',
-        type: TestType.NATIONAL_TEST,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 50,
-        isGenerated: false,
-    },
-    {
-        id: '4799f8b0-4746-4705-959a-9d7a50dbcd89',
-        title: 'toeic reading',
-        timeLength: 75,
-        author: '',
-        type: TestType.TOEIC_READING,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 100,
-        isGenerated: false,
-    },
-    {
-        id: '4bc840dc-79b1-428d-8dc9-db6c848bca1e',
-        title: 'toeic reading',
-        timeLength: 75,
-        author: '',
-        type: TestType.TOEIC_READING,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 100,
-        isGenerated: false,
-    },
-    {
-        id: '58487806-67c3-4cd4-af5f-4a5939609729',
-        title: 'TOEIC Listening',
-        timeLength: 45,
-        author: '',
-        type: TestType.TOEIC_LISTENING,
-        startDate: new Date(),
-        endDate: new Date(),
-        totalQuestions: 100,
-        isGenerated: false,
-    },
-];
-
 export default function TestPage() {
     const params = useSearchParams();
     const type = (params.get('type') as TestType) || TestType.NATIONAL_TEST;
-    const [searchQuery, setSearchQuery] = useState('');
+    const { data: tests } = useGetTestsAnyoneQuery(type);
 
-    const filteredTests = useMemo(() => {
-        return mockData.filter((test) => {
-            const matchesType = test.type === type;
-            const matchesSearch =
-                searchQuery === '' ||
-                test.title.toLowerCase().includes(searchQuery.toLowerCase());
-            return matchesType && matchesSearch;
-        });
-    }, [type, searchQuery]);
+    const searchFn = (test: Test, query: string) => {
+        const value = query.toLowerCase();
+        return (
+            test.title?.toLowerCase().includes(value) ||
+            test.type?.toLowerCase().includes(value) ||
+            new Date(test.startDate).toLocaleDateString().includes(query) ||
+            new Date(test.endDate).toLocaleDateString().includes(query) ||
+            test.totalQuestions?.toString().includes(query) ||
+            test.timeLength?.toString().includes(query) ||
+            (test.isGenerated ? 'Có' : 'Không').includes(query)
+        );
+    };
+
+    const { searchText, filteredData, handleSearch } = useSearch<Test>(
+        tests || [],
+        searchFn,
+    );
 
     return (
         <div className="space-y-8">
@@ -144,11 +84,9 @@ export default function TestPage() {
                         <Title level={4}>Tìm kiếm</Title>
                         <Input.Search
                             placeholder="Tìm kiếm đề thi..."
-                            onSearch={(value) => {
-                                setSearchQuery(value);
-                            }}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            value={searchQuery}
+                            onSearch={(value) => handleSearch(value)}
+                            onChange={(e) => handleSearch(e.target.value)}
+                            value={searchText}
                             allowClear
                             size="large"
                         />
@@ -172,9 +110,9 @@ export default function TestPage() {
                         </Radio.Group>
                     </CardBorder>
                 </div>
-                <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
-                    {filteredTests.length > 0 ? (
-                        filteredTests.map((test, index) => (
+                {filteredData ? (
+                    <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
+                        {filteredData.map((test, index) => (
                             <TestFrame
                                 key={index}
                                 theme={
@@ -184,11 +122,13 @@ export default function TestPage() {
                                 }
                                 test={test}
                             />
-                        ))
-                    ) : (
+                        ))}
+                    </div>
+                ) : (
+                    <div className="flex flex-[4] items-center justify-center">
                         <Empty description="Không tìm thấy đề thi phù hợp" />
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );
