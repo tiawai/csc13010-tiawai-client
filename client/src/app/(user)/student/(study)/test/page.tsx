@@ -1,6 +1,6 @@
 'use client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Input, Radio, Typography, Button, Flex, Space } from 'antd';
+import { Input, Radio, Typography, Button, Flex, Space, Empty } from 'antd';
 import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
 import { CardBorder } from '@/components/common/card';
@@ -186,11 +186,7 @@ export default function TestPage() {
                             />
                         ))
                     ) : (
-                        <div className="col-span-3 py-8 text-center">
-                            <Text className="text-lg">
-                                Không tìm thấy đề thi phù hợp
-                            </Text>
-                        </div>
+                        <Empty description="Không tìm thấy đề thi phù hợp" />
                     )}
                 </div>
             </div>

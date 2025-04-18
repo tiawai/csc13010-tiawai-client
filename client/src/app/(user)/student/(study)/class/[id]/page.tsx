@@ -1,55 +1,28 @@
+'use client';
 import { Banner, BannerTitle } from '@/ui/components/banner';
-import { Col, Flex, Row, Space } from 'antd';
+import { Col, Flex, Row, Space, Spin } from 'antd';
 import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import profileTiawai from '@public/profile-tiawai.webp';
 import ClassFrame from '@/ui/home/class-frame';
+import { Classroom } from '@/types/classroom.type';
+import { useGetClassroomsQuery } from '@/services/classroom';
 
-const classData = [
-    {
-        image: '',
-        rating: 4.8,
-        price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
-    },
-    {
-        image: '',
-        rating: 4.8,
-        price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
-    },
-    {
-        image: '',
-        rating: 4.8,
-        price: 500000,
-        title: 'Lớp học 2',
-        lessons: 15,
-        students: 150,
-        duration: 150,
-        teacher: {
-            name: 'Teacher 2',
-            image: '',
-        },
-    },
-];
+const Page = ({ params }: { params: { id: string } }) => {
+    const { id } = params;
+    const { data: classrooms = [], isLoading } = useGetClassroomsQuery();
+    const [filteredClassrooms, setFilteredClassrooms] = useState<Classroom[]>(
+        [],
+    );
 
-const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params;
-    console.log(id);
+    useEffect(() => {
+        if (classrooms.length > 0) {
+            // Filter or get related classrooms logic here
+            // For now, just show all classrooms
+            setFilteredClassrooms(classrooms);
+        }
+    }, [classrooms, id]);
+
     return (
         <Flex vertical>
             <Banner className="mb-28">
@@ -60,13 +33,19 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
                     </BannerTitle>
                 </Space>
             </Banner>
-            <Row gutter={[40, 64]} className="mb-10">
-                {classData.map((classItem, index) => (
-                    <Col xs={24} md={12} lg={8} key={index}>
-                        <ClassFrame class={classItem} />
-                    </Col>
-                ))}
-            </Row>
+            {isLoading ? (
+                <div className="flex justify-center">
+                    <Spin size="large" />
+                </div>
+            ) : (
+                <Row gutter={[40, 64]} className="mb-10">
+                    {filteredClassrooms.map((classItem) => (
+                        <Col xs={24} md={12} lg={8} key={classItem.id}>
+                            <ClassFrame class={classItem} />
+                        </Col>
+                    ))}
+                </Row>
+            )}
         </Flex>
     );
 };
