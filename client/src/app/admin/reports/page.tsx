@@ -1,6 +1,6 @@
 'use client';
 import { useMemo } from 'react';
-import { Flex, Table, Button, Empty, message, Tag, Select, Avatar } from 'antd';
+import { Flex, Table, Button, Empty, Tag, Select, Avatar } from 'antd';
 import { Report, ReportStatus } from '@/types/report.type';
 import { AdminBanner } from '@/components/common/banner';
 import { TableInputSearch } from '@/components/admin/table';
@@ -12,12 +12,16 @@ import {
 import { usePagination } from '@/lib/hooks/use-paganation';
 import { useSearch } from '@/lib/hooks/use-search';
 import { User } from '@/types/user.type';
+import { useNotification } from '@/lib/hooks/use-notification';
+import { useAppSelector } from '@/lib/hooks/hook';
 
 export default function AdminReportsPage() {
+    const userId = useAppSelector((state) => state.auth.user?.id);
     const { data: reports, isLoading } = useGetAllReportsQuery();
     const [updateReportStatus, { isLoading: isLoadingUpdate }] =
         useUpdateReportStatusMutation();
     const [deleteReport] = useDeleteReportMutation();
+    const { notify } = useNotification();
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
 
     const searchFn = (report: Report, query: string) => {
@@ -113,13 +117,27 @@ export default function AdminReportsPage() {
                             loading={isLoadingUpdate}
                             disabled={isLoadingUpdate}
                             value={record.status}
-                            onChange={(newStatus) =>
+                            onChange={(newStatus) => {
+                                if (!newStatus) return;
+                                if (
+                                    record.manageBy &&
+                                    userId !== record.manageBy?.id
+                                ) {
+                                    notify({
+                                        message:
+                                            'Đã có người khác nhận báo cáo này',
+                                        description:
+                                            'Bạn không thể thay đổi trạng thái của báo cáo này',
+                                        notiType: 'error',
+                                    });
+                                    return;
+                                }
+
                                 updateReportStatus({
                                     id: record.id,
-                                    status: newStatus,
-                                })
-                            }
-                            style={{ width: 150 }}
+                                    status: newStatus as ReportStatus,
+                                });
+                            }}
                         >
                             {Object.values(ReportStatus).map((statusOption) => (
                                 <Select.Option
@@ -143,14 +161,17 @@ export default function AdminReportsPage() {
                                     deleteReport(record.id)
                                         .unwrap()
                                         .then(() => {
-                                            message.success(
-                                                'Xóa báo cáo thành công',
-                                            );
+                                            notify({
+                                                message:
+                                                    'Xóa báo cáo thành công',
+                                            });
                                         })
                                         .catch((error) => {
-                                            message.error(
-                                                'Đã có lỗi xảy ra khi xóa báo cáo',
-                                            );
+                                            notify({
+                                                message:
+                                                    'Đã có lỗi xảy ra khi xóa báo cáo',
+                                                notiType: 'error',
+                                            });
                                             console.error(error);
                                         });
                                 }

@@ -15,9 +15,10 @@ import {
 import { usePagination } from '@/lib/hooks/use-paganation';
 import { useSearch } from '@/lib/hooks/use-search';
 import { TableInputSearch } from '@/components/admin/table';
-import { Modal, message } from 'antd';
+import { Modal } from 'antd';
 import { saveAs } from 'file-saver';
 import { useState } from 'react';
+import { useNotification } from '@/lib/hooks/use-notification';
 
 const columns: ColumnsType<Payment> = [
     {
@@ -79,6 +80,7 @@ export default function AdminPaymentsPage() {
         useLazyGetPayoutQuery();
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { notify } = useNotification();
 
     const searchFn = (payment: Payment, query: string) => {
         const value = query.toLowerCase();
@@ -103,7 +105,10 @@ export default function AdminPaymentsPage() {
         const text =
             payoutData?.map((item) => JSON.stringify(item)).join('\n') ?? '';
         navigator.clipboard.writeText(text);
-        message.success('Đã copy vào clipboard!');
+        notify({
+            message: 'Đã sao chép vào clipboard',
+            description: 'Dữ liệu đã được sao chép vào clipboard.',
+        });
     };
 
     const handleDownloadCSV = () => {
@@ -119,7 +124,10 @@ export default function AdminPaymentsPage() {
         if (payoutData && payoutData.length > 0) {
             handleDownloadCSV();
         } else {
-            message.error('Không có dữ liệu để tải xuống');
+            notify({
+                message: 'Không có dữ liệu để tải xuống',
+                description: 'Vui lòng kiểm tra lại dữ liệu.',
+            });
         }
     };
 
@@ -140,12 +148,19 @@ export default function AdminPaymentsPage() {
                                 if (res && res.length > 0) {
                                     setIsModalOpen(true);
                                 } else {
-                                    message.info('Không có dữ liệu để xuất.');
+                                    notify({
+                                        message: 'Không có dữ liệu payout',
+                                        description:
+                                            'Không có dữ liệu payout để hiển thị.',
+                                    });
                                 }
                             } catch (err) {
-                                message.error(
-                                    'Đã có lỗi xảy ra khi lấy danh sách payout',
-                                );
+                                notify({
+                                    message: 'Lỗi khi lấy dữ liệu payout',
+                                    description:
+                                        'Đã có lỗi xảy ra khi lấy dữ liệu payout.',
+                                    notiType: 'error',
+                                });
                                 console.error(err);
                             }
                         }}
