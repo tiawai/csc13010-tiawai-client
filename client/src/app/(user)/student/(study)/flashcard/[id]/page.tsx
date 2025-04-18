@@ -12,7 +12,7 @@ import {
     flashcardsLiterature,
     flashcardsCulture,
 } from './flashcards';
-import { useGetFlashcardsByIdQuery } from '@/services/flashcard';
+import { useGetFlashcardByIdQuery } from '@/services/flashcard';
 
 const data = [
     {
@@ -47,7 +47,7 @@ export default function FlashCardItemPage({
     params: { id: string };
 }) {
     const id = params.id;
-    const { data: userFlashcards, isLoading } = useGetFlashcardsByIdQuery(id, {
+    const { data: userFlashcards, isLoading } = useGetFlashcardByIdQuery(id, {
         skip: !id,
     });
 
@@ -62,6 +62,7 @@ export default function FlashCardItemPage({
         (item) => item.topic === decodedId,
     )?.words;
 
+    const topic = userFlashcards?.topic || decodedId;
     const flashcards = userFlashcards?.flashcards || defaultFlashcards;
     return (
         <Row gutter={[0, 40]}>
@@ -71,9 +72,7 @@ export default function FlashCardItemPage({
                     href="/student/flashcard"
                 >
                     <LeftOutlined />
-                    <span className="text-xl font-bold">
-                        Flashcard {userFlashcards.topic}
-                    </span>
+                    <span className="text-xl font-bold">Flashcard {topic}</span>
                     <div className="rounded-full bg-[#f4edf4] px-4 py-1">
                         <CarryOutOutlined className="text-[#4d2c5e]" />
                     </div>
