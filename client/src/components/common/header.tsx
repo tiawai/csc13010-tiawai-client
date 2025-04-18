@@ -27,6 +27,7 @@ import { useSignOutMutation } from '@/services/auth.service';
 import { useDisableSessionMutation } from '@/services/chat';
 import { Role, UserUtils } from '@/types/user.type';
 import { TestType } from '@/types/test.type';
+import { YoutubeOutlined, DollarOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph } = Typography;
 
@@ -74,7 +75,9 @@ const adminItems: MenuProps["items"] = [
 // prettier-ignore
 const dropdownItemsStudent: MenuProps["items"] = [
     { key: "profile", label: <Link href="/profile">Hồ sơ cá nhân</Link>, icon: <UserOutlined /> },
-    { key: "history", label: <Link href="/student/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
+    { key: "study-history", label: <Link href="/student/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
+    { key: "my-class", label: <Link href="/student/my-class">Lớp học của tôi</Link>, icon: <YoutubeOutlined /> },
+    { key: "payment-history", label: <Link href="/student/payment-history">Lịch sử giao dịch</Link>, icon: <DollarOutlined /> },
     { key: "signout", label: "Đăng xuất", icon: <LogoutOutlined /> },
 ];
 
