@@ -23,6 +23,15 @@ import { useState } from 'react';
 import { useNotification } from '@/lib/hooks/use-notification';
 import * as XLSX from 'xlsx';
 
+interface PayoutData {
+    index: number;
+    accountNumber: string;
+    accountHolderName: string;
+    bankName: string;
+    amount: number;
+    message: string;
+}
+
 const columns: ColumnsType<Payment> = [
     {
         title: 'Mã đơn hàng',
@@ -121,7 +130,7 @@ export default function AdminPaymentsPage() {
         });
     };
 
-    const handleDownloadCSV = async (payouts: any[]) => {
+    const handleDownloadCSV = async (payouts: PayoutData[]) => {
         const response = await fetch('/templates/payout-template.xlsx');
         const arrayBuffer = await response.arrayBuffer();
 
