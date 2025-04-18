@@ -1,7 +1,7 @@
 'use client';
 import { Form, Input, Select } from 'antd';
 import { CardButton } from '@/components/common/card';
-//import { useUpdateBankAccountMutation } from '@/services/payment.service';
+import { useUpdateBankAccountMutation } from '@/services/payment.service';
 import { useUpdateUserProfileMutation } from '@/services/user.service';
 import { useChangePasswordMutation } from '@/services/auth.service';
 import { useNotification } from '@/lib/hooks/use-notification';
@@ -363,31 +363,31 @@ export const UpdateBankAccountFormItems = [
 
 export const UserUpdateBankAccountForm = () => {
     const [form] = Form.useForm();
-    // const [updateBankAcount, { isLoading }] = useUpdateBankAccountMutation();
+    const [updateBankAcount, { isLoading }] = useUpdateBankAccountMutation();
     const { notify } = useNotification();
 
     const onFinish = async () => {
         const values = form.getFieldsValue();
         const { accountNumber, accountHolderName, bankName } = values;
-        // const res = await updateBankAcount({
-        //     accountNumber,
-        //     accountHolderName,
-        //     bankName,
-        // });
+        const res = await updateBankAcount({
+            accountNumber,
+            accountHolderName,
+            bankName,
+        });
 
-        // if (res.error) {
-        //     notify({
-        //         message: 'Cập nhật tài thất bại',
-        //         description:
-        //             'Đã có lỗi xảy ra khi cập nhật tài khoản ngân hàng.',
-        //         notiType: 'error',
-        //     });
-        // } else {
-        //     notify({
-        //         message: 'Cập nhật tài thành công',
-        //         description: 'Tài khoản ngân hàng đã được cập nhật thành công.',
-        //     });
-        // }
+        if (res.error) {
+            notify({
+                message: 'Cập nhật tài thất bại',
+                description:
+                    'Đã có lỗi xảy ra khi cập nhật tài khoản ngân hàng.',
+                notiType: 'error',
+            });
+        } else {
+            notify({
+                message: 'Cập nhật tài thành công',
+                description: 'Tài khoản ngân hàng đã được cập nhật thành công.',
+            });
+        }
     };
 
     return (
@@ -413,11 +413,11 @@ export const UserUpdateBankAccountForm = () => {
                     {item.component}
                 </Form.Item>
             ))}
-            {/* <CardButton
+            <CardButton
                 className="m-auto"
                 text="Cập nhật tài khoản ngân hàng"
                 isLoading={isLoading}
-            /> */}
+            />
         </Form>
     );
 };
