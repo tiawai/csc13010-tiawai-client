@@ -25,10 +25,6 @@ export const HOME_FEATURES = [
         description:
             'Cung cấp Flashcard theo chủ đề hoặc do chính tay bạn tạo ra',
     },
-    {
-        title: 'Thử thách & xếp hạng',
-        description: 'Cạnh tranh, thi đấu cùng cộng đồng học tập',
-    },
 ];
 
 export const HOME_HEADERS = [
@@ -51,11 +47,6 @@ export const HOME_HEADERS = [
         title: 'Luyện thi THPTQG – Ôn tập hiệu quả, bứt phá điểm số!',
         description:
             'Hệ thống đề thi chuẩn, cập nhật liên tục, phân tích đáp án chi tiết. Học đúng trọng tâm, rèn luyện mỗi ngày, tự tin chinh phục kỳ thi quan trọng! 🚀✨',
-    },
-    {
-        title: 'Challenge & Xếp hạng – Cạnh tranh, bứt phá, vươn lên top! 🏆🔥',
-        description:
-            'Thử sức với đề thi THPTQG & IELTS, so tài cùng cộng đồng học tập, leo bảng xếp hạng và khẳng định bản thân. Bạn đã sẵn sàng chinh phục thử thách chưa? 🚀💯',
     },
 ];
 

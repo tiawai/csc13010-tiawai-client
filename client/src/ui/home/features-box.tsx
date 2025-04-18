@@ -39,12 +39,6 @@ const mainFeatures = [
         title: HOME_FEATURES[4].title,
         description: HOME_FEATURES[4].description,
     },
-    {
-        src: 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-6.svg',
-        alt: 'home icon 6',
-        title: HOME_FEATURES[5].title,
-        description: HOME_FEATURES[5].description,
-    },
 ];
 
 const FeaturesBox = ({ className = '' }: Readonly<{ className?: string }>) => {
