@@ -11,47 +11,47 @@ const CreateExamByAI = () => {
                 <Row gutter={[16, 16]}>
                     <Col span={12}>
                         <label className="block font-semibold">Tên đề</label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
                     <Col span={12}>
                         <label className="block font-semibold">
                             Thời gian làm bài
                         </label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
 
                     <Col span={12}>
                         <label className="block font-semibold">
                             Ngày bắt đầu
                         </label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
                     <Col span={12}>
                         <label className="block font-semibold">
                             Ngày kết thúc
                         </label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
 
                     <Col span={12}>
                         <label className="block font-semibold">
                             Số lượng câu hỏi
                         </label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
                     <Col span={12}>
                         <label className="block font-semibold">
                             Nội dung câu hỏi
                         </label>
-                        <Input className="mt-1 rounded-full bg-purple-100" />
+                        <Input className="mt-1 !rounded-full !bg-purple-100" />
                     </Col>
                 </Row>
 
                 <div className="mt-6 flex justify-end space-x-4">
-                    <Button className="rounded-full bg-red-400 px-6 py-2 text-white">
+                    <Button className="!rounded-full !bg-red-400 !px-6 !py-2 !text-white">
                         Huỷ
                     </Button>
-                    <Button className="rounded-full bg-[#DAE3E9] px-6 py-2 font-semibold">
+                    <Button className="!rounded-full !bg-[#DAE3E9] !px-6 !py-2 !font-semibold">
                         Tạo đề với AI (20.000)
                     </Button>
                 </div>

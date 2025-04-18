@@ -2,7 +2,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '@/lib/store/store';
 
-const ignoreEndpoints = ['uploadAudioTL', 'uploadImagesTL', 'uploadImagesTR'];
+const ignoreEndpoints = [
+    'uploadAudioTL',
+    'uploadImagesTL',
+    'uploadImagesTR',
+    'createClassroom',
+    'updateClassroom',
+    'createLesson',
+    'updateLesson',
+];
 
 const baseQuery = fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -33,5 +41,8 @@ export const appApi = createApi({
         'Flashcard',
         'Payment',
         'Report',
+        'Classroom',
+        'Lesson',
+        'Student',
     ],
 });

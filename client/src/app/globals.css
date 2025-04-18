@@ -54,14 +54,24 @@ body {
     @apply !m-auto !flex !justify-center !rounded-full !bg-[#E9DAE9] !font-bold !text-black;
 }
 
-.ck-content ul,
-.preview-content ul {
-    list-style-type: disc !important;
-    padding-left: 20px !important;
+.preview-content table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
 }
 
-.ck-content ol,
-.preview-content ol {
-    list-style-type: decimal !important;
-    padding-left: 15px !important;
+.preview-content th,
+.preview-content td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+}
+
+.preview-content figure.table {
+    margin: 1em 0;
+    overflow-x: auto;
+}
+
+.preview-content table td:empty::before {
+    content: '\00a0';
 }

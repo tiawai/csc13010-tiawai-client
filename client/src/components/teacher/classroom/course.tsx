@@ -1,3 +1,4 @@
+'use client';
 import { Card, Dropdown, MenuProps } from 'antd';
 import {
     StarFilled,
@@ -7,15 +8,19 @@ import {
     EditOutlined,
     DeleteOutlined,
 } from '@ant-design/icons';
-import Image, { StaticImageData } from 'next/image';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface CourseProps {
     title: string;
-    image: StaticImageData;
+    image: string;
     star: number;
     rating: number;
     price: string;
     students: string;
+    onEdit: () => void;
+    onDelete: () => void;
+    id: string;
 }
 
 const Course: React.FC<CourseProps> = ({
@@ -25,13 +30,31 @@ const Course: React.FC<CourseProps> = ({
     rating,
     price,
     students,
+    onEdit,
+    onDelete,
+    id,
 }) => {
-    // Menu của Dropdown chứa các hành động
+    const router = useRouter();
+
+    const handleClick = () => {
+        router.push(`/teacher/classroom/${id}`);
+    };
+
+    const handleMenuClick: MenuProps['onClick'] = (e) => {
+        e.domEvent.stopPropagation();
+
+        if (e.key === 'edit') {
+            onEdit();
+        } else if (e.key === 'delete') {
+            onDelete();
+        }
+    };
+
     const menuItems: MenuProps['items'] = [
         {
             key: 'edit',
             label: (
-                <span className="flex cursor-pointer items-center gap-2 p-2 font-semibold hover:bg-gray-100">
+                <span className="flex items-center gap-2 font-semibold">
                     <EditOutlined />
                     Sửa lớp
                 </span>
@@ -40,7 +63,7 @@ const Course: React.FC<CourseProps> = ({
         {
             key: 'delete',
             label: (
-                <span className="flex cursor-pointer items-center gap-2 p-2 font-semibold text-red-500 hover:bg-gray-100">
+                <span className="flex items-center gap-2 font-semibold text-red-500">
                     <DeleteOutlined />
                     Xoá lớp
                 </span>
@@ -51,27 +74,32 @@ const Course: React.FC<CourseProps> = ({
     return (
         <Card
             hoverable
-            className="rounded-lg border bg-[#DAE3E9] shadow-md"
+            className="cursor-pointer rounded-lg border bg-[#DAE3E9] shadow-md"
             cover={
-                <Image
-                    src={image}
-                    alt={title}
-                    width={300}
-                    height={200}
-                    className="rounded-t-lg"
-                />
+                <div className="relative h-[250px] w-full overflow-hidden rounded-t-lg">
+                    <Image
+                        src={image}
+                        alt={title}
+                        fill
+                        className="object-cover"
+                        onClick={handleClick}
+                    />
+                </div>
             }
+            onClick={handleClick}
         >
             <div className="mb-2 flex items-center space-x-1">
                 {Array.from({ length: 5 }).map((_, index) => (
                     <StarFilled
                         key={index}
                         className={
-                            index < star ? 'text-[#FF3000]' : 'text-gray-300'
+                            index < star ? '!text-[#FF3000]' : '!text-gray-300'
                         }
                     />
                 ))}
-                <span className="ml-2 font-semibold">{rating}k</span>
+                <span className="ml-2 font-semibold">
+                    {isNaN(Number(rating)) ? '0' : Number(rating).toFixed(1)}
+                </span>
             </div>
 
             <h3 className="my-2 text-xl font-bold">{title}</h3>
@@ -84,17 +112,21 @@ const Course: React.FC<CourseProps> = ({
                 </span>
             </div>
 
-            {/* Dropdown cho More Options */}
             <div className="flex justify-end">
                 <Dropdown
-                    menu={{ items: menuItems }}
+                    menu={{ items: menuItems, onClick: handleMenuClick }}
                     trigger={['click']}
                     placement="bottomLeft"
                 >
-                    <MoreOutlined
-                        className="cursor-pointer text-2xl"
-                        rotate={90}
-                    />
+                    <span
+                        className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-200"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <MoreOutlined
+                            className="cursor-pointer text-2xl"
+                            rotate={90}
+                        />
+                    </span>
                 </Dropdown>
             </div>
         </Card>
