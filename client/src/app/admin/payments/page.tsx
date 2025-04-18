@@ -50,7 +50,7 @@ const columns: ColumnsType<Payment> = [
         key: 'status',
         render: (status: PaymentStatus) => {
             const color =
-                status === PaymentStatus.COMPLETED
+                status === PaymentStatus.SUCCESS
                     ? 'green'
                     : status === PaymentStatus.FAILED
                       ? 'red'

@@ -23,6 +23,11 @@ const paymentApi = appApi.injectEndpoints({
             providesTags: ['Payment'],
         }),
 
+        getByStudentId: builder.query<Payment[], void>({
+            query: () => `/payments/student`,
+            providesTags: ['Payment'],
+        }),
+
         createPayment: builder.mutation<Payment, CreatePayment>({
             query: (body) => ({
                 url: '/payments',
@@ -101,6 +106,7 @@ const paymentApi = appApi.injectEndpoints({
 export const {
     useGetAllPaymentsQuery,
     useGetPaymentByIdQuery,
+    useGetByStudentIdQuery,
     useCreatePaymentMutation,
     useVerifyPaymentMutation,
     usePaymentWebhookMutation,

@@ -10,6 +10,9 @@ import { twMerge } from 'tailwind-merge';
 import { Typography } from 'antd';
 import { Classroom } from '@/types/classroom.type';
 import { useRouter } from 'next/navigation';
+import { useCreatePaymentMutation } from '@/services/payment.service';
+import { PaymentType } from '@/types/payment.type';
+import { useNotification } from '@/lib/hooks/use-notification';
 const { Title } = Typography;
 
 const durationFormatter = (duration: number) => {
@@ -44,11 +47,34 @@ const ClassFrame: React.FC<{
     class: Classroom;
 }> = ({ className, class: classData }) => {
     const router = useRouter();
+    const [createPayment] = useCreatePaymentMutation();
+    const { notify } = useNotification();
 
-    const handleJoinClass = () => {
-        router.push(`/student/class/${classData.id}`);
+    const handlePayment = async () => {
+        const res = await createPayment({
+            type: PaymentType.CLASSROOM,
+            amount: classData.price,
+            teacherId: classData.teacherId,
+            classroomId: classData.id,
+        });
+
+        if (res.error) {
+            notify({
+                message: 'Có lỗi xảy ra',
+                description: 'Không thể tạo đơn thanh toán',
+                notiType: 'error',
+            });
+            return;
+        }
+
+        if (res.data.paymentLink) {
+            notify({
+                message: 'Tạo đơn thanh toán thành công',
+                description: 'Đang chuyển hướng đến trang thanh toán',
+            });
+            router.push(res.data.paymentLink);
+        }
     };
-
     return (
         <Flex
             className={twMerge(
@@ -111,7 +137,7 @@ const ClassFrame: React.FC<{
             <Button
                 variant="solid"
                 className="w-full !bg-secondary-button !font-montserrat !text-white"
-                onClick={handleJoinClass}
+                onClick={handlePayment}
             >
                 Tham gia
             </Button>
