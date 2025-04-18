@@ -1,72 +1,39 @@
 'use client';
-
-import { useState, useMemo } from 'react';
-import { Flex, Table, Button, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import { FilterIcon } from '@/ui/admin/icons';
-
-export interface Report {
-    id: string;
-    fullname: string;
-    createdAt: string;
-    type: string;
-    description: string;
-    status: string;
-    manageBy: string;
-}
-
-const fakeReports: Report[] = [
-    {
-        id: '1',
-        fullname: 'John Doe',
-        createdAt: '2023-10-01',
-        type: 'Bug',
-        description: 'Issue with login functionality',
-        status: 'Pending',
-        manageBy: 'Admin A',
-    },
-    {
-        id: '2',
-        fullname: 'Jane Smith',
-        createdAt: '2023-10-02',
-        type: 'Feature Request',
-        description: 'Add dark mode',
-        status: 'Resolved',
-        manageBy: 'Admin B',
-    },
-    {
-        id: '3',
-        fullname: 'Alice Johnson',
-        createdAt: '2023-10-03',
-        type: 'Bug',
-        description: 'Error on dashboard',
-        status: 'In Progress',
-        manageBy: 'Admin C',
-    },
-];
+import { useMemo } from 'react';
+import { Flex, Table, Button, Empty, message, Tag, Select, Avatar } from 'antd';
+import { Report, ReportStatus } from '@/types/report.type';
+import { AdminBanner } from '@/components/common/banner';
+import { TableInputSearch } from '@/components/admin/table';
+import {
+    useGetAllReportsQuery,
+    useDeleteReportMutation,
+    useUpdateReportStatusMutation,
+} from '@/services/report.service';
+import { usePagination } from '@/lib/hooks/use-paganation';
+import { useSearch } from '@/lib/hooks/use-search';
+import { User } from '@/types/user.type';
 
 export default function AdminReportsPage() {
-    const [searchText, setSearchText] = useState<string>('');
-    const [filteredData, setFilteredData] = useState<Report[]>(fakeReports);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(5);
+    const { data: reports, isLoading } = useGetAllReportsQuery();
+    const [updateReportStatus, { isLoading: isLoadingUpdate }] =
+        useUpdateReportStatusMutation();
+    const [deleteReport] = useDeleteReportMutation();
+    const { currentPage, pageSize, handlePageChange } = usePagination(5);
 
-    const handleSearch = (value: string) => {
-        setSearchText(value);
-        const filtered = fakeReports.filter((report) => {
-            const fullname = report.fullname.toLowerCase();
-            return fullname.includes(value.toLowerCase());
-        });
-        setFilteredData(filtered);
-        setCurrentPage(1);
+    const searchFn = (report: Report, query: string) => {
+        const value = query.toLowerCase();
+        return (
+            report.fullname.toLowerCase().includes(value) ||
+            report.content.toLowerCase().includes(value) ||
+            report.status.toLowerCase().includes(value) ||
+            (report.manageBy?.username?.toLowerCase().includes(value) ?? false)
+        );
     };
 
-    const handlePageChange = (page: number, pageSize?: number) => {
-        setCurrentPage(page);
-        if (pageSize) {
-            setPageSize(pageSize);
-        }
-    };
+    const { searchText, filteredData, handleSearch } = useSearch<Report>(
+        reports || [],
+        searchFn,
+    );
 
     const columns = useMemo(
         () => [
@@ -76,48 +43,118 @@ export default function AdminReportsPage() {
                 key: 'fullname',
             },
             {
+                title: 'Email',
+                dataIndex: 'email',
+                key: 'email',
+            },
+            {
+                title: 'Số điện thoại',
+                dataIndex: 'phone',
+                key: 'phone',
+            },
+            {
+                title: 'Nội dung',
+                dataIndex: 'content',
+                key: 'content',
+            },
+            {
+                title: 'Trạng thái',
+                dataIndex: 'status',
+                key: 'status',
+                render: (status: ReportStatus) => {
+                    const color =
+                        status === ReportStatus.RESOLVED
+                            ? 'green'
+                            : status === ReportStatus.IN_PROGRESS
+                              ? 'blue'
+                              : 'red';
+                    const statusText =
+                        status === ReportStatus.PENDING
+                            ? 'Đang chờ xử lý'
+                            : status === ReportStatus.IN_PROGRESS
+                              ? 'Đang xử lý'
+                              : status === ReportStatus.RESOLVED
+                                ? 'Đã giải quyết'
+                                : 'Không xác định';
+                    return <Tag color={color}>{statusText}</Tag>;
+                },
+            },
+            {
+                title: 'Quản lý bởi',
+                dataIndex: 'manageBy',
+                key: 'manageBy',
+                render: (manageBy: User | null) =>
+                    manageBy ? (
+                        <div className="flex items-center gap-2">
+                            <Avatar
+                                src={manageBy.profileImage}
+                                alt={manageBy.username}
+                                size="small"
+                                style={{ marginRight: 8 }}
+                            />
+                            {manageBy.username}
+                        </div>
+                    ) : (
+                        'N/A'
+                    ),
+            },
+            {
                 title: 'Ngày tạo',
                 dataIndex: 'createdAt',
                 key: 'createdAt',
                 render: (date: string) => new Date(date).toLocaleDateString(),
             },
             {
-                title: 'Loại',
-                dataIndex: 'type',
-                key: 'type',
-            },
-            {
-                title: 'Mô tả',
-                dataIndex: 'description',
-                key: 'description',
-            },
-            {
-                title: 'Trạng thái',
-                dataIndex: 'status',
-                key: 'status',
-            },
-            {
-                title: 'Quản lý bởi',
-                dataIndex: 'manageBy',
-                key: 'manageBy',
-            },
-            {
                 title: 'Thanh điều khiển',
                 key: 'actions',
                 render: (record: Report) => (
                     <Flex justify="start" gap={10}>
-                        <Button
-                            shape="round"
-                            onClick={() => console.log('Xem:', record)}
-                            className="!bg-[#DAE3E9] text-black"
+                        <Select
+                            loading={isLoadingUpdate}
+                            disabled={isLoadingUpdate}
+                            value={record.status}
+                            onChange={(newStatus) =>
+                                updateReportStatus({
+                                    id: record.id,
+                                    status: newStatus,
+                                })
+                            }
+                            style={{ width: 150 }}
                         >
-                            Xem
-                        </Button>
+                            {Object.values(ReportStatus).map((statusOption) => (
+                                <Select.Option
+                                    key={statusOption}
+                                    value={statusOption}
+                                >
+                                    {statusOption}
+                                </Select.Option>
+                            ))}
+                        </Select>
                         <Button
                             type="primary"
                             shape="round"
                             danger
-                            onClick={() => console.log('Xóa:', record.id)}
+                            onClick={() => {
+                                if (
+                                    confirm(
+                                        'Bạn có chắc chắn muốn xóa báo cáo này?',
+                                    )
+                                ) {
+                                    deleteReport(record.id)
+                                        .unwrap()
+                                        .then(() => {
+                                            message.success(
+                                                'Xóa báo cáo thành công',
+                                            );
+                                        })
+                                        .catch((error) => {
+                                            message.error(
+                                                'Đã có lỗi xảy ra khi xóa báo cáo',
+                                            );
+                                            console.error(error);
+                                        });
+                                }
+                            }}
                         >
                             Xóa
                         </Button>
@@ -130,43 +167,43 @@ export default function AdminReportsPage() {
 
     return (
         <>
-            <Flex
-                justify="space-between"
-                align="center"
-                gap={20}
-                style={{ marginBottom: 20 }}
-            >
-                <Input
-                    size="large"
-                    placeholder="Tìm kiếm"
-                    prefix={<SearchOutlined />}
-                    value={searchText}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="!bg-[#E9DAE9] font-roboto text-black"
+            <div className="space-y-4">
+                <AdminBanner text="Quản lý báo cáo" />
+                <div className="flex items-center justify-between gap-4">
+                    <TableInputSearch
+                        placeholder="Tìm kiếm báo cáo"
+                        value={searchText}
+                        onChange={handleSearch}
+                    />
+                </div>
+                <Table
+                    rowKey={(record) => record.id}
+                    dataSource={filteredData}
+                    columns={columns}
+                    loading={isLoading}
+                    locale={{
+                        emptyText: (
+                            <Empty
+                                imageStyle={{ height: 60 }}
+                                description={
+                                    isLoading
+                                        ? 'Đang tải...'
+                                        : 'Không có báo cáo nào'
+                                }
+                            />
+                        ),
+                    }}
+                    pagination={{
+                        position: ['bottomCenter'],
+                        pageSize: pageSize,
+                        pageSizeOptions: [5, 10, 20, 50],
+                        total: filteredData?.length || 0,
+                        showSizeChanger: true,
+                        current: currentPage,
+                        onChange: handlePageChange,
+                    }}
                 />
-                <Button
-                    icon={<FilterIcon width={18} />}
-                    size="large"
-                    style={{ background: '#E9DAE9' }}
-                    className="font-roboto font-medium"
-                >
-                    Bộ lọc
-                </Button>
-            </Flex>
-            <Table
-                columns={columns}
-                dataSource={filteredData}
-                rowKey={(record) => record?.id || -1}
-                pagination={{
-                    position: ['bottomCenter'],
-                    pageSize: pageSize,
-                    pageSizeOptions: [5, 10, 20, 50],
-                    total: filteredData?.length || 0,
-                    showSizeChanger: true,
-                    current: currentPage,
-                    onChange: handlePageChange,
-                }}
-            />
+            </div>
         </>
     );
 }
