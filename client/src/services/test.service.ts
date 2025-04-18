@@ -198,7 +198,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         getTestByClassroomId: builder.query<Test[], string>({
-            query: (classroomId) => `/tests/teacher/classroom/${classroomId}`,
+            query: (classroomId) => `/tests/classroom/${classroomId}`,
             providesTags: ['Test'],
         }),
     }),
