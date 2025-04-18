@@ -1,6 +1,6 @@
 'use client';
 // import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
-import { Flex, Typography, Empty, Row, Col, Button } from 'antd';
+import { Flex, Typography, Empty, Row, Col, Button, Spin } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
 import ExamFrame from '@/ui/exam-frame';
@@ -14,9 +14,10 @@ import homeCircle1 from '@public/home/home-circle-1.svg';
 import homeDots from '@public/home/home-dots.png';
 import { twMerge } from 'tailwind-merge';
 import ClassFrame from '@/ui/home/class-frame';
-import FindClassInput from '@/ui/components/find-class-input';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useGetClassroomsQuery } from '@/services/classroom';
+import { useEffect, useState } from 'react';
+import { Classroom } from '@/types/classroom.type';
 const { Title, Paragraph } = Typography;
 
 export interface ExamData {
@@ -154,54 +155,6 @@ const examData: ExamData[] = [
     },
 ];
 
-const classData = [
-    {
-        id: '1',
-        className: 'Lớp học 1',
-        description: 'Mô tả lớp học 1',
-        backgroundImage:
-            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-1.jpg',
-        maxStudent: 150,
-        price: 500000,
-        avgRating: 4.8,
-        totalLessons: 15,
-        classCode: 'CLASS001',
-        teacherId: 'teacher1',
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-01',
-    },
-    {
-        id: '2',
-        className: 'Lớp học 2',
-        description: 'Mô tả lớp học 2',
-        backgroundImage:
-            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-2.jpg',
-        maxStudent: 150,
-        price: 500000,
-        avgRating: 4.8,
-        totalLessons: 15,
-        classCode: 'CLASS002',
-        teacherId: 'teacher2',
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-01',
-    },
-    {
-        id: '3',
-        className: 'Lớp học 3',
-        description: 'Mô tả lớp học 3',
-        backgroundImage:
-            'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/class-3.jpg',
-        maxStudent: 150,
-        price: 500000,
-        avgRating: 4.8,
-        totalLessons: 15,
-        classCode: 'CLASS003',
-        teacherId: 'teacher3',
-        createdAt: '2023-01-01',
-        updatedAt: '2023-01-01',
-    },
-];
-
 const Heading: React.FC<{ children: React.ReactNode; className?: string }> = ({
     children,
     className,
@@ -252,13 +205,19 @@ export default function Home() {
     //         tests: practiceData,
     //     },
     // ];
-
+    const [popularClassrooms, setPopularClassrooms] = useState<Classroom[]>([]);
+    const { data: classData = [], isLoading: isLoadingClassrooms } =
+        useGetClassroomsQuery();
     const router = useRouter();
-    const [searchQuery, setSearchQuery] = useState('');
 
-    const handleClassSearch = (value: string) => {
-        setSearchQuery(value);
-    };
+    useEffect(() => {
+        if (classData.length > 0) {
+            const topClasses = [...classData]
+                .sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0))
+                .slice(0, 3);
+            setPopularClassrooms(topClasses);
+        }
+    }, [classData]);
 
     return (
         <main className="flex select-none flex-col items-center justify-center">
@@ -388,30 +347,32 @@ export default function Home() {
                             <Description>
                                 {HOME_HEADERS[1].description}
                             </Description>
-                        </div>
-                        <FindClassInput
-                            className="-mt-10 flex-[0.4]"
-                            onSearch={handleClassSearch}
-                        />
+                        </div>{' '}
+                        <Button
+                            variant="solid"
+                            size="middle"
+                            className="group relative flex-[0.4] self-start !rounded-[40px] !bg-secondary-button !font-montserrat !font-bold !text-white"
+                            onClick={() => router.push('/student/class')}
+                        >
+                            Khám phá thêm lớp học
+                            <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
+                                <ArrowRightOutlined className="!text-black" />
+                            </div>
+                        </Button>
                     </Flex>
-                    <Row gutter={[40, 24]} className="mb-10">
-                        {classData.map((classItem, index) => (
-                            <Col xs={24} md={12} lg={8} key={index}>
-                                <ClassFrame class={classItem} />
-                            </Col>
-                        ))}
-                    </Row>
-                    <Button
-                        variant="solid"
-                        size="large"
-                        className="group relative self-center rounded-[40px] bg-secondary-button pl-8 pr-14 font-montserrat font-bold text-white"
-                        onClick={() => router.push('/student/class')}
-                    >
-                        Khám phá thêm lớp học
-                        <div className="absolute -right-1 top-0 aspect-square h-full content-center justify-center rounded-full bg-[#DAE3E9] transition-all duration-300 group-hover:translate-x-4 group-hover:opacity-0">
-                            <ArrowRightOutlined className="!text-black" />
+                    {isLoadingClassrooms ? (
+                        <div className="flex justify-center">
+                            <Spin size="large" />
                         </div>
-                    </Button>
+                    ) : (
+                        <Row gutter={[40, 24]} className="mb-10">
+                            {popularClassrooms.map((classItem) => (
+                                <Col xs={24} md={12} lg={8} key={classItem.id}>
+                                    <ClassFrame class={classItem} />
+                                </Col>
+                            ))}
+                        </Row>
+                    )}
                 </Flex>
             </div>
 
@@ -449,7 +410,12 @@ export default function Home() {
                                                         ? 'blue'
                                                         : 'pink'
                                                 }
-                                                examData={test}
+                                                id={test.id}
+                                                duration={test.duration}
+                                                totalAttempts={
+                                                    test.totalAttempts
+                                                }
+                                                title={test.title}
                                             />
                                         </Col>
                                     ))}
@@ -498,7 +464,10 @@ export default function Home() {
                                             ? 'pink'
                                             : 'blue'
                                     }
-                                    examData={test}
+                                    id={test.id}
+                                    duration={test.duration}
+                                    totalAttempts={test.totalAttempts}
+                                    title={test.title}
                                 />
                             </Col>
                         ))}
