@@ -9,6 +9,7 @@ const ignoreEndpoints = [
     'createClassroom',
     'updateClassroom',
     'createLesson',
+    'updateLesson',
 ];
 
 const baseQuery = fetchBaseQuery({

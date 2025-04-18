@@ -1,12 +1,18 @@
+'use client';
+import { useState } from 'react';
 import Image from 'next/image';
 import { BannerTitle, BannerSubTitle } from '@/components/common/banner';
 import Banner from '@/app/(user)/student/(study)/_ui/banner';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
 import SearchForm from '@/components/teacher/common/searchform';
-import { Space, Row, Col } from 'antd';
+import { Space, Row, Col, Spin, Empty } from 'antd';
 import ClassDropdown from '@/components/teacher/exam/classdropdown';
 import TestCard from '@/components/teacher/exam/testCard';
 import LessonCard from '@/components/teacher/exam/lessonCard';
+import {
+    useGetTeacherClassroomsQuery,
+    useGetLessonsQuery,
+} from '@/services/classroom';
 
 const examList = [
     { id: 1, title: 'Đề Thi Toán 2023', duration: 90, attempts: 150 },
@@ -15,15 +21,39 @@ const examList = [
     { id: 4, title: 'Đề Thi Tiếng Anh 2023', duration: 45, attempts: 80 },
 ];
 
-const lessonList = [
-    { id: 1, title: 'Bài 1 - Ngữ pháp cơ bản' },
-    { id: 2, title: 'Bài 2 - Câu điều kiện' },
-    { id: 3, title: 'Bài 3 - Thì hiện tại hoàn thành' },
-    { id: 4, title: 'Bài 4 - Câu bị động' },
-    { id: 5, title: 'Bài 5 - Mệnh đề quan hệ' },
-];
-
 const ExamPage = () => {
+    const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
+        undefined,
+    );
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const { data: classrooms, isLoading: isClassroomsLoading } =
+        useGetTeacherClassroomsQuery();
+    const {
+        data: lessons,
+        isLoading: isLessonsLoading,
+        error: lessonsError,
+    } = useGetLessonsQuery({
+        classId: selectedClassId,
+    });
+
+    const handleClassSelect = (classId: string | undefined) => {
+        setSelectedClassId(classId);
+    };
+
+    const handleSearch = (value: string) => {
+        setSearchTerm(value);
+    };
+
+    // Lọc bài học dựa trên searchTerm
+    const filteredLessons = lessons?.filter((lesson) =>
+        lesson.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
+    // Lọc đề thi dựa trên searchTerm
+    const filteredExams = examList.filter((exam) =>
+        exam.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+
     return (
         <div className="select-none space-y-20">
             <Banner>
@@ -31,7 +61,7 @@ const ExamPage = () => {
                     <BannerTitle title="Quản lý Đề thi & Bài học – Tổ chức khoa học, giảng dạy hiệu quả! 📚📝" />
                     <BannerSubTitle
                         title="Dễ dàng tạo, sắp xếp và chỉnh sửa bài giảng, đề thi theo lộ trình giảng dạy.
-                        Upload slide, soạn bài trực tiếp hoặc sử dụng AI Tia để tạo nội dung nhanh chóng! 🚀✨"
+            Upload slide, soạn bài trực tiếp hoặc sử dụng AI Tia để tạo nội dung nhanh chóng! 🚀✨"
                     />
                 </div>
                 <Image
@@ -46,32 +76,55 @@ const ExamPage = () => {
             <div>
                 <div className="mb-6 text-3xl font-bold">Quản lý lớp học</div>
                 <Space size="large">
-                    <SearchForm />
-                    <ClassDropdown />
+                    <SearchForm
+                        onSearch={handleSearch}
+                        title="Tìm kiếm bài học & đề thi"
+                    />
+                    <ClassDropdown
+                        classrooms={classrooms || []}
+                        onSelect={handleClassSelect}
+                        loading={isClassroomsLoading}
+                    />
                 </Space>
 
                 {/* Danh sách đề thi */}
-                <div className="mb-6 text-2xl font-bold">Đề thi</div>
-                <Row gutter={[16, 16]} className="mb-6">
-                    {examList.map((exam) => (
-                        <Col key={exam.id} xs={24} sm={12} md={8} lg={6}>
-                            <TestCard
-                                title={exam.title}
-                                duration={exam.duration}
-                                attempts={exam.attempts}
-                            />
-                        </Col>
-                    ))}
-                </Row>
+                <div className="mb-6 mt-6 text-2xl font-bold">Đề thi</div>
+                {filteredExams.length > 0 ? (
+                    <Row gutter={[16, 16]} className="mb-6">
+                        {filteredExams.map((exam) => (
+                            <Col key={exam.id} xs={24} sm={12} md={8} lg={6}>
+                                <TestCard
+                                    title={exam.title}
+                                    duration={exam.duration}
+                                    attempts={exam.attempts}
+                                />
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <Empty description="Không tìm thấy đề thi nào" />
+                )}
 
+                {/* Danh sách bài học */}
                 <div className="mb-6 text-2xl font-bold">Bài học</div>
-                <Row gutter={[16, 16]} className="mb-6">
-                    {lessonList.map((lesson) => (
-                        <Col key={lesson.id} xs={24} sm={12} md={8} lg={6}>
-                            <LessonCard title={lesson.title} />
-                        </Col>
-                    ))}
-                </Row>
+                {isLessonsLoading ? (
+                    <Spin size="large" className="flex justify-center" />
+                ) : lessonsError ? (
+                    <Empty description="Lỗi khi tải danh sách bài học" />
+                ) : filteredLessons && filteredLessons.length > 0 ? (
+                    <Row gutter={[16, 16]} className="mb-6">
+                        {filteredLessons.map((lesson) => (
+                            <Col key={lesson.id} xs={24} sm={12} md={8} lg={6}>
+                                <LessonCard
+                                    id={lesson.id}
+                                    title={lesson.title}
+                                />
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <Empty description="Không tìm thấy bài học nào" />
+                )}
             </div>
         </div>
     );

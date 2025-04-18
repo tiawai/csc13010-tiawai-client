@@ -9,7 +9,6 @@ import {
     Typography,
     Space,
     Divider,
-    Modal,
 } from 'antd';
 import {
     useGetLessonByIdQuery,
@@ -21,11 +20,11 @@ import {
     DeleteOutlined,
     FilePdfOutlined,
     LinkOutlined,
-    ExclamationCircleOutlined,
 } from '@ant-design/icons';
+import { useState } from 'react';
+import ConfirmModal from '@/components/common/confirm-modal';
 
 const { Title, Text } = Typography;
-const { confirm } = Modal;
 
 const ViewLesson = () => {
     const { id: lessonId } = useParams();
@@ -36,6 +35,7 @@ const ViewLesson = () => {
         error,
     } = useGetLessonByIdQuery(lessonId as string);
     const [deleteLesson, { isLoading: isDeleting }] = useDeleteLessonMutation();
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
     const handleBack = () => {
         if (window.history.length > 1) {
@@ -47,19 +47,6 @@ const ViewLesson = () => {
 
     const handleEdit = () => {
         router.push(`/teacher/lesson/${lessonId}/edit`);
-    };
-
-    const showDeleteConfirm = () => {
-        confirm({
-            title: 'Xác nhận xóa bài học',
-            icon: <ExclamationCircleOutlined />,
-            content:
-                'Bạn có chắc chắn muốn xóa bài học này? Hành động này không thể hoàn tác.',
-            okText: 'Xóa',
-            okType: 'danger',
-            cancelText: 'Hủy',
-            onOk: handleDelete,
-        });
     };
 
     const handleDelete = async () => {
@@ -75,7 +62,7 @@ const ViewLesson = () => {
             } else {
                 router.push('/');
             }
-        } catch (error) {
+        } catch (error: unknown) {
             notification.error({
                 message: 'Lỗi',
                 description:
@@ -84,6 +71,7 @@ const ViewLesson = () => {
                 placement: 'topRight',
             });
         }
+        setIsConfirmModalOpen(false);
     };
 
     if (isLoading) {
@@ -150,7 +138,7 @@ const ViewLesson = () => {
                         type="primary"
                         danger
                         size="large"
-                        onClick={showDeleteConfirm}
+                        onClick={() => setIsConfirmModalOpen(true)}
                         loading={isDeleting}
                         disabled={isDeleting}
                     >
@@ -215,6 +203,13 @@ const ViewLesson = () => {
                     </Space>
                 </Card>
             )}
+
+            <ConfirmModal
+                open={isConfirmModalOpen}
+                content="Bạn có chắc chắn muốn xóa bài học này không?"
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmModalOpen(false)}
+            />
         </div>
     );
 };

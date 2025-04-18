@@ -118,7 +118,7 @@ const ClassroomPage = () => {
             </div>
             <div>
                 <div className="!mb-6 text-3xl font-bold">Quản lý lớp học</div>
-                <SearchForm onSearch={handleSearch} />
+                <SearchForm title="Tìm kiếm lớp học" onSearch={handleSearch} />
                 {isLoading ? (
                     <div className="flex justify-center">
                         <Spin size="large" />
