@@ -32,6 +32,10 @@ import {
     useCreatePart2TRMutation,
     useCreatePart3TRMutation,
     useCreateToeicReadingTestMutation,
+
+    // teacher
+    useCreateToeicListeningTestTeacherMutation,
+    useCreateToeicReadingTestTeacherMutation,
 } from '@/services/test.service';
 import { TestType } from '@/types/test.type';
 import {
@@ -42,6 +46,7 @@ import {
     NavigationButtonSave,
 } from './form-ui';
 import { CreateQuestionDto, Question } from '@/types/question.type';
+import { useParams } from 'next/navigation';
 
 export const PartTitle = ({ title }: { title: string }) => {
     return <Title className="!text-center">{title}</Title>;
@@ -98,6 +103,8 @@ export const PartNavigation = memo(
 
 export const PartNavigationFooter = memo(
     <T extends string>({ partMap }: PartNavigationProps<T>) => {
+        const params = useParams();
+        const classroomId = params.id as string;
         const dispatch = useAppDispatch();
         const currentPart = useAppSelector(selectCurrentPart);
         const firstpart = useAppSelector(selectFirstPart);
@@ -145,6 +152,12 @@ export const PartNavigationFooter = memo(
         const [createPart1TR] = useCreatePart1TRMutation();
         const [createPart2TR] = useCreatePart2TRMutation();
         const [createPart3TR] = useCreatePart3TRMutation();
+
+        // Teacher hooks
+        const [createToeicListeningTestTeacher] =
+            useCreateToeicListeningTestTeacherMutation();
+        const [createToeicReadingTestTeacher] =
+            useCreateToeicReadingTestTeacherMutation();
 
         const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
@@ -290,6 +303,7 @@ export const PartNavigationFooter = memo(
                     choices: question.choices,
                     correctAnswer: question.correctAnswer || 'A',
                     points: 4.5,
+
                     // paragraph: `Đoạn văn - Câu ${question.questionOrder}`,
                     // content: `Câu ${question.questionOrder}`,
                     // explanation: `Giải thích - Câu ${question.questionOrder}`,
@@ -337,9 +351,10 @@ export const PartNavigationFooter = memo(
                     paragraph: question?.paragraph,
                     content: question?.content,
                     explanation: question?.explanation,
-                    correctAnswer: question.correctAnswer || 'A',
                     choices: question.choices,
+                    correctAnswer: question.correctAnswer || 'A',
                     points: 4.5,
+
                     // paragraph: `Đoạn văn - Câu ${question.questionOrder}`,
                     // content: `Câu ${question.questionOrder}`,
                     // explanation: `Giải thích - Câu ${question.questionOrder}`,
@@ -393,10 +408,19 @@ export const PartNavigationFooter = memo(
                 }
 
                 const encodedAudioUrl = encodeURIComponent(resAudioUrl);
-                const res = await createToeicListeningTest({
-                    audioUrl: encodedAudioUrl,
-                    test: testPayload,
-                });
+                let res = undefined;
+                if (classroomId !== undefined) {
+                    res = await createToeicListeningTestTeacher({
+                        classroomId,
+                        audioUrl: encodedAudioUrl,
+                        test: testPayload,
+                    });
+                } else {
+                    res = await createToeicListeningTest({
+                        audioUrl: encodedAudioUrl,
+                        test: testPayload,
+                    });
+                }
 
                 if (res.error) return setIsLoading(false);
                 const testId = res.data.id;
@@ -409,7 +433,15 @@ export const PartNavigationFooter = memo(
                 ]);
             }
             if (testType === 'reading') {
-                const res = await createToeicReadingTest(testPayload);
+                let res = undefined;
+                if (classroomId !== undefined) {
+                    res = await createToeicReadingTestTeacher({
+                        classroomId,
+                        ...testPayload,
+                    });
+                } else {
+                    res = await createToeicReadingTest(testPayload);
+                }
                 if (res.error) return setIsLoading(false);
                 const testId = res.data.id;
 

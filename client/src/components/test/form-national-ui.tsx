@@ -13,14 +13,24 @@ import {
 import { useCreateNationalTestMutation } from '@/services/test.service';
 import { CreateQuestionDto } from '@/types/question.type';
 import { CreateNationalTestDto, TestType } from '@/types/test.type';
+import { useParams } from 'next/navigation';
+import { useNotification } from '@/lib/hooks/use-notification';
+import { useCreateNationalTestTeacherMutation } from '@/services/test.service';
 
 export const FormFooter = memo(() => {
+    const params = useParams();
+    const classroomId = params.id as string;
     const dispatch = useAppDispatch();
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-    const [createNationalTest, { isLoading }] = useCreateNationalTestMutation();
     const testState = useAppSelector((state) => state.nationalTestCreator);
+    const [isLoading, setIsLoading] = useState(false);
+    const [createNationalTest] = useCreateNationalTestMutation();
+    const [createNationalTestTeacher] = useCreateNationalTestTeacherMutation();
+    const { notify } = useNotification();
 
     const handleSaveTest = async () => {
+        setIsLoading(true);
+
         const {
             title,
             startDate,
@@ -45,14 +55,47 @@ export const FormFooter = memo(() => {
                     content: question?.content,
                     paragraph: question?.paragraph,
                     explanation: question?.explanation,
-                    correctAnswer: question.correctAnswer || 'A',
                     choices: question.choices,
+                    correctAnswer: question.correctAnswer || 'A',
                     points: 0.25,
+
+                    // content: `Câu ${question.questionOrder}`,
+                    // paragraph: `Đoạn văn bản câu ${question.questionOrder}`,
+                    // explanation: `Giải thích câu ${question.questionOrder}`,
+                    // choices: {
+                    //     A: 'Đáp án A',
+                    //     B: 'Đáp án B',
+                    //     C: 'Đáp án C',
+                    //     D: 'Đáp án D',
+                    // },
                 }),
             ),
         };
 
-        await createNationalTest(body);
+        let res;
+        if (classroomId) {
+            res = await createNationalTestTeacher({
+                classroomId: classroomId,
+                ...body,
+            });
+        } else {
+            res = await createNationalTest(body);
+        }
+
+        setIsLoading(false);
+
+        if (res?.data) {
+            notify({
+                message: 'Đăng đề thành công',
+                description: 'Đề thi đã được đăng thành công.',
+            });
+        } else {
+            notify({
+                message: 'Đăng đề thất bại',
+                description: 'Đề thi đã được đăng thất bại.',
+                notiType: 'error',
+            });
+        }
     };
 
     const handleCancelTest = () => {

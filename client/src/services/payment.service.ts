@@ -4,7 +4,11 @@ import {
     PaymentVerify,
     PaymentWebhook,
     CreatePayment,
+    BankAccount,
+    BankAccountDto,
+    PayoutDto,
 } from '@/types/payment.type';
+import { update } from 'lodash';
 
 const paymentApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -46,9 +50,50 @@ const paymentApi = appApi.injectEndpoints({
             invalidatesTags: ['Payment'],
         }),
 
-        getPayout: builder.query<Payment[], void>({
+        getBankAccount: builder.query<BankAccount, void>({
+            query: () => `/payments/accounts`,
+            providesTags: ['Payment'],
+        }),
+
+        createBankAccount: builder.mutation<BankAccount, BankAccountDto>({
+            query: (body) => ({
+                url: '/payments/accounts',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Payment'],
+        }),
+
+        updateBankAccount: builder.mutation<BankAccount, BankAccountDto>({
+            query: (body) => ({
+                url: '/payments/accounts',
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: ['Payment'],
+        }),
+
+        getPayout: builder.query<PayoutDto, void>({
             query: () => '/payments/payout',
             providesTags: ['Payment'],
+        }),
+
+        processPayout: builder.mutation<void, { payments: string[] }>({
+            query: (body) => ({
+                url: '/payments/payout/process',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Payment'],
+        }),
+
+        updatePayoutSuccess: builder.mutation<void, void>({
+            query: (body) => ({
+                url: '/payments/payout/success',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Payment'],
         }),
     }),
 });
@@ -59,6 +104,10 @@ export const {
     useCreatePaymentMutation,
     useVerifyPaymentMutation,
     usePaymentWebhookMutation,
+    useGetBankAccountQuery,
+    useCreateBankAccountMutation,
+    useUpdateBankAccountMutation,
     useLazyGetPayoutQuery,
-    useGetPayoutQuery,
+    useProcessPayoutMutation,
+    useUpdatePayoutSuccessMutation,
 } = paymentApi;
