@@ -32,5 +32,6 @@ export const appApi = createApi({
         'Chat',
         'Flashcard',
         'Payment',
+        'Report',
     ],
 });
