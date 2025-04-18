@@ -95,7 +95,9 @@ const StudentActions: React.FC<{ studentId: string }> = ({ studentId }) => {
         } catch (error: unknown) {
             notification.error({
                 message: 'Xóa học sinh thất bại',
-                description: error?.data?.message || 'Lỗi không xác định',
+                description:
+                    (error as { data: { message: string } })?.data?.message ||
+                    'Lỗi không xác định',
             });
         }
     };
