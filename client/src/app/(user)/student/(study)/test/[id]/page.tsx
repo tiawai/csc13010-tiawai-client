@@ -22,6 +22,9 @@ import { useGetTestByIdQuery } from '@/services/test.service';
 import { Loading } from '@/components/common/loading';
 import { setTest } from '@/lib/slices/test.slice';
 import Title from 'antd/es/typography/Title';
+import { useCreateReportMutation } from '@/services/report.service';
+import { CreateReport } from '@/types/report.type';
+import { useNotification } from '@/lib/hooks/use-notification';
 
 export default function TestPage({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -30,6 +33,10 @@ export default function TestPage({ params }: { params: { id: string } }) {
     const { test } = useAppSelector((state) => state.test);
     const [isReportModalVisible, setIsReportModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const [createReport, { isLoading: isCreatingReport }] =
+        useCreateReportMutation();
+    const user = useAppSelector((state) => state.auth.user);
+    const { notify } = useNotification();
 
     useEffect(() => {
         if (data) {
@@ -59,12 +66,32 @@ export default function TestPage({ params }: { params: { id: string } }) {
 
     const handleReportSubmit = () => {
         form.validateFields().then((values) => {
-            console.log('Report submitted:', values);
+            const reportData: CreateReport = {
+                content: values.reason,
+                fullname: user?.username || '',
+                email: user?.email || '',
+                phone: values.phone || '',
+            };
 
-            // api call
-
-            setIsReportModalVisible(false);
-            form.resetFields();
+            createReport(reportData)
+                .unwrap()
+                .then(() => {
+                    notify({
+                        type: 'success',
+                        message: 'Báo cáo thành công',
+                        description: 'Cảm ơn bạn đã báo cáo đề thi này!',
+                    });
+                    setIsReportModalVisible(false);
+                    form.resetFields();
+                })
+                .catch((error) => {
+                    console.error('Failed to create report:', error);
+                    notify({
+                        type: 'error',
+                        message: 'Báo cáo thất bại',
+                        description: 'Đã có lỗi xảy ra khi gửi báo cáo.',
+                    });
+                });
         });
     };
 
@@ -169,12 +196,34 @@ export default function TestPage({ params }: { params: { id: string } }) {
                             key="submit"
                             type="primary"
                             onClick={handleReportSubmit}
+                            loading={isCreatingReport}
                         >
                             Gửi báo cáo
                         </Button>,
                     ]}
                 >
-                    <Form form={form}>
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        style={{ width: '100%' }}
+                    >
+                        <Form.Item
+                            name="phone"
+                            label="Số điện thoại"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Vui lòng nhập số điện thoại!',
+                                },
+                                {
+                                    pattern: /^(0[3|5|7|8|9])+([0-9]{8})$/,
+                                    message: 'Số điện thoại không hợp lệ!',
+                                },
+                            ]}
+                            style={{ width: '100%' }}
+                        >
+                            <Input placeholder="Nhập số điện thoại của bạn" />
+                        </Form.Item>
                         <Form.Item
                             name="reason"
                             label="Lý do báo cáo"
@@ -184,6 +233,7 @@ export default function TestPage({ params }: { params: { id: string } }) {
                                     message: 'Vui lòng nhập lý do báo cáo!',
                                 },
                             ]}
+                            style={{ width: '100%' }}
                         >
                             <Input.TextArea
                                 rows={4}
