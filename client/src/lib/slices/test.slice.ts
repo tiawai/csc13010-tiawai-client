@@ -1,6 +1,6 @@
 'use client';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Test } from '@/types/test.type';
+import { Test, TestResult } from '@/types/test.type';
 import {
     Question,
     Answer,
@@ -13,6 +13,7 @@ export interface TestState {
     test: Test;
     questions: Question[];
     answers: Answer[];
+    result?: TestResult;
 }
 
 const initialState: TestState = {
@@ -37,12 +38,14 @@ const testSlice = createSlice({
             state.answers = QuestionUtils.initListAnswers(
                 action.payload.questions,
             );
+            state.result = undefined;
         },
 
         resetTest: (state) => {
             state.test = {} as Test;
             state.questions = [];
             state.answers = [];
+            state.result = undefined;
         },
 
         setAnswer: (
@@ -55,10 +58,14 @@ const testSlice = createSlice({
             const { questionOrder, choice } = action.payload;
             state.answers[questionOrder - 1].answer = choice;
         },
+
+        setResults: (state, action: PayloadAction<TestResult>) => {
+            state.result = action.payload;
+        },
     },
 });
 
-export const { setTest, resetTest, setAnswer } = testSlice.actions;
+export const { setTest, resetTest, setAnswer, setResults } = testSlice.actions;
 export default testSlice.reducer;
 
 export const selectAnswerByQuestionOrder =

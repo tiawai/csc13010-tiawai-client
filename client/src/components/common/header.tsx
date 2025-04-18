@@ -40,11 +40,11 @@ const guestItems: MenuProps["items"] = [
 const studentItems: MenuProps["items"] = [
     { label: <Link href="/student/">Trang chủ</Link>, key: "home" },
     { label: <Dropdown menu={{ items: [
-        { key: '1', label: <Link href={`/student/test?type=${TestType.TOEIC_LISTENING}`}>Đề thi TOEIC Listening</Link> },
-        { key: '2', label: <Link href={`/student/test?type=${TestType.TOEIC_READING}`}>Đề thi TOEIC Reading</Link> }
+        { key: '1', label: <Link href={`/student/test?type=${encodeURIComponent(TestType.TOEIC_LISTENING)}`}>Đề thi TOEIC Listening</Link> },
+        { key: '2', label: <Link href={`/student/test?type=${encodeURIComponent(TestType.TOEIC_READING)}`}>Đề thi TOEIC Reading</Link> }
       ]}}><span>Kỹ năng TOEIC<DownOutlined /></span></Dropdown>, key: "toeic"
     },
-    { label: <Link href={`/student/test?type=${TestType.NATIONAL_TEST}`}>Ôn thi THPTQG</Link>, key: "thptqg" },
+    { label: <Link href={`/student/test?type=${encodeURIComponent(TestType.NATIONAL_TEST)}`}>Ôn thi THPTQG</Link>, key: "thptqg" },
     { label: <Link href="/student/flashcard">Flashcard</Link>, key: "flashcard" },
     { label: <Link href="/student/class">Lớp học</Link>, key: "class" },
     { label: <Link href="/contact">Liên hệ</Link>, key: "contact" },
@@ -66,16 +66,21 @@ const adminItems: MenuProps["items"] = [
     { label: <Link href="/admin">Thống kê</Link>, key: "dashboard" },
     { label: <Link href="/admin/users">Quản lý người dùng</Link>, key: "users" },
     { label: <Link href="/admin/classrooms">Quản lý lớp học</Link>, key: "classrooms" },
-    { label: <Link href="/admin/assignments">Quản lý bài tập</Link>, key: "assignments" },
     { label: <Link href="/admin/tests">Quản lý đề thi</Link>, key: "tests" },
     { label: <Link href="/admin/reports">Quản lý báo cáo</Link>, key: "reports" },
     { label: <Link href="/admin/payments">Quản lý giao dịch</Link>, key: "payments" },
 ];
 
 // prettier-ignore
-const dropdownItems: MenuProps["items"] = [
+const dropdownItemsStudent: MenuProps["items"] = [
     { key: "profile", label: <Link href="/profile">Hồ sơ cá nhân</Link>, icon: <UserOutlined /> },
     { key: "history", label: <Link href="/student/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
+    { key: "signout", label: "Đăng xuất", icon: <LogoutOutlined /> },
+];
+
+// prettier-ignore
+const dropdownItemsTA: MenuProps["items"] = [
+    { key: "profile", label: <Link href="/profile">Hồ sơ cá nhân</Link>, icon: <UserOutlined /> },
     { key: "signout", label: "Đăng xuất", icon: <LogoutOutlined /> },
 ];
 
@@ -85,6 +90,8 @@ const Header = () => {
     const [disableChatSession] = useDisableSessionMutation();
     const chatSessionId = useAppSelector((state) => state.auth.chatSessionId);
     const user = useAppSelector(selectUser);
+    const dropdownItems =
+        user.role === Role.STUDENT ? dropdownItemsStudent : dropdownItemsTA;
 
     const handleDropdownClick: MenuProps['onClick'] = async ({ key }) => {
         if (key === 'signout') {
