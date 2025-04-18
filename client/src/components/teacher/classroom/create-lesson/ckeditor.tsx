@@ -13,7 +13,7 @@ const CkEditor: React.FC<CkEditorProps> = ({ value, onChange }) => {
     useEffect(() => {
         const style = document.createElement('style');
         style.innerHTML = `
-      .ck-editor__editable_inline {
+        .ck-editor__editable_inline {
         min-height: 300px !important;
       }
     `;
