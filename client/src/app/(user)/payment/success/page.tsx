@@ -66,6 +66,7 @@ export default function PaymentSuccess() {
                 status,
                 orderCode,
             });
+
             if (res.error || !res.data) {
                 setStatus('error');
                 return;
@@ -76,7 +77,7 @@ export default function PaymentSuccess() {
         };
 
         handleVerifyPayment();
-    }, [queryParams, verifyPayment]);
+    }, []);
 
     const getSuccessActions = () => {
         if (!payment) return [];
@@ -93,7 +94,7 @@ export default function PaymentSuccess() {
                     key="classroom"
                     type="primary"
                     onClick={() =>
-                        router.push(`/classroom/${payment.classroomId}`)
+                        router.push(`/student/class/${payment.classroomId}`)
                     }
                 >
                     Vào lớp học
