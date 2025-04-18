@@ -80,3 +80,11 @@ export interface SubmitTestDto {
     timeConsumed: number;
     answers: Answer[];
 }
+
+export interface TestResult {
+    submissionId: string;
+    score: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    emptyAnswers: number;
+}

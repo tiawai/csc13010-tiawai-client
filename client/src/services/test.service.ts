@@ -11,12 +11,18 @@ import {
     UploadAudioToeicDto,
     CreateToeicListeningTestDto,
     SubmitTestDto,
+    TestType,
+    TestResult,
 } from '@/types/test.type';
-import { get } from 'lodash';
 
 const testApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
+        getTestsAnyone: builder.query<Test[], TestType>({
+            query: (type) => `/tests?type=${type}`,
+            providesTags: ['Test'],
+        }),
+
         getTests: builder.query<Test[], void>({
             query: () => '/tests/admin',
             providesTags: ['Test'],
@@ -26,7 +32,7 @@ const testApi = appApi.injectEndpoints({
             query: (id) => `/tests/test/${id}`,
         }),
 
-        submitTestById: builder.mutation<void, SubmitTestDto>({
+        submitTestById: builder.mutation<TestResult, SubmitTestDto>({
             query: ({ testId, ...body }) => ({
                 url: `/tests/test/${testId}/submission`,
                 method: 'POST',
@@ -199,6 +205,8 @@ const testApi = appApi.injectEndpoints({
 });
 
 export const {
+    // Test hooks
+    useGetTestsAnyoneQuery,
     useGetTestsQuery,
     useGetTestByIdQuery,
     useSubmitTestByIdMutation,
