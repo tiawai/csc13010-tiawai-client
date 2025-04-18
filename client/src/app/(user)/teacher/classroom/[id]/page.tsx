@@ -1,6 +1,16 @@
 'use client';
+import { useParams } from 'next/navigation';
 import { DownOutlined } from '@ant-design/icons';
-import { Table, Card, Button, TableColumnsType, Avatar, Dropdown } from 'antd';
+import {
+    Table,
+    Card,
+    Button,
+    TableColumnsType,
+    Avatar,
+    Dropdown,
+    Spin,
+    Empty,
+} from 'antd';
 import type { MenuProps } from 'antd';
 import {
     DeleteOutlined,
@@ -14,6 +24,10 @@ import LessonCard from '@/components/teacher/exam/lessonCard';
 import TestCard from '@/components/teacher/exam/testCard';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
+import {
+    useGetClassroomByIdQuery,
+    useGetLessonsQuery,
+} from '@/services/classroom';
 
 interface Student {
     key: string;
@@ -28,14 +42,6 @@ const examList = [
     { id: 2, title: 'Đề Thi Vật Lý 2023', duration: 60, attempts: 120 },
     { id: 3, title: 'Đề Thi Hóa Học 2023', duration: 75, attempts: 100 },
     { id: 4, title: 'Đề Thi Tiếng Anh 2023', duration: 45, attempts: 80 },
-];
-
-const lessonList = [
-    { id: 1, title: 'Bài 1 - Ngữ pháp cơ bản' },
-    { id: 2, title: 'Bài 2 - Câu điều kiện' },
-    { id: 3, title: 'Bài 3 - Thì hiện tại hoàn thành' },
-    { id: 4, title: 'Bài 4 - Câu bị động' },
-    { id: 5, title: 'Bài 5 - Mệnh đề quan hệ' },
 ];
 
 const students: Student[] = [
@@ -107,12 +113,10 @@ const columns: TableColumnsType<Student> = [
         render: () => (
             <div className="flex items-center justify-center gap-2">
                 <Button size="small" className="bg-gray-200">
-                    {' '}
-                    <EyeOutlined /> Xem{' '}
+                    <EyeOutlined /> Xem
                 </Button>
                 <Button size="small" danger>
-                    {' '}
-                    <DeleteOutlined /> Xoá{' '}
+                    <DeleteOutlined /> Xoá
                 </Button>
             </div>
         ),
@@ -120,14 +124,28 @@ const columns: TableColumnsType<Student> = [
 ];
 
 const ClassManagement = () => {
+    const router = useRouter();
+    const { id } = useParams(); // Lấy classroomId từ URL
     const [activeTab, setActiveTab] = useState('students');
     const [activeTable, setActiveTable] = useState('lessons');
-    const router = useRouter();
+
+    const {
+        data: classroom,
+        isLoading: isClassroomLoading,
+        error: classroomError,
+    } = useGetClassroomByIdQuery(id as string);
+
+    const {
+        data: lessons,
+        isLoading: isLessonsLoading,
+        error: lessonsError,
+    } = useGetLessonsQuery({ classId: id as string });
+
     const handleMenuClick = (key: string) => {
         if (key === '1') {
-            router.push('/teacher/classroom/class-management/create-lesson');
+            router.push(`/teacher/classroom/${id}/create-lesson`);
         } else if (key === '2') {
-            router.push('/teacher/classroom/class-management/create-exam');
+            router.push(`/teacher/classroom/${id}/create-exam`);
         }
     };
 
@@ -148,17 +166,38 @@ const ClassManagement = () => {
 
     return (
         <div className="p-6">
-            <div className="mb-4 inline-block min-w-96 rounded-full bg-[#DAE3E9] px-6 py-2 text-2xl font-bold shadow-sm">
-                <DownOutlined rotate={90} className="mr-4" />
-                IELTS BASIC
-            </div>
+            {isClassroomLoading ? (
+                <div className="flex justify-center">
+                    <Spin size="large" />
+                </div>
+            ) : classroomError ? (
+                <Empty description="Lỗi khi tải thông tin lớp học" />
+            ) : classroom ? (
+                <>
+                    <div className="mb-4 inline-block min-w-96 select-none rounded-full bg-[#DAE3E9] px-6 py-2 text-2xl font-bold shadow-sm">
+                        <DownOutlined rotate={90} className="mr-4" />
+                        {classroom.className}
+                    </div>
+                    <div className="mb-4">
+                        <p className="text-lg">
+                            <strong>Mô tả:</strong> {classroom.description}
+                        </p>
+                        <p className="text-lg">
+                            <strong>Số học sinh tối đa:</strong>{' '}
+                            {classroom.maxStudent}
+                        </p>
+                    </div>
+                </>
+            ) : (
+                <Empty description="Không tìm thấy lớp học" />
+            )}
 
-            <div className="mb-2 flex justify-end">
+            <div className="mb-4 flex justify-end">
                 <Dropdown
                     menu={{ items }}
                     trigger={['click']}
                     placement="topLeft"
-                    className="flex items-center justify-end rounded-full bg-[#DAE3E9] p-4 text-xl font-normal"
+                    className="flex items-center justify-end !rounded-full !bg-[#DAE3E9] !p-5 !font-montserrat !text-lg"
                 >
                     <Button icon={<PlusOutlined />}>Thêm bài mới</Button>
                 </Dropdown>
@@ -207,7 +246,7 @@ const ClassManagement = () => {
                             <div className="relative mb-1 flex w-full items-center justify-around">
                                 <button
                                     className={twMerge(
-                                        'min-w-[100px] rounded-full px-5 py-1 text-base',
+                                        'min-w-[100px] rounded-full px-10 py-1 text-base',
                                         activeTable === 'lessons'
                                             ? 'bg-[#E9DAE9] font-bold text-[#4D2C5E]'
                                             : 'hover:bg-gray-100',
@@ -216,12 +255,10 @@ const ClassManagement = () => {
                                 >
                                     Bài học
                                 </button>
-
                                 <div className="h-6 w-0 border-l-2 border-black"></div>
-
                                 <button
                                     className={twMerge(
-                                        'min-w-[100px] rounded-full px-5 py-1 text-base',
+                                        'min-w-[100px] rounded-full px-10 py-1 text-base',
                                         activeTable === 'tests'
                                             ? 'bg-[#E9DAE9] font-bold text-[#4D2C5E]'
                                             : 'hover:bg-gray-100',
@@ -247,21 +284,34 @@ const ClassManagement = () => {
                         />
                     ) : (
                         <div className="grid grid-cols-1 place-items-center gap-4 p-2 sm:grid-cols-2">
-                            {activeTable === 'lessons'
-                                ? lessonList.map((lesson) => (
-                                      <LessonCard
-                                          key={lesson.id}
-                                          title={lesson.title}
-                                      />
-                                  ))
-                                : examList.map((exam) => (
-                                      <TestCard
-                                          key={exam.id}
-                                          title={exam.title}
-                                          duration={exam.duration}
-                                          attempts={exam.attempts}
-                                      />
-                                  ))}
+                            {activeTable === 'lessons' ? (
+                                isLessonsLoading ? (
+                                    <Spin size="large" />
+                                ) : lessonsError ? (
+                                    <Empty description="Lỗi khi tải danh sách bài học" />
+                                ) : lessons && lessons.length > 0 ? (
+                                    lessons.map((lesson) => (
+                                        <LessonCard
+                                            key={lesson.id}
+                                            id={lesson.id}
+                                            title={lesson.title}
+                                        />
+                                    ))
+                                ) : (
+                                    <div className="col-span-full flex w-full items-center justify-center">
+                                        <Empty description="Không có bài học nào" />
+                                    </div>
+                                )
+                            ) : (
+                                examList.map((exam) => (
+                                    <TestCard
+                                        key={exam.id}
+                                        title={exam.title}
+                                        duration={exam.duration}
+                                        attempts={exam.attempts}
+                                    />
+                                ))
+                            )}
                         </div>
                     )}
                 </div>

@@ -4,11 +4,15 @@ import { Navigation } from '@/components/common/navigation';
 import { UserCard, UserInfoCard } from '@/components/profile/user-card';
 import { UserInfoDisplay } from '@/components/profile/user-info-display';
 import {
+    UserUpdateBankAccountForm,
     UserUpdateInfoForm,
     UserUpdatePasswordForm,
 } from '@/components/profile/user-info-update';
 import { useGetMyProfileQuery } from '@/services/user.service';
 import { Loading } from '@/components/common/loading';
+import { Role } from '@/types/user.type';
+import { useAppSelector } from '@/lib/hooks/hook';
+import { useGetBankAccountQuery } from '@/services/payment.service';
 
 const userStudyingInfo = {
     examTaken: 0,
@@ -18,9 +22,12 @@ const userStudyingInfo = {
 
 export const PageContent = () => {
     const { data, isLoading } = useGetMyProfileQuery();
+    const { data: bankAccount, isLoading: isLoadingBankAccount } =
+        useGetBankAccountQuery();
     const [navigationIndex, setNavigationIndex] = useState<number>(0);
+    const userRole = useAppSelector((state) => state.auth.user.role);
 
-    if (isLoading) return <Loading />;
+    if (isLoading || isLoadingBankAccount) return <Loading />;
 
     const userInfo = {
         name: 'Tiawai',
@@ -42,6 +49,19 @@ export const PageContent = () => {
                     <UserInfoCard title="Thông tin học tập">
                         <UserInfoDisplay props={userStudyingInfo} />
                     </UserInfoCard>
+                    {userRole === Role.TEACHER && (
+                        <UserInfoCard title="Thông tin ngân hàng">
+                            <UserInfoDisplay
+                                props={{
+                                    accountNumber:
+                                        bankAccount?.accountNumber || '',
+                                    accountHolderName:
+                                        bankAccount?.accountHolderName || '',
+                                    bankName: bankAccount?.bankName || '',
+                                }}
+                            />
+                        </UserInfoCard>
+                    )}
                 </>
             ),
         },
@@ -55,6 +75,11 @@ export const PageContent = () => {
                     <UserInfoCard title="Cập nhật mật khẩu">
                         <UserUpdatePasswordForm />
                     </UserInfoCard>
+                    {userRole === Role.TEACHER && (
+                        <UserInfoCard title="Cập nhật tài khoản ngân hàng">
+                            <UserUpdateBankAccountForm />
+                        </UserInfoCard>
+                    )}
                 </>
             ),
         },

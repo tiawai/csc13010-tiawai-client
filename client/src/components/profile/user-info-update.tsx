@@ -1,5 +1,11 @@
+'use client';
 import { Form, Input } from 'antd';
 import { CardButton } from '@/components/common/card';
+import { Select } from 'antd';
+import { useUpdateBankAccountMutation } from '@/services/payment.service';
+import { useNotification } from '@/lib/hooks/use-notification';
+
+const { Option } = Select;
 
 const keyMap: { [key: string]: string } = {
     name: 'Họ và tên',
@@ -133,6 +139,167 @@ const UserUpdatePasswordForm = () => {
                 className="m-auto"
                 text="Cập nhật mật khẩu"
                 onClick={() => {}}
+            />
+        </Form>
+    );
+};
+
+const bankNameOptions = [
+    'Nông nghiệp và Phát triển nông thôn (VBA)',
+    'Ngoại thương Việt Nam (VCB)',
+    'Đầu tư và phát triển (BIDV)',
+    'Công Thương Việt Nam (VIETINBANK)',
+    'Việt Nam Thịnh Vượng (VPB)',
+    'Quốc tế (VIB)',
+    'Xuất nhập khẩu (EIB)',
+    'Sài Gòn Hà Nội (SHB)',
+    'Tiên Phong (TPB)',
+    'Kỹ Thương (TCB)',
+    'Hàng hải (MSB)',
+    'Ngân hàng Thương mại Cổ phần Lộc Phát Việt Nam',
+    'Đông Á (DAB)',
+    'Bắc Á (NASB)',
+    'Sài Gòn Công thương (SGB)',
+    'Việt Nam Thương tín (VIETBANK)',
+    'BVBank – Ngân hàng TMCP Bản Việt',
+    'Kiên Long (KLB)',
+    'Ngân hàng TMCP Thịnh vượng và Phát triển (PGBank)',
+    'Đại chúng Việt Nam (PVC)',
+    'Á Châu (ACB)',
+    'Nam Á (NAMABANK)',
+    'Sài Gòn (SCB)',
+    'Đông Nam Á (SEAB)',
+    'Phương Đông (OCB)',
+    'Việt Á (VAB)',
+    'Quốc Dân (NCB)',
+    'Liên doanh VID Public Bank (VID)',
+    'Bảo Việt (BVB)',
+    'Ngân hàng TNHH MTV Việt Nam Hiện Đại (MBV)',
+    'Phát triển nhà TP HCM (HDB)',
+    'Dầu khí toàn cầu (GPB)',
+    'Sacombank (STB)',
+    'An Bình (ABBANK)',
+    'TNHH MTV Hong Leong VN (HLB)',
+    'MTV Shinhan Việt Nam (SHBVN)',
+    'Liên Doanh Việt Nga (VRB)',
+    'Xây dựng Việt Nam (CBB)',
+    'United Overseas Bank Việt Nam (UOB)',
+    'Woori Việt Nam (Woori)',
+    'Indovina (IVB)',
+    'Việt Nam Thịnh Vượng CAKE BANK (VPB)',
+    'Việt Nam Thịnh Vượng UBANK (VPB)',
+    'Quân đội (MB)',
+];
+
+export const UpdateBankAccountFormItems = [
+    {
+        label: <FormLabel text="Số tài khoản" />,
+        name: 'accountNumber',
+        rules: [{ required: true, message: 'Vui lòng nhập số tài khoản!' }],
+        component: (
+            <Input
+                className="font-roboto font-bold"
+                placeholder="Nhập số tài khoản"
+            />
+        ),
+    },
+    {
+        label: <FormLabel text="Tên tài khoản" />,
+        name: 'accountHolderName',
+        rules: [{ required: true, message: 'Vui lòng nhập tên tài khoản!' }],
+        component: (
+            <Input
+                className="font-roboto font-bold"
+                placeholder="Nhập tên tài khoản"
+            />
+        ),
+    },
+    {
+        label: <FormLabel text="Tên ngân hàng" />,
+        name: 'bankName',
+        rules: [{ required: true, message: 'Vui lòng chọn ngân hàng!' }],
+        component: (
+            <Select
+                placeholder="Chọn ngân hàng"
+                className="w-full font-roboto font-bold"
+                showSearch
+                optionFilterProp="children"
+                defaultValue=""
+                filterOption={(input, option) =>
+                    String(option?.value ?? '')
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                }
+            >
+                <Option value="" disabled>
+                    Chọn ngân hàng
+                </Option>
+                {bankNameOptions.map((bankName) => (
+                    <Option key={bankName} value={bankName}>
+                        <b>{bankName}</b>
+                    </Option>
+                ))}
+            </Select>
+        ),
+    },
+];
+
+export const UserUpdateBankAccountForm = () => {
+    const [form] = Form.useForm();
+    const [updateBankAcount, { isLoading }] = useUpdateBankAccountMutation();
+    const { notify } = useNotification();
+
+    const onFinish = async () => {
+        const values = form.getFieldsValue();
+        const { accountNumber, accountHolderName, bankName } = values;
+        const res = await updateBankAcount({
+            accountNumber,
+            accountHolderName,
+            bankName,
+        });
+
+        if (res.error) {
+            notify({
+                message: 'Cập nhật tài thất bại',
+                description:
+                    'Đã có lỗi xảy ra khi cập nhật tài khoản ngân hàng.',
+                notiType: 'error',
+            });
+        } else {
+            notify({
+                message: 'Cập nhật tài thành công',
+                description: 'Tài khoản ngân hàng đã được cập nhật thành công.',
+            });
+        }
+    };
+
+    return (
+        <Form
+            form={form}
+            name="bank-account"
+            labelCol={{ span: 12 }}
+            labelAlign="left"
+            wrapperCol={{ span: 12 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            autoComplete="off"
+            variant="borderless"
+            colon={false}
+        >
+            {UpdateBankAccountFormItems.map((item) => (
+                <Form.Item
+                    key={item.name}
+                    name={item.name}
+                    label={item.label}
+                    rules={item.rules}
+                >
+                    {item.component}
+                </Form.Item>
+            ))}
+            <CardButton
+                className="m-auto"
+                text="Cập nhật tài khoản ngân hàng"
+                isLoading={isLoading}
             />
         </Form>
     );

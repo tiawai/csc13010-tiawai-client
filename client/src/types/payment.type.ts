@@ -63,3 +63,28 @@ export interface PaymentContent {
         subtitle: string;
     };
 }
+
+export interface PayoutDto {
+    payouts: {
+        accountNumber: string;
+        accountHolderName: string;
+        bankName: string;
+        amount: number;
+        message: string;
+    }[];
+    payments: string[];
+}
+
+export interface BankAccount {
+    id: string;
+    userId: string;
+    accountNumber: string;
+    accountHolderName: string;
+    bankName: string;
+}
+
+export interface BankAccountDto {
+    accountNumber: string;
+    accountHolderName: string;
+    bankName: string;
+}

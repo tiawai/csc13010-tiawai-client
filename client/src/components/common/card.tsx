@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Button, Card } from 'antd';
 import { twMerge } from 'tailwind-merge';
 
 const CardBorder = ({
@@ -37,21 +37,27 @@ const CardTitle = ({ title }: { title: string }) => (
 const CardButton = ({
     className,
     text,
+    isLoading,
     onClick,
 }: {
     className?: string;
     text: string;
-    onClick: () => void;
+    isLoading?: boolean;
+    onClick?: () => void;
 }) => (
-    <button
+    <Button
         className={twMerge(
-            'block rounded-full bg-[#E9DAE9] px-12 py-[3px] text-lg font-bold',
+            '!block !bg-[#E9DAE9] !px-12 !text-lg !font-bold',
             className,
         )}
         onClick={onClick}
+        loading={isLoading}
+        shape="round"
+        size="large"
+        htmlType="submit"
     >
         {text}
-    </button>
+    </Button>
 );
 
 export { CardBorder, CardTitle, CardButton };
