@@ -93,9 +93,11 @@ const StudentActions: React.FC<{ studentId: string }> = ({ studentId }) => {
             });
             setIsConfirmModalOpen(false);
         } catch (error: unknown) {
+            const err = error as Error;
             notification.error({
                 message: 'Xóa học sinh thất bại',
-                description: error?.data?.message || 'Lỗi không xác định',
+                description:
+                    err.message || 'Lỗi không xác định. Vui lòng thử lại.',
             });
         }
     };
