@@ -24,7 +24,7 @@ import {
 import { useState } from 'react';
 import ConfirmModal from '@/components/common/confirm-modal';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const ViewLesson = () => {
     const { id: lessonId } = useParams();
@@ -63,11 +63,10 @@ const ViewLesson = () => {
                 router.push('/');
             }
         } catch (error: unknown) {
+            const err = error as Error;
             notification.error({
                 message: 'Lỗi',
-                description:
-                    error?.data?.message ||
-                    'Xóa bài học thất bại. Vui lòng thử lại sau.',
+                description: err.message || 'Xóa bài học thất bại',
                 placement: 'topRight',
             });
         }
@@ -151,11 +150,6 @@ const ViewLesson = () => {
                 <Title level={2} className="mb-2">
                     {lesson.title}
                 </Title>
-                {lesson.description && (
-                    <Text type="secondary" className="mb-4 block">
-                        {lesson.description}
-                    </Text>
-                )}
                 <Divider />
                 <div
                     className="preview-content prose max-w-none rounded-md border bg-white p-4 py-2"

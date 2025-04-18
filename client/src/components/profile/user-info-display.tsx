@@ -2,11 +2,11 @@ import React from 'react';
 import { Col, Row } from 'antd';
 
 const keyMap: { [key: string]: string } = {
-    name: 'Họ và tên',
+    username: 'Họ và tên',
     email: 'Email',
     gender: 'Giới tính',
     phone: 'Số điện thoại',
-    birthday: 'Ngày sinh',
+    birthdate: 'Ngày sinh',
     address: 'Địa chỉ',
     examTaken: 'Số đề thi đã làm',
     practiceTaken: 'Số chuyên đề đã tạo',

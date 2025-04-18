@@ -10,6 +10,7 @@ const ignoreEndpoints = [
     'updateClassroom',
     'createLesson',
     'updateLesson',
+    'uploadProfileImage',
 ];
 
 const baseQuery = fetchBaseQuery({
