@@ -7,6 +7,7 @@ import {
     DownloadOutlined,
     QuestionCircleOutlined,
 } from '@ant-design/icons';
+import { Exam } from '@/types/exam';
 const { Text, Title } = Typography;
 
 const ExamFrame = ({
@@ -16,6 +17,7 @@ const ExamFrame = ({
     duration,
     totalAttempts,
     isTest = false,
+    examData,
 }: Readonly<{
     theme?: 'pink' | 'blue';
     id?: string | number;
@@ -23,6 +25,7 @@ const ExamFrame = ({
     duration?: number;
     totalAttempts?: number;
     isTest?: boolean;
+    examData?: Exam;
 }>) => {
     const router = useRouter();
     const iconSrc =
