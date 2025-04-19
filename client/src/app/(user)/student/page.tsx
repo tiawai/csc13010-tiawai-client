@@ -1,5 +1,4 @@
 'use client';
-// import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
 import { ArrowRightOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Flex, Typography, Empty, Row, Col, Button, Spin } from 'antd';
 import { useEffect, useState } from 'react';
@@ -7,7 +6,6 @@ import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import ExamFrame from '@/ui/exam-frame';
 import FeaturesBox from '@/ui/home/features-box';
 import ClassFrame from '@/ui/home/class-frame';
 import homeMainImg from '@public/home/home-main-img.svg';
