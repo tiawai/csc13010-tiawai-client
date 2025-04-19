@@ -1,16 +1,16 @@
 'use client';
 import { PageLayout, PageTitle } from '@/components/common/page';
 import profileTiawai from '@public/profile-tiawai.webp';
-import { useGetByStudentIdQuery } from '@/services/payment.service';
+import {
+    useGetStudentPaymentsQuery,
+    useGetTeacherPaymentsQuery,
+} from '@/services/payment.service';
 import { Empty, Table, Tag } from 'antd';
 import { usePagination } from '@/lib/hooks/use-paganation';
-import {
-    Payment,
-    PaymentStatus,
-    PaymentType,
-    PayoutStatus,
-} from '@/types/payment.type';
+import { Payment, PaymentStatus, PaymentType } from '@/types/payment.type';
 import { ColumnsType } from 'antd/es/table';
+import { useAppSelector } from '@/lib/hooks/hook';
+import { Role } from '@/types/user.type';
 
 const columns: ColumnsType<Payment> = [
     {
@@ -23,6 +23,11 @@ const columns: ColumnsType<Payment> = [
         dataIndex: 'type',
         key: 'type',
         render: (type: PaymentType) => <Tag color="blue">{type}</Tag>,
+    },
+    {
+        title: 'Nội dung thanh toán',
+        dataIndex: 'description',
+        key: 'description',
     },
     {
         title: 'Thời gian',
@@ -44,16 +49,24 @@ const columns: ColumnsType<Payment> = [
             const color =
                 status === PaymentStatus.SUCCESS
                     ? 'green'
-                    : status === PaymentStatus.FAILED
-                      ? 'red'
-                      : 'blue';
+                    : status === PaymentStatus.PENDING
+                      ? 'blue'
+                      : 'red';
             return <Tag color={color}>{status}</Tag>;
         },
     },
 ];
 
 export default function PaymentHistoryPage() {
-    const { data: payments, isLoading } = useGetByStudentIdQuery();
+    const userRole = useAppSelector((state) => state.auth.user.role);
+    const { data: payments, isLoading } =
+        userRole === Role.STUDENT
+            ? useGetStudentPaymentsQuery(undefined, {
+                  skip: userRole !== Role.STUDENT,
+              })
+            : useGetTeacherPaymentsQuery(undefined, {
+                  skip: userRole !== Role.TEACHER,
+              });
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
 
     return (

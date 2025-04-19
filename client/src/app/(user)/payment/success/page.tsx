@@ -1,11 +1,15 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Result, Button, Spin } from 'antd';
+import { Result, Button } from 'antd';
 import { useRouter } from 'next/navigation';
-import { Banner, BannerTitle } from '@/ui/components/banner';
 import { useVerifyPaymentMutation } from '@/services/payment.service';
-import { Payment, PaymentType, PaymentContent } from '@/types/payment.type';
+import {
+    PaymentType,
+    PaymentContent,
+    PaymentStatus,
+} from '@/types/payment.type';
+import { Loading } from '@/components/common/loading';
 
 const paymentContent: Record<PaymentType, PaymentContent> = {
     CLASSROOM: {
@@ -33,11 +37,8 @@ const paymentContent: Record<PaymentType, PaymentContent> = {
 export default function PaymentSuccess() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [status, setStatus] = useState<'success' | 'error' | 'loading'>(
-        'loading',
-    );
-    const [payment, setPayment] = useState<Payment | undefined>(undefined);
-    const [verifyPayment] = useVerifyPaymentMutation();
+    const [verifyPayment, { data: payment, isLoading }] =
+        useVerifyPaymentMutation();
 
     const queryParams = useMemo(
         () => ({
@@ -52,109 +53,62 @@ export default function PaymentSuccess() {
 
     useEffect(() => {
         const { code, id, cancel, status, orderCode } = queryParams;
-
-        const handleVerifyPayment = async () => {
-            if (!code || !id || !status || !orderCode) {
-                setStatus('error');
-                return;
-            }
-
-            const res = await verifyPayment({
-                code,
-                id,
-                cancel,
-                status,
-                orderCode,
-            });
-
-            if (res.error || !res.data) {
-                setStatus('error');
-                return;
-            }
-
-            setPayment(res.data);
-            setStatus('success');
-        };
-
-        handleVerifyPayment();
+        verifyPayment({
+            code: code || '',
+            id: id || '',
+            cancel: cancel || false,
+            status: status || '',
+            orderCode: orderCode || '',
+        });
     }, []);
 
-    const getSuccessActions = () => {
-        if (!payment) return [];
-
-        const actions = [
-            <Button key="home" type="primary" onClick={() => router.push('/')}>
-                Về trang chủ
-            </Button>,
-        ];
-
-        if (payment.type === 'CLASSROOM') {
-            actions.unshift(
-                <Button
-                    key="classroom"
-                    type="primary"
-                    onClick={() =>
-                        router.push(`/student/class/${payment.classroomId}`)
-                    }
-                >
-                    Vào lớp học
-                </Button>,
-            );
-        } else {
-            actions.push(
-                <Button key="profile" onClick={() => router.push('/profile')}>
-                    Xem số dư
-                </Button>,
-            );
-        }
-
-        return actions;
-    };
-
-    if (status === 'loading') {
-        return (
-            <div className="flex min-h-screen flex-col items-center justify-center">
-                <Banner>
-                    <BannerTitle>Xác nhận thanh toán</BannerTitle>
-                </Banner>
-                <Spin size="large" />
-            </div>
-        );
-    }
-
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center">
-            <Banner>
-                <BannerTitle>Xác nhận thanh toán</BannerTitle>
-            </Banner>
-
-            <div className="mt-8">
-                {status === 'success' && payment && (
-                    <Result
-                        status="success"
-                        title={paymentContent[payment.type].success.title}
-                        subTitle={paymentContent[payment.type].success.subtitle}
-                        extra={getSuccessActions()}
-                    />
-                )}
-
-                {status === 'error' && (
-                    <Result
-                        status="error"
-                        title="Thanh toán thất bại"
-                        subTitle="Đã có lỗi xảy ra trong quá trình thanh toán."
-                        extra={[
-                            <Button
-                                key="retry"
-                                type="primary"
-                                onClick={() => router.push('/payment')}
-                            >
-                                Thử lại
-                            </Button>,
-                        ]}
-                    />
-                )}
-            </div>
+        <div className="flex h-full items-center justify-center">
+            {isLoading ? (
+                <Loading />
+            ) : (
+                <>
+                    {payment?.status === PaymentStatus.SUCCESS ? (
+                        <Result
+                            status="success"
+                            title={paymentContent[payment.type].success.title}
+                            subTitle={
+                                paymentContent[payment.type].success.subtitle
+                            }
+                            extra={[
+                                <Button onClick={() => router.push('/')}>
+                                    Về trang chủ
+                                </Button>,
+                                <Button
+                                    type="primary"
+                                    onClick={() =>
+                                        router.push(
+                                            `/student/class/${payment.classroomId}`,
+                                        )
+                                    }
+                                >
+                                    Vào lớp học
+                                </Button>,
+                            ]}
+                        />
+                    ) : (
+                        <Result
+                            status="error"
+                            title="Thanh toán thất bại"
+                            subTitle="Đã có lỗi xảy ra trong quá trình thanh toán."
+                            extra={[
+                                <Button
+                                    key="retry"
+                                    type="primary"
+                                    onClick={() => router.refresh()}
+                                >
+                                    Thử lại
+                                </Button>,
+                            ]}
+                        />
+                    )}
+                </>
+            )}
         </div>
     );
 }

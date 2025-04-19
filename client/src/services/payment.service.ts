@@ -18,21 +18,33 @@ const paymentApi = appApi.injectEndpoints({
             providesTags: ['Payment'],
         }),
 
+        getStudentPayments: builder.query<Payment[], void>({
+            query: () => '/payments/student',
+            providesTags: ['Payment'],
+        }),
+
+        getTeacherPayments: builder.query<Payment[], void>({
+            query: () => '/payments/teacher',
+            providesTags: ['Payment'],
+        }),
+
         getPaymentById: builder.query<Payment, string>({
             query: (id) => `/payments/${id}`,
             providesTags: ['Payment'],
         }),
 
-        getByStudentId: builder.query<Payment[], void>({
-            query: () => `/payments/student`,
-            providesTags: ['Payment'],
+        createPaymentClassroom: builder.mutation<Payment, string>({
+            query: (classroomId) => ({
+                url: `/payments/classroom/${classroomId}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Payment'],
         }),
 
-        createPayment: builder.mutation<Payment, CreatePayment>({
-            query: (body) => ({
-                url: '/payments',
+        createPaymentAI: builder.mutation<Payment, void>({
+            query: () => ({
+                url: `/payments/ai`,
                 method: 'POST',
-                body,
             }),
             invalidatesTags: ['Payment'],
         }),
@@ -46,9 +58,23 @@ const paymentApi = appApi.injectEndpoints({
             invalidatesTags: ['Payment'],
         }),
 
-        paymentWebhook: builder.mutation<PaymentWebhook, void>({
+        getPayout: builder.query<PayoutDto, void>({
+            query: () => '/payments/payout',
+            providesTags: ['Payment'],
+        }),
+
+        processPayout: builder.mutation<void, { payments: string[] }>({
             query: (body) => ({
-                url: '/payments/webhook',
+                url: '/payments/payout/process',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['Payment'],
+        }),
+
+        updatePayoutSuccess: builder.mutation<void, void>({
+            query: (body) => ({
+                url: '/payments/payout/success',
                 method: 'POST',
                 body,
             }),
@@ -77,43 +103,24 @@ const paymentApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Payment'],
         }),
-
-        getPayout: builder.query<PayoutDto, void>({
-            query: () => '/payments/payout',
-            providesTags: ['Payment'],
-        }),
-
-        processPayout: builder.mutation<void, { payments: string[] }>({
-            query: (body) => ({
-                url: '/payments/payout/process',
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['Payment'],
-        }),
-
-        updatePayoutSuccess: builder.mutation<void, void>({
-            query: (body) => ({
-                url: '/payments/payout/success',
-                method: 'POST',
-                body,
-            }),
-            invalidatesTags: ['Payment'],
-        }),
     }),
 });
 
 export const {
     useGetAllPaymentsQuery,
+    useGetStudentPaymentsQuery,
+    useGetTeacherPaymentsQuery,
     useGetPaymentByIdQuery,
-    useGetByStudentIdQuery,
-    useCreatePaymentMutation,
+
+    useCreatePaymentClassroomMutation,
+    useCreatePaymentAIMutation,
     useVerifyPaymentMutation,
-    usePaymentWebhookMutation,
-    useGetBankAccountQuery,
-    useCreateBankAccountMutation,
-    useUpdateBankAccountMutation,
+
     useLazyGetPayoutQuery,
     useProcessPayoutMutation,
     useUpdatePayoutSuccessMutation,
+
+    useGetBankAccountQuery,
+    useCreateBankAccountMutation,
+    useUpdateBankAccountMutation,
 } = paymentApi;
