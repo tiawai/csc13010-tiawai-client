@@ -10,9 +10,9 @@ import { twMerge } from 'tailwind-merge';
 import { Typography } from 'antd';
 import { Classroom } from '@/types/classroom.type';
 import { useRouter } from 'next/navigation';
-import { useCreatePaymentMutation } from '@/services/payment.service';
-import { PaymentType } from '@/types/payment.type';
+import { useCreatePaymentClassroomMutation } from '@/services/payment.service';
 import { useNotification } from '@/lib/hooks/use-notification';
+import { PaymentStatus, PaymentType } from '@/types/payment.type';
 const { Title } = Typography;
 
 const durationFormatter = (duration: number) => {
@@ -47,16 +47,11 @@ const ClassFrame: React.FC<{
     class: Classroom;
 }> = ({ className, class: classData }) => {
     const router = useRouter();
-    const [createPayment] = useCreatePaymentMutation();
+    const [createPayment, { isLoading }] = useCreatePaymentClassroomMutation();
     const { notify } = useNotification();
 
     const handlePayment = async () => {
-        const res = await createPayment({
-            type: PaymentType.CLASSROOM,
-            amount: classData.price,
-            teacherId: classData.teacherId,
-            classroomId: classData.id,
-        });
+        const res = await createPayment(classData.id);
 
         if (res.error) {
             notify({
@@ -64,15 +59,17 @@ const ClassFrame: React.FC<{
                 description: 'Không thể tạo đơn thanh toán',
                 notiType: 'error',
             });
-            return;
-        }
-
-        if (res.data.paymentLink) {
+        } else if (
+            res.data.paymentLink &&
+            res.data.status !== PaymentStatus.SUCCESS
+        ) {
             notify({
                 message: 'Tạo đơn thanh toán thành công',
                 description: 'Đang chuyển hướng đến trang thanh toán',
             });
             router.push(res.data.paymentLink);
+        } else {
+            router.push(`class/${classData.id}`);
         }
     };
     return (
@@ -138,6 +135,7 @@ const ClassFrame: React.FC<{
                 variant="solid"
                 className="w-full !bg-secondary-button !font-montserrat !text-white"
                 onClick={handlePayment}
+                loading={isLoading}
             >
                 Tham gia
             </Button>
