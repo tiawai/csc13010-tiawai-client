@@ -38,6 +38,7 @@ const ExamFrame = ({
     const size = theme === 'pink' ? 100 : 62;
 
     const onExamClick = () => {
+        examData?.duration;
         if (isTest) {
             router.push(`/student/test/${id}`);
         } else {
