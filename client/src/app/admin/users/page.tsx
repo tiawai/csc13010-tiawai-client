@@ -1,6 +1,5 @@
 'use client';
 import { Avatar, Button, Empty, Select, Table } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
 import { useGetUsersQuery } from '@/services/user.service';
 import { AdminBanner } from '@/components/common/banner';
 import { ColumnsType } from 'antd/es/table';

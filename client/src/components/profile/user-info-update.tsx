@@ -5,7 +5,7 @@ import { useUpdateBankAccountMutation } from '@/services/payment.service';
 import { useUpdateUserProfileMutation } from '@/services/user.service';
 import { useChangePasswordMutation } from '@/services/auth.service';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { Role, UpdateUserDto } from '@/types/user.type';
+import { UpdateUserDto } from '@/types/user.type';
 
 const { Option } = Select;
 
