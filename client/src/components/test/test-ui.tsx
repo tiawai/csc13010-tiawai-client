@@ -1,7 +1,7 @@
 import { Test } from '@/types/test.type';
 import IconFrame from '@/ui/icon-frame';
 import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Button, Flex, Result, Space, Typography } from 'antd';
+import { Button, Flex, Result, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
 const { Text, Title } = Typography;
 
