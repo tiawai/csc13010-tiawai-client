@@ -1,6 +1,6 @@
 // @/components/teacher/exam/classdropdown.tsx
 'use client';
-import { Select, Spin } from 'antd';
+import { Select } from 'antd';
 import { Classroom } from '@/types/classroom.type';
 
 interface ClassDropdownProps {

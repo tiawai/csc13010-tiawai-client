@@ -184,7 +184,7 @@ export default function AdminReportsPage() {
                 ),
             },
         ],
-        [],
+        [userId, isLoadingUpdate, notify, deleteReport, updateReportStatus],
     );
 
     return (

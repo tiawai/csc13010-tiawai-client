@@ -59,14 +59,19 @@ const columns: ColumnsType<Payment> = [
 
 export default function PaymentHistoryPage() {
     const userRole = useAppSelector((state) => state.auth.user.role);
-    const { data: payments, isLoading } =
+    const studentPayments = useGetStudentPaymentsQuery(undefined, {
+        skip: userRole !== Role.STUDENT,
+    });
+    const teacherPayments = useGetTeacherPaymentsQuery(undefined, {
+        skip: userRole !== Role.TEACHER,
+    });
+
+    const payments =
+        userRole === Role.STUDENT ? studentPayments.data : teacherPayments.data;
+    const isLoading =
         userRole === Role.STUDENT
-            ? useGetStudentPaymentsQuery(undefined, {
-                  skip: userRole !== Role.STUDENT,
-              })
-            : useGetTeacherPaymentsQuery(undefined, {
-                  skip: userRole !== Role.TEACHER,
-              });
+            ? studentPayments.isLoading
+            : teacherPayments.isLoading;
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
 
     return (

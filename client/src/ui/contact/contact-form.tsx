@@ -25,6 +25,7 @@ export const ContactForm = () => {
                 description: 'Chúng tôi sẽ liên hệ với bạn sớm nhất có thể',
             });
         } catch (error) {
+            console.error('Error sending report:', error);
             notify({
                 message: 'Gửi báo cáo thất bại',
                 description: 'Vui lòng thử lại sau',

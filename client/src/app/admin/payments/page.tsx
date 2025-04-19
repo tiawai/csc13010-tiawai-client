@@ -210,6 +210,7 @@ export default function AdminPaymentsPage() {
                                         });
                                     }
                                 } catch (err) {
+                                    console.error(err);
                                     notify({
                                         message: 'Lỗi khi lấy dữ liệu payout',
                                         description:
@@ -232,6 +233,7 @@ export default function AdminPaymentsPage() {
                                             'Cập nhật trạng thái payout thành công.',
                                     });
                                 } catch (err) {
+                                    console.error(err);
                                     notify({
                                         message: 'Lỗi khi cập nhật trạng thái',
                                         description:
