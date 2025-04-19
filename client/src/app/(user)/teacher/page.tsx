@@ -5,17 +5,26 @@ import { Typography } from 'antd';
 import homeMainImg from '@public/home/home-main-img.svg';
 import Teacher from '@public/tiawai-teacher.png';
 import TiaMascot from '@public/mascot/full.webp';
+import Link from 'next/link';
 
 const { Title } = Typography;
 
 const features = [
-    { title: 'Tạo lớp học', color: 'bg-[#DAE3E9]', link: '#' },
+    {
+        title: 'Tạo lớp học',
+        color: 'bg-[#DAE3E9]',
+        link: '/teacher/classroom',
+    },
     {
         title: 'Quản lý lớp học',
         color: 'bg-[#E9DAE9]',
         link: '/teacher/classroom',
     },
-    { title: 'Tạo đề thi/bài học', color: 'bg-[#E9DAE9]', link: '#' },
+    {
+        title: 'Tạo đề thi/bài học',
+        color: 'bg-[#E9DAE9]',
+        link: '/teacher/exam',
+    },
     {
         title: 'Quản lý đề thi/bài học',
         color: 'bg-[#DAE3E9]',
@@ -75,7 +84,7 @@ export default function Home() {
                     </h1>
                     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
                         {features.map((item, index) => (
-                            <a
+                            <Link
                                 key={index}
                                 href={item.link}
                                 className={`flex h-full min-h-[140px] flex-col justify-between rounded-lg ${item.color} px-6 py-4 shadow-md transition hover:scale-105`}
@@ -86,7 +95,7 @@ export default function Home() {
                                 <button className="self-end rounded-full bg-[#4D2C5E] px-4 py-2 text-sm text-white">
                                     Khám Phá
                                 </button>
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </div>

@@ -69,7 +69,7 @@ const ClassFrame: React.FC<{
             });
             router.push(res.data.paymentLink);
         } else {
-            router.push(`class/${classData.id}`);
+            router.push(`/student/class/${classData.id}`);
         }
     };
     return (
