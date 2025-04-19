@@ -2,13 +2,10 @@ import { appApi } from '@/services/config.service';
 import {
     Payment,
     PaymentVerify,
-    PaymentWebhook,
-    CreatePayment,
     BankAccount,
     BankAccountDto,
     PayoutDto,
 } from '@/types/payment.type';
-import { update } from 'lodash';
 
 const paymentApi = appApi.injectEndpoints({
     overrideExisting: true,

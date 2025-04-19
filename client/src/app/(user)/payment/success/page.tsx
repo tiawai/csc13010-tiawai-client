@@ -60,7 +60,7 @@ export default function PaymentSuccess() {
             status: status || '',
             orderCode: orderCode || '',
         });
-    }, []);
+    }, [queryParams, verifyPayment]);
 
     return (
         <div className="flex h-full items-center justify-center">
@@ -76,10 +76,14 @@ export default function PaymentSuccess() {
                                 paymentContent[payment.type].success.subtitle
                             }
                             extra={[
-                                <Button onClick={() => router.push('/')}>
+                                <Button
+                                    key="home"
+                                    onClick={() => router.push('/')}
+                                >
                                     Về trang chủ
                                 </Button>,
                                 <Button
+                                    key="classroom"
                                     type="primary"
                                     onClick={() =>
                                         router.push(

@@ -12,7 +12,7 @@ import { Classroom } from '@/types/classroom.type';
 import { useRouter } from 'next/navigation';
 import { useCreatePaymentClassroomMutation } from '@/services/payment.service';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { PaymentStatus, PaymentType } from '@/types/payment.type';
+import { PaymentStatus } from '@/types/payment.type';
 const { Title } = Typography;
 
 const durationFormatter = (duration: number) => {

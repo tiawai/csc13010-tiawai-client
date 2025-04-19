@@ -1,6 +1,5 @@
 import { appApi } from '@/services/config.service';
 import { Exam } from '@/types/exam';
-import { User } from '@/types/user.type';
 
 const adminApi = appApi.injectEndpoints({
     overrideExisting: true,

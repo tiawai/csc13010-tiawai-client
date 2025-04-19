@@ -60,7 +60,7 @@ export default function PaymentCancel() {
             status: status || '',
             orderCode: orderCode || '',
         });
-    }, []);
+    }, [queryParams, verifyPayment]);
 
     return (
         <div className="flex h-full items-center justify-center">
@@ -76,7 +76,10 @@ export default function PaymentCancel() {
                                 paymentContent[payment.type].success.subtitle
                             }
                             extra={[
-                                <Button onClick={() => router.push('/')}>
+                                <Button
+                                    key="home"
+                                    onClick={() => router.push('/')}
+                                >
                                     Về trang chủ
                                 </Button>,
                             ]}
@@ -87,10 +90,14 @@ export default function PaymentCancel() {
                             title="Hủy thanh toán thất bại"
                             subTitle="Đã có lỗi xảy ra trong quá trình hủy thanh toán."
                             extra={[
-                                <Button onClick={() => router.push('/')}>
+                                <Button
+                                    key="home"
+                                    onClick={() => router.push('/')}
+                                >
                                     Về trang chủ
                                 </Button>,
                                 <Button
+                                    key="retry"
                                     type="primary"
                                     onClick={() => router.push('/payment')}
                                 >
