@@ -1,16 +1,15 @@
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Input, Radio, Typography, Button, Flex, Space, Empty } from 'antd';
-import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import { useSearchParams } from 'next/navigation';
+import { Input, Radio, Typography, Empty } from 'antd';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
 import { CardBorder } from '@/components/common/card';
 import { PageTitle } from '@/components/common/page';
 import { Test, TestType } from '@/types/test.type';
-import IconFrame from '@/ui/icon-frame';
 import { useGetTestsAnyoneQuery } from '@/services/test.service';
 import { useSearch } from '@/lib/hooks/use-search';
+import { TestFrame } from '@/components/test/test-ui';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 const testContent: Record<
     TestType,
@@ -133,88 +132,3 @@ export default function TestPage() {
         </div>
     );
 }
-
-const testInfo: {
-    unit: string;
-    icon: React.ReactNode;
-}[] = [
-    {
-        unit: 'phút',
-        icon: <ClockCircleOutlined />,
-    },
-    {
-        unit: 'lượt làm',
-        icon: <DownloadOutlined />,
-    },
-];
-
-const TestFrame = ({
-    theme = 'pink',
-    test,
-}: Readonly<{
-    theme?: 'pink' | 'blue';
-    test: Test;
-}>) => {
-    const router = useRouter();
-    const iconSrc =
-        theme === 'pink'
-            ? '/home/home-8.svg'
-            : 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-4.png';
-    const iconAlt = theme === 'pink' ? 'home icon 8' : 'home icon 4';
-    const bgColor = theme === 'pink' ? '#E9DAE9' : '#DAE3E9';
-    const objColor = theme === 'pink' ? '#4D2C5E' : '#2C2F5E';
-    const size = theme === 'pink' ? 100 : 62;
-
-    return (
-        <Flex
-            className="!w-full !gap-3 !rounded-xl !py-4 px-3"
-            style={{
-                backgroundColor: bgColor,
-                boxShadow: '0px 4px 25px 0px rgba(0,0,0,0.10)',
-            }}
-            align="center"
-        >
-            <IconFrame
-                className="aspect-square min-h-max min-w-max"
-                bgColor={objColor}
-                src={iconSrc}
-                alt={iconAlt}
-                width={size}
-                height={size}
-            />
-            <Flex className="!max-w-full gap-4" vertical>
-                <Title
-                    className="!m-0 !max-w-[65%] truncate !font-roboto"
-                    level={5}
-                >
-                    {test.title}
-                </Title>
-                <Flex justify="space-between">
-                    <Space size="large">
-                        {testInfo.map((info, index) => (
-                            <Flex align="center" key={index} gap={4}>
-                                {info.icon}
-                                <Text className="!text-nowrap !font-roboto !font-medium !text-[#ACACAC]">
-                                    {info.unit === 'phút'
-                                        ? `${test.timeLength} phút`
-                                        : `${test.timeLength} lượt làm`}
-                                </Text>
-                            </Flex>
-                        ))}
-                    </Space>
-                </Flex>
-                <div>
-                    <Button
-                        shape="round"
-                        type="primary"
-                        className={`${theme === 'pink' ? 'bg-primary-button' : 'bg-secondary-button'}`}
-                        size="small"
-                        onClick={() => router.push(`test/${test.id}`)}
-                    >
-                        Xem đề thi
-                    </Button>
-                </div>
-            </Flex>
-        </Flex>
-    );
-};

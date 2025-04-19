@@ -1,23 +1,27 @@
 'use client';
 // import { useGetExamPracticesQuery, useGetExamsQuery } from "@/services/exam";
+import { ArrowRightOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Flex, Typography, Empty, Row, Col, Button, Spin } from 'antd';
+import { useEffect, useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import ExamFrame from '@/ui/exam-frame';
+import FeaturesBox from '@/ui/home/features-box';
+import ClassFrame from '@/ui/home/class-frame';
 import homeMainImg from '@public/home/home-main-img.svg';
 import bigTiawai from '@public/home/big-tiawai.png';
-import FeaturesBox from '@/ui/home/features-box';
-import { Exam } from '@/types/exam';
-import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
-import { ArrowRightOutlined, CheckCircleFilled } from '@ant-design/icons';
 import homeCircle1 from '@public/home/home-circle-1.svg';
 import homeDots from '@public/home/home-dots.png';
-import { twMerge } from 'tailwind-merge';
-import ClassFrame from '@/ui/home/class-frame';
-import { useRouter } from 'next/navigation';
+import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
 import { useGetClassroomsQuery } from '@/services/classroom';
-import { useEffect, useState } from 'react';
+import { useGetTestsAnyoneQuery } from '@/services/test.service';
 import { Classroom } from '@/types/classroom.type';
+import { Exam } from '@/types/exam';
+import { TestType } from '@/types/test.type';
+import { TestFrame } from '@/components/test/test-ui';
+
 const { Title, Paragraph } = Typography;
 
 export interface ExamData {
@@ -28,7 +32,7 @@ export interface ExamData {
 
 const examData: ExamData[] = [
     {
-        key: 'reading',
+        key: `/student/test?type=${encodeURIComponent(TestType.TOEIC_READING)}`,
         type: 'TOEIC Reading',
         tests: [
             {
@@ -70,7 +74,7 @@ const examData: ExamData[] = [
         ],
     },
     {
-        key: 'listening',
+        key: `/student/test?type=${encodeURIComponent(TestType.TOEIC_LISTENING)}`,
         type: 'TOEIC Listening',
         tests: [
             {
@@ -112,7 +116,7 @@ const examData: ExamData[] = [
         ],
     },
     {
-        key: 'thptqg',
+        key: `/student/test?type=${encodeURIComponent(TestType.NATIONAL_TEST)}`,
         type: 'Bộ đề thi THPTQG',
         tests: [
             {
@@ -188,6 +192,15 @@ const Description: React.FC<{
 };
 
 export default function Home() {
+    const { data: toeicReadingTests } = useGetTestsAnyoneQuery(
+        TestType.TOEIC_READING,
+    );
+    const { data: toeicListeningTests } = useGetTestsAnyoneQuery(
+        TestType.TOEIC_LISTENING,
+    );
+    const { data: nationalTests } = useGetTestsAnyoneQuery(
+        TestType.NATIONAL_TEST,
+    );
     // const { data, isLoading } = useGetExamsQuery();
     // const { data: practiceData } = useGetExamPracticesQuery();
 
@@ -376,8 +389,8 @@ export default function Home() {
                 </Flex>
             </div>
 
-            <Flex className="mb-40" gap={80} vertical>
-                <Flex vertical align="center" className="-mb-20">
+            <Flex className="mb-40 !w-full" vertical>
+                <Flex vertical align="center">
                     <Heading className="relative !text-[2.7rem]">
                         {HOME_HEADERS[2].title}
                     </Heading>
@@ -385,52 +398,74 @@ export default function Home() {
                         {HOME_HEADERS[2].description}
                     </Description>
                 </Flex>
-                {examData &&
-                    examData.slice(0, 2).map((exam: ExamData) => (
-                        <div key={exam.key}>
-                            <Flex justify="space-between" align="center">
-                                <Title className="!m-0 leading-none">
-                                    {exam.type}
-                                </Title>
-                                <Link
-                                    href={`/${exam.key}`}
-                                    className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
-                                >
-                                    Xem thêm &gt;
-                                </Link>
-                            </Flex>
-                            {exam.tests.length > 0 ? (
-                                <Row className="mt-8" gutter={[24, 24]}>
-                                    {exam.tests.map((test, index) => (
-                                        <Col xs={24} md={12} lg={6} key={index}>
-                                            <ExamFrame
-                                                key={index}
-                                                theme={
-                                                    exam.key == 'listening'
-                                                        ? 'blue'
-                                                        : 'pink'
-                                                }
-                                                id={test.id}
-                                                duration={test.duration}
-                                                totalAttempts={
-                                                    test.totalAttempts
-                                                }
-                                                title={test.title}
-                                            />
-                                        </Col>
-                                    ))}
-                                </Row>
-                            ) : (
-                                <Empty
-                                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                                    description="Không có dữ liệu"
-                                    imageStyle={{
-                                        height: 100,
-                                    }}
+
+                <Flex justify="space-between" align="center">
+                    <Title className="!m-0 leading-none">
+                        {examData[2].type}
+                    </Title>
+                    <Link
+                        href={`${examData[0].key}`}
+                        className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
+                    >
+                        Xem thêm &gt;
+                    </Link>
+                </Flex>
+
+                {toeicReadingTests && toeicReadingTests?.length > 0 ? (
+                    <Row className="mt-8" gutter={[24, 24]}>
+                        {toeicReadingTests.map((test, index) => (
+                            <Col xs={24} md={12} lg={6} key={index}>
+                                <TestFrame
+                                    key={index}
+                                    theme={'pink'}
+                                    test={test}
                                 />
-                            )}
-                        </div>
-                    ))}
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <Empty
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        description="Không có dữ liệu"
+                        imageStyle={{
+                            height: 100,
+                        }}
+                    />
+                )}
+
+                <Flex className="!mt-10" justify="space-between" align="center">
+                    <Title className="!m-0 capitalize leading-none">
+                        {examData[1].type}
+                    </Title>
+                    <Link
+                        href={`${examData[1].key}`}
+                        className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
+                    >
+                        Xem thêm &gt;
+                    </Link>
+                </Flex>
+
+                {toeicListeningTests && toeicListeningTests?.length > 0 ? (
+                    <Row className="mt-8" gutter={[24, 24]}>
+                        {toeicListeningTests.map((test, index) => (
+                            <Col xs={24} md={12} lg={6} key={index}>
+                                <TestFrame
+                                    key={index}
+                                    theme={'pink'}
+                                    test={test}
+                                />
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <Empty
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        description="Không có dữ liệu"
+                        imageStyle={{
+                            height: 100,
+                        }}
+                    />
+                )}
             </Flex>
 
             <Flex vertical className="mb-40">
@@ -447,27 +482,20 @@ export default function Home() {
                         {examData[2].type}
                     </Title>
                     <Link
-                        href={`/${examData[2].key}`}
+                        href={`${examData[2].key}`}
                         className="h-max rounded-full px-4 py-2 font-roboto text-xl font-medium leading-none text-black transition duration-500 ease-in-out hover:bg-slate-300 hover:text-black"
                     >
                         Xem thêm &gt;
                     </Link>
                 </Flex>
-                {examData[2].tests.length > 0 ? (
+                {nationalTests && nationalTests.length > 0 ? (
                     <Row className="mt-8" gutter={[24, 24]}>
-                        {examData[2].tests.map((test, index) => (
+                        {nationalTests.map((test, index) => (
                             <Col xs={24} md={12} lg={6} key={index}>
-                                <ExamFrame
+                                <TestFrame
                                     key={index}
-                                    theme={
-                                        examData[2].key === 'reading'
-                                            ? 'pink'
-                                            : 'blue'
-                                    }
-                                    id={test.id}
-                                    duration={test.duration}
-                                    totalAttempts={test.totalAttempts}
-                                    title={test.title}
+                                    theme={'blue'}
+                                    test={test}
                                 />
                             </Col>
                         ))}
