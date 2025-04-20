@@ -126,7 +126,7 @@ export default function FlashCardPage() {
                 const { id, ...body } = flashcardData;
                 await updateFlashcard({
                     id,
-                    ...body,
+                    body,
                 }).unwrap();
                 notify({
                     message: 'Cập nhật danh sách từ vựng thành công',

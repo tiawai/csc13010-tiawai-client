@@ -91,7 +91,7 @@ export const TestFrame = ({
                     <Button
                         shape="round"
                         type="primary"
-                        className={`${theme === 'pink' ? 'bg-primary-button' : 'bg-secondary-button'}`}
+                        className={`${theme === 'pink' ? '!bg-primary-button' : '!bg-secondary-button'}`}
                         size="small"
                         onClick={() => router.push(`test/${test.id}`)}
                     >
