@@ -99,14 +99,23 @@ const UserUpdateInfoForm = ({
                                           message: 'Vui lòng nhập email',
                                       },
                                   ]
-                                : key === 'username'
+                                : key === 'phone'
                                   ? [
                                         {
-                                            required: true,
-                                            message: 'Vui lòng nhập họ và tên',
+                                            pattern: /^\+\d{10,12}$/,
+                                            message:
+                                                'Số điện thoại phải bắt đầu bằng "+" kèm mã vùng',
                                         },
                                     ]
-                                  : []
+                                  : key === 'username'
+                                    ? [
+                                          {
+                                              required: true,
+                                              message:
+                                                  'Vui lòng nhập họ và tên',
+                                          },
+                                      ]
+                                    : []
                         }
                     >
                         {key === 'gender' ? (

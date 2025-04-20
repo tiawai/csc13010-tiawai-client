@@ -105,7 +105,6 @@ const ExamPage = () => {
                     <Empty description="Không tìm thấy đề thi nào" />
                 )}
 
-                {/* Danh sách bài học */}
                 <div className="mb-6 text-2xl font-bold">Bài học</div>
                 {isLessonsLoading ? (
                     <Spin size="large" className="flex justify-center" />

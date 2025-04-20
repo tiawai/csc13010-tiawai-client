@@ -74,7 +74,7 @@ const Course: React.FC<CourseProps> = ({
     return (
         <Card
             hoverable
-            className="cursor-pointer rounded-lg border bg-[#DAE3E9] shadow-md"
+            className="cursor-pointer rounded-lg border !bg-[#DAE3E9] shadow-md"
             cover={
                 <div className="relative h-[250px] w-full overflow-hidden rounded-t-lg">
                     <Image
