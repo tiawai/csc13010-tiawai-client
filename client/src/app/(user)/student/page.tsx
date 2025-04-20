@@ -343,7 +343,7 @@ export default function Home() {
                 </Flex>
             </Flex>
 
-            <div className="relative mb-40 w-[calc(100vw-2rem)]">
+            <div className="relative mb-32 w-[calc(100vw-2rem)]">
                 <div className="absolute inset-0 -z-10 h-full bg-gradient-to-bl from-[#b9edf1]/50 to-[#efdbee]/50 opacity-90 blur-[77px]" />
                 <Flex
                     vertical

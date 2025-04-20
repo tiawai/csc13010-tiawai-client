@@ -93,7 +93,7 @@ export const TestFrame = ({
                         type="primary"
                         className={`${theme === 'pink' ? '!bg-primary-button' : '!bg-secondary-button'}`}
                         size="small"
-                        onClick={() => router.push(`test/${test.id}`)}
+                        onClick={() => router.push(`/student/test/${test.id}`)}
                     >
                         Xem đề thi
                     </Button>
