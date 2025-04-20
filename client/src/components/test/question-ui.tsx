@@ -239,7 +239,8 @@ export const QuestionCorrectAnswer = ({
                 className="flex gap-8"
                 value={[correctAnswer]}
                 onChange={(values) => {
-                    setField('correctAnswer', values[0] as string);
+                    const value = values.length > 1 ? values[1] : values[0];
+                    setField('correctAnswer', value as string);
                 }}
             >
                 {ChoicesTypes.map((type) => (

@@ -24,6 +24,7 @@ import {
     QuestionParagraph,
     QuestionChoices,
     QuestionExplanation,
+    QuestionCorrectAnswer,
 } from './question-ui';
 import { FormQuestionTitle, FormQuestionLayout } from './form-ui';
 import { useTestField } from '@/lib/hooks/use-test-field';
@@ -156,6 +157,10 @@ const FormQuestions = memo(() => {
                 <QuestionParagraph getField={getField} setField={setField} />
                 <QuestionContent getField={getField} setField={setField} />
                 <QuestionChoices getField={getField} setField={setField} />
+                <QuestionCorrectAnswer
+                    getField={getField}
+                    setField={setField}
+                />
                 <QuestionExplanation getField={getField} setField={setField} />
             </div>
         </FormQuestionLayout>
