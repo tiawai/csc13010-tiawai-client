@@ -1,9 +1,5 @@
 'use client';
-import {
-    ClockCircleFilled,
-    FileTextFilled,
-    UserOutlined,
-} from '@ant-design/icons';
+import { FileTextFilled, UserOutlined } from '@ant-design/icons';
 import { Button, Flex, Rate } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
@@ -14,12 +10,6 @@ import { useCreatePaymentClassroomMutation } from '@/services/payment.service';
 import { useNotification } from '@/lib/hooks/use-notification';
 import { PaymentStatus } from '@/types/payment.type';
 const { Title } = Typography;
-
-const durationFormatter = (duration: number) => {
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-};
 
 const userFormatter = (user: number) => {
     if (user > 100 && user < 1000) {
@@ -113,32 +103,30 @@ const ClassFrame: React.FC<{
                     {classData.className}
                 </Title>
             </div>
-            <Flex
-                className="rounded-md bg-white p-5 text-secondary"
-                align="center"
-                justify="space-between"
-            >
-                <Flex align="center" gap={4}>
-                    <FileTextFilled />
-                    <span>{classData.totalLessons || 0} bài học</span>
+            <Flex gap={10}>
+                <Flex
+                    className="flex-1 rounded-md bg-white p-5 text-secondary"
+                    align="center"
+                    justify="space-evenly"
+                >
+                    <Flex align="center" gap={4}>
+                        <FileTextFilled />
+                        <span>{classData.totalLessons || 0} bài học</span>
+                    </Flex>
+                    <Flex align="baseline" gap={4}>
+                        <UserOutlined />
+                        <span>{userFormatter(classData.maxStudent || 0)}</span>
+                    </Flex>
                 </Flex>
-                <Flex align="center" gap={4}>
-                    <ClockCircleFilled />
-                    <span>{durationFormatter(0)}</span>
-                </Flex>
-                <Flex align="baseline" gap={4}>
-                    <UserOutlined />
-                    <span>{userFormatter(classData.maxStudent || 0)}</span>
-                </Flex>
+                <Button
+                    variant="solid"
+                    className="!h-auto w-full flex-[0.6] !bg-secondary-button !font-montserrat !text-white"
+                    onClick={handlePayment}
+                    loading={isLoading}
+                >
+                    Tham gia
+                </Button>
             </Flex>
-            <Button
-                variant="solid"
-                className="w-full !bg-secondary-button !font-montserrat !text-white"
-                onClick={handlePayment}
-                loading={isLoading}
-            >
-                Tham gia
-            </Button>
         </Flex>
     );
 };
