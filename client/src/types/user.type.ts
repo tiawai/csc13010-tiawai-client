@@ -26,6 +26,18 @@ export interface UpdateUserDto {
     address?: string;
 }
 
+export interface UpdateUserProfileResponseDTO {
+    message: string;
+    user: {
+        id: string;
+        username: string;
+        email: string;
+        phone?: string;
+        birthdate?: string;
+        profileImage?: string;
+    };
+}
+
 export class UserUtils {
     static initUser(id = '', username = '', email = '', role: Role): User {
         return { id, username, email, role };

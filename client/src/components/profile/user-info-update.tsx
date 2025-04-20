@@ -5,7 +5,10 @@ import { useUpdateBankAccountMutation } from '@/services/payment.service';
 import { useUpdateUserProfileMutation } from '@/services/user.service';
 import { useChangePasswordMutation } from '@/services/auth.service';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { UpdateUserDto } from '@/types/user.type';
+import { UpdateUserDto, UpdateUserProfileResponseDTO } from '@/types/user.type';
+import { useDispatch } from 'react-redux';
+import { setAuthState } from '@/lib/slices/auth.slice';
+import { useAppSelector } from '@/lib/hooks/hook';
 
 const { Option } = Select;
 
@@ -29,6 +32,7 @@ const UserUpdateInfoForm = ({
     const [form] = Form.useForm();
     const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation();
     const { notify } = useNotification();
+    const dispatch = useDispatch();
 
     const onFinish = async (values: UpdateUserDto) => {
         try {
@@ -38,16 +42,36 @@ const UserUpdateInfoForm = ({
                     `${year}-${month}-${day}`,
                 ).toISOString();
             }
-            await updateUserProfile(values).unwrap();
+            const response = await updateUserProfile(values).unwrap();
+            dispatch(
+                setAuthState({
+                    user: {
+                        id: response.user.id,
+                        username: response.user.username,
+                        email: response.user.email,
+                        role: '',
+                        profileImage: response.user.profileImage,
+                        phone: response.user.phone,
+                        birthdate: response.user.birthdate,
+                        gender: values.gender || null,
+                        address: values.address,
+                    },
+                    accessToken: undefined,
+                    refreshToken: undefined,
+                }),
+            );
             notify({
                 message: 'Cập nhật thông tin thành công',
                 description: 'Thông tin cá nhân đã được cập nhật.',
             });
         } catch (error: unknown) {
-            const err = error as Error;
+            const err = error as { data?: { message?: string | string[] } };
+            const errorMessage =
+                err.data?.message ||
+                'Đã có lỗi xảy ra khi cập nhật thông tin cá nhân. Vui lòng thử lại sau.';
             notify({
                 message: 'Cập nhật thông tin thất bại',
-                description: err.message || 'Vui lòng thử lại sau',
+                description: errorMessage,
                 notiType: 'error',
             });
         }
@@ -102,9 +126,9 @@ const UserUpdateInfoForm = ({
                                 : key === 'phone'
                                   ? [
                                         {
-                                            pattern: /^\+\d{10,12}$/,
+                                            pattern: /^\+\d{2}\d{9}$/,
                                             message:
-                                                'Số điện thoại phải bắt đầu bằng "+" kèm mã vùng',
+                                                'SĐT phải bắt đầu bằng "+" kèm 2 chữ số mã vùng và 9 chữ số',
                                         },
                                     ]
                                   : key === 'username'
