@@ -12,7 +12,7 @@ import {
     selectPreviousPart,
     // selectReadingQuestions,
     setCurrentPart,
-    setIsExporting,
+    // setIsExporting,
     setToeicTestField,
     ToeicTestType,
 } from '@/lib/slices/toeic-test-creator.slice';
@@ -41,7 +41,7 @@ import { TestType } from '@/types/test.type';
 import {
     NavigationButtonBack,
     NavigationButtonCancel,
-    NavigationButtonExport,
+    // NavigationButtonExport,
     NavigationButtonNext,
     NavigationButtonSave,
 } from './form-ui';
@@ -502,10 +502,10 @@ export const PartNavigationFooter = memo(
                                 onClick={() => handleSaveTest()}
                                 loading={isLoading}
                             />
-                            <NavigationButtonExport
+                            {/* <NavigationButtonExport
                                 text="Xuất bản"
                                 onClick={() => dispatch(setIsExporting(true))}
-                            />
+                            /> */}
                         </>
                     )}
                 </div>

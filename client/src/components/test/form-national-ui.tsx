@@ -3,11 +3,11 @@ import { memo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import {
     resetTHPGQGTestCreator,
-    setNationalIsExporting,
+    // setNationalIsExporting,
 } from '@/lib/slices/national-test-creator.slice';
 import {
     NavigationButtonCancel,
-    NavigationButtonExport,
+    // NavigationButtonExport,
     NavigationButtonSave,
 } from './form-ui';
 import { useCreateNationalTestMutation } from '@/services/test.service';
@@ -115,10 +115,10 @@ export const FormFooter = memo(() => {
                     onClick={handleSaveTest}
                     loading={isLoading}
                 />
-                <NavigationButtonExport
+                {/* <NavigationButtonExport
                     text="Xuất bản"
                     onClick={() => dispatch(setNationalIsExporting(true))}
-                />
+                /> */}
             </div>
 
             <Modal
