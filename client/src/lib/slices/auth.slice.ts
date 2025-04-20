@@ -30,7 +30,9 @@ const authSlice = createSlice({
     initialState: initialState,
     reducers: {
         setAuthState: (state, action: PayloadAction<AuthState>): void => {
-            state.user = action.payload.user;
+            if (state.user.id !== action.payload.user.id) {
+                state.user = action.payload.user;
+            }
             state.accessToken = action.payload.accessToken;
             state.refreshToken = action.payload.refreshToken;
         },
@@ -47,6 +49,14 @@ const authSlice = createSlice({
             state.chatSessionId = action.payload;
         },
 
+        setUser: (state, action: PayloadAction<Partial<User>>): void => {
+            console.log('setUser', action.payload);
+            state.user = {
+                ...state.user,
+                ...action.payload,
+            };
+        },
+
         setSignOut: (state): void => {
             state.user = UserUtils.initGuest();
             state.refreshToken = undefined;
@@ -57,7 +67,12 @@ const authSlice = createSlice({
 
 export default authSlice.reducer;
 
-export const { setAuthState, setCridentials, setChatSessionId, setSignOut } =
-    authSlice.actions;
+export const {
+    setAuthState,
+    setCridentials,
+    setChatSessionId,
+    setUser,
+    setSignOut,
+} = authSlice.actions;
 
 export const selectUser = (state: RootState) => state.auth.user;

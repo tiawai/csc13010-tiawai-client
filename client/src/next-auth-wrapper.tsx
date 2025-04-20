@@ -1,31 +1,26 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
-import { useAppDispatch } from '@/lib/hooks/hook';
+import { useState, useEffect, useCallback, memo } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import { Alert, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { setAuthState } from '@/lib/slices/auth.slice';
 import { useSignOutMutation } from './services/auth.service';
-import { appApi } from '@/services/config.service';
-import { store } from '@/lib/store/store';
 import { signOut } from 'next-auth/react';
+import { Loading } from './components/common/loading';
+import React from 'react';
 
-export default function NextAuthWrapper({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+const NextAuthWrapper = memo(({ children }: { children: React.ReactNode }) => {
     const dispatch = useAppDispatch();
     const [signOutClient] = useSignOutMutation();
     const { data: session, status } = useSession();
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const accessToken = useAppSelector((state) => state.auth.accessToken);
 
-    const handleSignOut = useMemo(() => {
-        return async () => {
-            setIsOpenModal(true);
-            await signOut({ redirect: false });
-            await signOutClient();
-        };
+    const handleSignOut = useCallback(async () => {
+        setIsOpenModal(true);
+        await signOut({ redirect: false });
+        await signOutClient();
     }, [signOutClient]);
 
     useEffect(() => {
@@ -41,21 +36,28 @@ export default function NextAuthWrapper({
                         refreshToken: session.refreshToken,
                     }),
                 );
-                store.dispatch(appApi.util.invalidateTags(['Auth']));
             }
         }
-    }, [dispatch, session, status, handleSignOut]);
+    }, [session, status, dispatch, handleSignOut]);
 
     return (
         <>
-            {children}
+            {status === 'loading' ||
+            (session !== null && (!session?.user || !accessToken)) ? (
+                <Loading className="h-lvh min-h-lvh" />
+            ) : (
+                <>{children}</>
+            )}
             <SessionModal
                 isOpenModal={isOpenModal}
                 setIsOpenModal={setIsOpenModal}
             />
         </>
     );
-}
+});
+
+NextAuthWrapper.displayName = 'NextAuthWrapper';
+export default NextAuthWrapper;
 
 export const SessionModal = ({
     isOpenModal,

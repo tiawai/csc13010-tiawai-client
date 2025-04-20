@@ -10,6 +10,7 @@ const userApi = appApi.injectEndpoints({
                 url: `/users?role=${role}`,
                 method: 'GET',
             }),
+            providesTags: ['User'],
         }),
 
         getMyProfile: builder.query<User, void>({
@@ -17,37 +18,43 @@ const userApi = appApi.injectEndpoints({
                 url: '/users/user',
                 method: 'GET',
             }),
-            providesTags: ['Auth'],
+            providesTags: ['User'],
         }),
-        updateUserProfile: builder.mutation<User, Partial<User>>({
+
+        updateUserProfile: builder.mutation<
+            { message: string; user: User },
+            Partial<User>
+        >({
             query: (body) => ({
                 url: '/users/user',
                 method: 'PATCH',
                 body,
             }),
-            invalidatesTags: ['Auth'],
+            invalidatesTags: ['User'],
         }),
+
         uploadProfileImage: builder.mutation<User, FormData>({
             query: (formData) => ({
                 url: '/users/user/image',
                 method: 'PUT',
                 body: formData,
             }),
-            invalidatesTags: ['Auth'],
+            invalidatesTags: ['User'],
         }),
+
         getMyStatistics: builder.query({
             query: () => ({
                 url: '/user/exam',
                 method: 'GET',
             }),
-            providesTags: ['Auth'],
         }),
+
         getHistoryExams: builder.query<UserHistoryExam[], void>({
             query: () => ({
                 url: '/user/history/exams',
                 method: 'GET',
             }),
-            providesTags: ['Auth', 'History'],
+            providesTags: ['History'],
         }),
     }),
 });
