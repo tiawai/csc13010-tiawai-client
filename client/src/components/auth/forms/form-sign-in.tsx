@@ -1,59 +1,43 @@
 'use client';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCreateSessionMutation } from '@/services/chat';
 import { useNotification } from '@/lib/hooks/use-notification';
 import { Form, Input, Typography } from 'antd';
-import { signIn, useSession } from 'next-auth/react';
-import { setAuthState, setChatSessionId } from '@/lib/slices/auth.slice';
-import { useAppDispatch } from '@/lib/hooks/hook';
+import { signIn } from 'next-auth/react';
+import { setChatSessionId } from '@/lib/slices/auth.slice';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import { FormButtonGradient } from '@/components/auth/ui/form';
 import { Role } from '@/types/user.type';
 const { Paragraph } = Typography;
 
 const FormSignIn = () => {
-    const [form] = Form.useForm();
     const router = useRouter();
+    const [form] = Form.useForm();
     const [isLoading, setIsLoading] = useState(false);
-    const { data: session } = useSession();
-    const { notify } = useNotification();
-
     const dispatch = useAppDispatch();
     const [createSession] = useCreateSessionMutation();
+    const { notify } = useNotification();
+    const userId = useAppSelector((state) => state.auth.user?.id);
+    const userRole = useAppSelector((state) => state.auth.user?.role);
 
     useEffect(() => {
-        const createNewChat = async (userId: string) => {
-            try {
-                const res = await createSession({
-                    userId,
-                    topic: 'chat ' + userId,
-                    isActive: true,
-                }).unwrap();
-                dispatch(setChatSessionId(res.id));
-            } catch (error) {
-                console.error('Failed to create chat session', error);
-            }
+        const createChatSession = async () => {
+            const session = await createSession({
+                userId,
+                topic: 'chat ' + userId,
+                isActive: true,
+            }).unwrap();
+            dispatch(setChatSessionId(session.id));
         };
-        if (session) {
-            dispatch(
-                setAuthState({
-                    user: session.user,
-                    accessToken: session.accessToken as string,
-                    refreshToken: session.refreshToken as string,
-                }),
-            );
-            const role = session?.user?.role as Role;
-            if (role === Role.ADMIN) {
-                router.push('/admin');
-            } else {
-                if (session.user.id) {
-                    createNewChat(session.user.id);
-                }
-                router.push('/');
+        if (userId) {
+            if (userRole !== Role.ADMIN) {
+                createChatSession();
             }
+            router.push('/');
         }
-    }, [session, router, createSession, dispatch]);
+    }, [userId, userRole, router, dispatch, createSession]);
 
     const onFinish = async () => {
         const formData = form.getFieldsValue();

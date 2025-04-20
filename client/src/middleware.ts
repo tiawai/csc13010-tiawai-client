@@ -16,12 +16,12 @@ type ProtectedRoutes = {
 
 const protectedRoutes: ProtectedRoutes = {
     Guest: {
-        invalidRoutes: ['/student/', '/teacher/', '/admin/', '/payment'],
-        validRoutes: [],
+        invalidRoutes: ['/student/', '/teacher/'],
+        validRoutes: ['/student', '/teacher', '/auth'],
         redirect: '/auth/sign-in',
     },
     Student: {
-        invalidRoutes: ['/admin', '/teacher/', '/auth'],
+        invalidRoutes: ['/admin', '/teacher', '/auth'],
         validRoutes: [],
         redirect: '/',
     },

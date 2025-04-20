@@ -5,10 +5,9 @@ import { useUpdateBankAccountMutation } from '@/services/payment.service';
 import { useUpdateUserProfileMutation } from '@/services/user.service';
 import { useChangePasswordMutation } from '@/services/auth.service';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { UpdateUserDto, UpdateUserProfileResponseDTO } from '@/types/user.type';
+import { UpdateUserDto } from '@/types/user.type';
 import { useDispatch } from 'react-redux';
-import { setAuthState } from '@/lib/slices/auth.slice';
-import { useAppSelector } from '@/lib/hooks/hook';
+import { setUser } from '@/lib/slices/auth.slice';
 
 const { Option } = Select;
 
@@ -35,43 +34,25 @@ const UserUpdateInfoForm = ({
     const dispatch = useDispatch();
 
     const onFinish = async (values: UpdateUserDto) => {
-        try {
-            if (values.birthdate) {
-                const [day, month, year] = values.birthdate.split('/');
-                values.birthdate = new Date(
-                    `${year}-${month}-${day}`,
-                ).toISOString();
-            }
-            const response = await updateUserProfile(values).unwrap();
-            dispatch(
-                setAuthState({
-                    user: {
-                        id: response.user.id,
-                        username: response.user.username,
-                        email: response.user.email,
-                        role: '',
-                        profileImage: response.user.profileImage,
-                        phone: response.user.phone,
-                        birthdate: response.user.birthdate,
-                        gender: values.gender || null,
-                        address: values.address,
-                    },
-                    accessToken: undefined,
-                    refreshToken: undefined,
-                }),
-            );
+        if (values.birthdate) {
+            const [day, month, year] = values.birthdate.split('/');
+            values.birthdate = new Date(
+                `${year}-${month}-${day}`,
+            ).toISOString();
+        }
+        const res = await updateUserProfile(values);
+        const user = res.data?.user;
+        if (user) {
+            dispatch(setUser(user));
             notify({
                 message: 'Cập nhật thông tin thành công',
                 description: 'Thông tin cá nhân đã được cập nhật.',
             });
-        } catch (error: unknown) {
-            const err = error as { data?: { message?: string | string[] } };
-            const errorMessage =
-                err.data?.message ||
-                'Đã có lỗi xảy ra khi cập nhật thông tin cá nhân. Vui lòng thử lại sau.';
+        } else {
             notify({
                 message: 'Cập nhật thông tin thất bại',
-                description: errorMessage,
+                description:
+                    'Đã có lỗi xảy ra khi cập nhật thông tin cá nhân. Vui lòng thử lại sau.',
                 notiType: 'error',
             });
         }
@@ -179,7 +160,7 @@ const FormLabel = ({ text }: { text: string }) => (
 
 const updatePasswordFormItems = [
     {
-        label: <FormLabel text="Mật khẩu cũ" />,
+        label: 'Mật khẩu cũ',
         name: 'oldPassword',
         rules: [{ required: true, message: 'Vui lòng nhập mật khẩu cũ!' }],
         component: (
@@ -190,7 +171,7 @@ const updatePasswordFormItems = [
         ),
     },
     {
-        label: <FormLabel text="Mật khẩu mới" />,
+        label: 'Mật khẩu mới',
         name: 'newPassword',
         rules: [{ required: true, message: 'Vui lòng nhập mật khẩu mới!' }],
         component: (
@@ -201,7 +182,7 @@ const updatePasswordFormItems = [
         ),
     },
     {
-        label: <FormLabel text="Xác nhận mật khẩu" />,
+        label: 'Xác nhận mật khẩu',
         name: 'confirmPassword',
         rules: [{ required: true, message: 'Vui lòng xác nhận mật khẩu!' }],
         component: (
@@ -279,7 +260,7 @@ const UserUpdatePasswordForm = () => {
                 <Form.Item
                     key={item.name}
                     name={item.name}
-                    label={item.label}
+                    label={<FormLabel text={item.label} />}
                     rules={item.rules}
                 >
                     {item.component}
@@ -343,7 +324,7 @@ const bankNameOptions = [
 
 export const UpdateBankAccountFormItems = [
     {
-        label: <FormLabel text="Số tài khoản" />,
+        label: 'Số tài khoản',
         name: 'accountNumber',
         rules: [{ required: true, message: 'Vui lòng nhập số tài khoản!' }],
         component: (
@@ -354,7 +335,7 @@ export const UpdateBankAccountFormItems = [
         ),
     },
     {
-        label: <FormLabel text="Tên tài khoản" />,
+        label: 'Tên tài khoản',
         name: 'accountHolderName',
         rules: [{ required: true, message: 'Vui lòng nhập tên tài khoản!' }],
         component: (
@@ -365,7 +346,7 @@ export const UpdateBankAccountFormItems = [
         ),
     },
     {
-        label: <FormLabel text="Tên ngân hàng" />,
+        label: 'Tên ngân hàng',
         name: 'bankName',
         rules: [{ required: true, message: 'Vui lòng chọn ngân hàng!' }],
         component: (
@@ -440,7 +421,7 @@ export const UserUpdateBankAccountForm = () => {
                 <Form.Item
                     key={item.name}
                     name={item.name}
-                    label={item.label}
+                    label={<FormLabel text={item.label} />}
                     rules={item.rules}
                 >
                     {item.component}

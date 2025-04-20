@@ -35,6 +35,7 @@ export const appApi = createApi({
     endpoints: () => ({}),
     tagTypes: [
         'Auth',
+        'User',
         'Exam',
         'Test',
         'History',

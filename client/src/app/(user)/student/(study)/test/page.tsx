@@ -1,8 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
-import { Input, Radio, Typography, Empty } from 'antd';
+import { Input, Typography, Empty } from 'antd';
 import bigTiawai2 from '@public/big-tiawai-2.svg';
-import { CardBorder } from '@/components/common/card';
 import { PageTitle } from '@/components/common/page';
 import { Test, TestType } from '@/types/test.type';
 import { useGetTestsAnyoneQuery } from '@/services/test.service';
@@ -77,58 +76,35 @@ export default function TestPage() {
                 Kho đề thi {testContent[type].vnName}
             </Title>
 
-            <div className="flex gap-8">
-                <div className="flex-[1] space-y-4">
-                    <CardBorder className="!rounded-3xl !p-2">
-                        <Title level={4}>Tìm kiếm</Title>
-                        <Input.Search
-                            placeholder="Tìm kiếm đề thi..."
-                            onSearch={(value) => handleSearch(value)}
-                            onChange={(e) => handleSearch(e.target.value)}
-                            value={searchText}
-                            allowClear
-                            size="large"
-                        />
-                    </CardBorder>
-                    <CardBorder className="!rounded-3xl !p-2">
-                        <Title level={4}>Bộ lọc</Title>
-                        <Radio.Group
-                            className="!flex !flex-col gap-1"
-                            defaultValue="all"
-                            buttonStyle="solid"
-                            onChange={(e) => {
-                                const filterType = e.target.value;
-                                console.log('Filter selected:', filterType);
-                                // Lọc danh sách đề dựa trên filterType
-                            }}
-                        >
-                            <Radio value="all">Tất cả</Radio>
-                            <Radio value="minh_hoa">Minh họa</Radio>
-                            <Radio value="chinh_thuc">Chính thức</Radio>
-                            <Radio value="truong">Các trường</Radio>
-                        </Radio.Group>
-                    </CardBorder>
-                </div>
-                {filteredData ? (
-                    <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
-                        {filteredData.map((test, index) => (
-                            <TestFrame
-                                key={index}
-                                theme={
-                                    type === TestType.TOEIC_LISTENING
-                                        ? 'blue'
-                                        : 'pink'
-                                }
-                                test={test}
-                            />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="flex flex-[4] items-center justify-center">
-                        <Empty description="Không tìm thấy đề thi phù hợp" />
-                    </div>
-                )}
+            <div className="flex-[1] space-y-4">
+                <Input.Search
+                    placeholder="Tìm kiếm đề thi..."
+                    onSearch={(value) => handleSearch(value)}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    value={searchText}
+                    allowClear
+                    size="large"
+                />
             </div>
+            {filteredData.length > 0 ? (
+                <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
+                    {filteredData.map((test, index) => (
+                        <TestFrame
+                            key={index}
+                            theme={
+                                type === TestType.TOEIC_LISTENING
+                                    ? 'blue'
+                                    : 'pink'
+                            }
+                            test={test}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <div className="flex flex-[4] items-center justify-center">
+                    <Empty description="Không tìm thấy đề thi phù hợp" />
+                </div>
+            )}
         </div>
     );
 }
