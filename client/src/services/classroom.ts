@@ -1,5 +1,6 @@
 import { appApi } from '@/services/config.service';
 import { Classroom, Lesson, Student } from '@/types/classroom.type';
+import { Test } from '@/types/test.type';
 
 const classroomApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -116,6 +117,15 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Student'],
         }),
+        getTestByClassroomId: builder.query<Test[], string>({
+            query: (classroomId) => ({
+                url: `/tests/classroom/${classroomId}`,
+                method: 'GET',
+            }),
+            providesTags: (result, error, classroomId) => [
+                { type: 'Test', id: classroomId },
+            ],
+        }),
     }),
 });
 
@@ -134,4 +144,5 @@ export const {
     useUpdateLessonMutation,
     useDeleteLessonMutation,
     useRemoveStudentFromClassroomMutation,
+    useGetTestByClassroomIdQuery,
 } = classroomApi;
