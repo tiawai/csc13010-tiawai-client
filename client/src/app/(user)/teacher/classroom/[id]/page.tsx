@@ -1,3 +1,4 @@
+// @/app/(user)/teacher/classroom/[id]/page.tsx
 'use client';
 import { useParams, useRouter } from 'next/navigation';
 import { DownOutlined } from '@ant-design/icons';
@@ -15,7 +16,6 @@ import {
 import type { MenuProps } from 'antd';
 import {
     DeleteOutlined,
-    EyeOutlined,
     FolderOpenOutlined,
     FileTextOutlined,
     PlusOutlined,
@@ -31,14 +31,8 @@ import {
     useGetClassroomStudentsQuery,
     useRemoveStudentFromClassroomMutation,
 } from '@/services/classroom';
+import { useGetTestByClassroomIdQuery } from '@/services/classroom';
 import { Student } from '@/types/classroom.type';
-
-const examList = [
-    { id: 1, title: 'Đề Thi Toán 2023', duration: 90, attempts: 150 },
-    { id: 2, title: 'Đề Thi Vật Lý 2023', duration: 60, attempts: 120 },
-    { id: 3, title: 'Đề Thi Hóa Học 2023', duration: 75, attempts: 100 },
-    { id: 4, title: 'Đề Thi Tiếng Anh 2023', duration: 45, attempts: 80 },
-];
 
 const columns: TableColumnsType<Student> = [
     {
@@ -134,19 +128,19 @@ const ClassManagement = () => {
         data: classroom,
         isLoading: isClassroomLoading,
         error: classroomError,
-    } = useGetClassroomByIdQuery(id as string);
+    } = useGetClassroomByIdQuery(id);
 
     const {
         data: lessons,
         isLoading: isLessonsLoading,
         error: lessonsError,
-    } = useGetLessonsQuery({ classId: id as string });
+    } = useGetLessonsQuery({ classId: id });
 
     const {
         data: students,
         isLoading: isStudentsLoading,
         error: studentsError,
-    } = useGetClassroomStudentsQuery(id as string);
+    } = useGetClassroomStudentsQuery(id);
 
     const handleMenuClick = (key: string) => {
         if (key === '1') {
@@ -319,15 +313,23 @@ const ClassManagement = () => {
                                         <Empty description="Không có bài học nào" />
                                     </div>
                                 )
-                            ) : (
-                                examList.map((exam) => (
+                            ) : isTestsLoading ? (
+                                <Spin size="large" />
+                            ) : testsError ? (
+                                <Empty description="Lỗi khi tải danh sách đề thi" />
+                            ) : tests && tests.length > 0 ? (
+                                tests.map((test) => (
                                     <TestCard
-                                        key={exam.id}
-                                        title={exam.title}
-                                        duration={exam.duration}
-                                        attempts={exam.attempts}
+                                        key={test.id}
+                                        title={test.title}
+                                        duration={test.timeLength}
+                                        attempts={0} // API không trả số lượt làm, để 0 hoặc thêm logic
                                     />
                                 ))
+                            ) : (
+                                <div className="col-span-full flex w-full items-center justify-center">
+                                    <Empty description="Không có đề thi nào" />
+                                </div>
                             )}
                         </div>
                     )}
