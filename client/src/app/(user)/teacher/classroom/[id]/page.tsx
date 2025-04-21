@@ -107,14 +107,6 @@ const StudentActions: React.FC<{ studentId: string }> = ({ studentId }) => {
             <div className="flex items-center justify-center gap-2">
                 <Button
                     size="small"
-                    className="bg-gray-200"
-                    onClick={() => {}}
-                    disabled={isRemoving}
-                >
-                    <EyeOutlined /> Xem
-                </Button>
-                <Button
-                    size="small"
                     danger
                     onClick={() => setIsConfirmModalOpen(true)}
                     disabled={isRemoving}
