@@ -49,7 +49,7 @@ const TestCard: React.FC<TestCardProps> = ({ title, duration, attempts }) => {
                 </div>
                 <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
                     <ClockCircleOutlined className="mr-1 text-black" />{' '}
-                    {duration} phút &nbsp;&nbsp;
+                    {duration} phút
                     <DownloadOutlined className="mr-1 text-black" /> {attempts}{' '}
                     lượt làm
                 </div>
