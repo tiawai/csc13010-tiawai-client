@@ -39,6 +39,12 @@ export interface UpdateUserProfileResponseDTO {
     };
 }
 
+export interface UserStatistics {
+    toeicTestCompleted: number;
+    nationalTestCompleted: number;
+    vocabularyLearned: number;
+}
+
 export class UserUtils {
     static initUser(id = '', username = '', email = '', role: Role): User {
         return { id, username, email, role };

@@ -4,13 +4,16 @@ import { twMerge } from 'tailwind-merge';
 const CardBorder = ({
     width = '100%',
     className,
+    loading = false,
     children,
 }: {
     width?: number | string;
     className?: string;
+    loading?: boolean;
     children: React.ReactNode;
 }) => (
     <Card
+        loading={loading}
         style={{
             width: width,
             height: 'fit-content',

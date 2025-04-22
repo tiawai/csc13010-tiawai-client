@@ -1,5 +1,11 @@
 import { appApi } from '@/services/config.service';
 import { Classroom, Lesson, Student } from '@/types/classroom.type';
+import {
+    CreateNationalTestDto,
+    CreateTestDto,
+    CreateToeicListeningTestDto,
+    Test,
+} from '@/types/test.type';
 
 const classroomApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -116,6 +122,56 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Student'],
         }),
+
+        // create test for teacher
+        createNationalTestClassroom: builder.mutation<
+            Test,
+            CreateNationalTestDto
+        >({
+            query: ({ classroomId, ...body }) => ({
+                url: `/classrooms/${classroomId}/tests/national-test`,
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        createToeicListeningTestClassroom: builder.mutation<
+            Test,
+            CreateToeicListeningTestDto
+        >({
+            query: ({ classroomId, audioUrl, test }) => ({
+                url: `/classrooms/${classroomId}/tests/toeic-listening-test?audioUrl=${audioUrl}`,
+                method: 'POST',
+                body: test,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        createToeicReadingTestClassroom: builder.mutation<Test, CreateTestDto>({
+            query: ({ classroomId, ...body }) => ({
+                url: `/classrooms/${classroomId}/tests/toeic-reading-test`,
+                method: 'POST',
+                body: body,
+            }),
+            invalidatesTags: ['Test'],
+        }),
+
+        getTestByClassroomId: builder.query<Test[], string>({
+            query: (classroomId) => `/classrooms/${classroomId}/tests`,
+            providesTags: ['Test'],
+        }),
+
+        deleteTestByClassroomId: builder.mutation<
+            void,
+            { classroomId: string; testId: string }
+        >({
+            query: ({ classroomId, testId }) => ({
+                url: `/classrooms/${classroomId}/tests/${testId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Test'],
+        }),
     }),
 });
 
@@ -134,4 +190,9 @@ export const {
     useUpdateLessonMutation,
     useDeleteLessonMutation,
     useRemoveStudentFromClassroomMutation,
+
+    useCreateNationalTestClassroomMutation,
+    useCreateToeicListeningTestClassroomMutation,
+    useCreateToeicReadingTestClassroomMutation,
+    useGetTestByClassroomIdQuery,
 } = classroomApi;

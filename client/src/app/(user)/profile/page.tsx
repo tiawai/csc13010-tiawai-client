@@ -8,36 +8,40 @@ import {
     UserUpdateInfoForm,
     UserUpdatePasswordForm,
 } from '@/components/profile/user-info-update';
-import { useGetMyProfileQuery } from '@/services/user.service';
+import {
+    useGetMyProfileQuery,
+    useGetUserStatisticsQuery,
+} from '@/services/user.service';
 import { Loading } from '@/components/common/loading';
 import { Role } from '@/types/user.type';
 import { useAppSelector } from '@/lib/hooks/hook';
 import { useGetBankAccountQuery } from '@/services/payment.service';
 
-const userStudyingInfo = {
-    examTaken: 0,
-    vocabularies: 0,
-    practiceTaken: 0,
-};
-
 export default function ProfilePage() {
-    const { data, isLoading, error } = useGetMyProfileQuery();
+    const { data, isLoading: isUserInfoLoading } = useGetMyProfileQuery();
+
+    const { data: bankAccount, isLoading: isBankAccountLoading } =
+        useGetBankAccountQuery();
+
+    const { data: userStatistic = {}, isLoading: isStatisticLoading } =
+        useGetUserStatisticsQuery();
+
     const [navigationIndex, setNavigationIndex] = useState<number>(0);
     const userRole = useAppSelector((state) => state.auth.user.role);
-    const { data: bankAccount } = useGetBankAccountQuery();
 
-    if (isLoading) return <Loading />;
-    if (error || !data) return <div>Lỗi khi tải thông tin cá nhân</div>;
+    if (isUserInfoLoading || isBankAccountLoading || isStatisticLoading) {
+        return <Loading />;
+    }
 
     const userInfo = {
-        username: data.username || 'Tiawai',
-        email: data.email || '',
-        gender: data.gender || 'Chưa cập nhật',
-        phone: data.phone || 'Chưa cập nhật',
-        birthdate: data.birthdate
-            ? new Date(data.birthdate).toLocaleDateString('vi-VN')
+        username: data?.username || 'Tiawai',
+        email: data?.email || '',
+        gender: data?.gender || 'Chưa cập nhật',
+        phone: data?.phone || 'Chưa cập nhật',
+        birthdate: data?.birthdate
+            ? new Date(data?.birthdate).toLocaleDateString('vi-VN')
             : 'Chưa cập nhật',
-        address: data.address || 'Chưa cập nhật',
+        address: data?.address || 'Chưa cập nhật',
     };
 
     const navigationItems = [
@@ -49,8 +53,8 @@ export default function ProfilePage() {
                         <UserInfoDisplay props={userInfo} />
                     </UserInfoCard>
                     {userRole === Role.STUDENT && (
-                        <UserInfoCard title="Thông tin học tập">
-                            <UserInfoDisplay props={userStudyingInfo} />
+                        <UserInfoCard title="Thông tin học tại tiawai">
+                            <UserInfoDisplay props={userStatistic} />
                         </UserInfoCard>
                     )}
                     {userRole === Role.TEACHER && (
@@ -91,9 +95,9 @@ export default function ProfilePage() {
     return (
         <div className="flex gap-12">
             <UserCard
-                name={userInfo.username}
-                email={userInfo.email}
-                avatar={data.profileImage}
+                name={userInfo?.username || ''}
+                email={userInfo?.email || ''}
+                avatar={data?.profileImage}
                 hideUpload={false}
             >
                 <Navigation

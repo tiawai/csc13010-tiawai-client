@@ -3,6 +3,7 @@ import { Empty, Table, Typography } from 'antd';
 import { useGetSubmissionsQuery } from '@/services/exam';
 const { Title } = Typography;
 import Link from 'next/link';
+import { useGetSubmissionsByTestIdQuery } from '@/services/test.service';
 
 const columns = [
     {
@@ -13,11 +14,11 @@ const columns = [
     },
     {
         title: 'Kết quả',
-        dataIndex: 'pts',
-        key: 'pts',
-        render: (pts: number) => {
-            if (pts === -1) return 'Chưa làm';
-            const newNumber = pts.toFixed(1);
+        dataIndex: 'score',
+        key: 'score',
+        render: (score: number) => {
+            if (Number(score) === -1) return 'Chưa làm';
+            const newNumber = Number(score).toFixed(1);
             return `${newNumber}%`;
         },
     },
@@ -28,12 +29,12 @@ const columns = [
     },
     {
         title: 'Bài nộp',
-        dataIndex: 'submissionId',
-        key: 'submissionId',
+        dataIndex: 'id',
+        key: 'id',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render: (submissionId: string, record: any) => {
+        render: (id: string, record: any) => {
             return (
-                <Link href={`/test/${record.testId}/result/${submissionId}`}>
+                <Link href={`/student/test/${record.testId}/result/${id}`}>
                     Xem chi tiết
                 </Link>
             );
@@ -42,13 +43,13 @@ const columns = [
 ];
 
 export const TestHistory = ({ id }: { id: string }) => {
-    const { data, isLoading } = useGetSubmissionsQuery(id);
+    const { data, isLoading } = useGetSubmissionsByTestIdQuery(id);
 
     return (
         <>
             <Title level={5}>Kết quả làm bài của bạn:</Title>
             <Table
-                rowKey={(record) => record.submissionId || ''}
+                rowKey={(record) => record.id || ''}
                 dataSource={data || []}
                 columns={columns}
                 pagination={false}

@@ -18,6 +18,7 @@ export interface Test {
     timeLength: number;
     audioUrl?: string | null;
     isGenerated: boolean;
+    submissionCount?: number;
     createdAt?: Date;
     updatedAt?: Date;
 }

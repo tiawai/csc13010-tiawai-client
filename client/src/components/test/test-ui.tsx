@@ -82,7 +82,7 @@ export const TestFrame = ({
                             <Text className="!text-nowrap !font-roboto !font-medium !text-[#ACACAC]">
                                 {info.unit === 'phút'
                                     ? `${test.timeLength} phút`
-                                    : `${test.timeLength} lượt làm`}
+                                    : `${test.submissionCount} lượt làm`}
                             </Text>
                         </Flex>
                     ))}
