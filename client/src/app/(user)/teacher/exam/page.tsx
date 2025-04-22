@@ -1,4 +1,3 @@
-// @/app/(user)/teacher/exam/page.tsx
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -13,13 +12,11 @@ import LessonCard from '@/components/teacher/exam/lessonCard';
 import {
     useGetTeacherClassroomsQuery,
     useGetLessonsQuery,
+    useGetTestByClassroomIdQuery,
 } from '@/services/classroom';
-import { useGetTestByClassroomIdQuery } from '@/services/classroom';
 
 const ExamPage = () => {
-    const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
-        undefined,
-    );
+    const [selectedClassId, setSelectedClassId] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const { data: classrooms, isLoading: isClassroomsLoading } =
         useGetTeacherClassroomsQuery();
@@ -34,9 +31,7 @@ const ExamPage = () => {
         data: tests,
         isLoading: isTestsLoading,
         error: testsError,
-    } = useGetTestByClassroomIdQuery(selectedClassId as string, {
-        skip: !selectedClassId,
-    });
+    } = useGetTestByClassroomIdQuery(selectedClassId);
 
     const handleClassSelect = (classId: string | undefined) => {
         setSelectedClassId(classId);
