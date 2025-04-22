@@ -10,12 +10,12 @@ import {
     // NavigationButtonExport,
     NavigationButtonSave,
 } from './form-ui';
-import { useCreateNationalTestMutation } from '@/services/test.service';
 import { CreateQuestionDto } from '@/types/question.type';
 import { CreateNationalTestDto, TestType } from '@/types/test.type';
 import { useParams } from 'next/navigation';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { useCreateNationalTestTeacherMutation } from '@/services/test.service';
+import { useCreateNationalTestClassroomMutation } from '@/services/classroom';
+import { useCreateNationalTestMutation } from '@/services/test.service';
 
 export const FormFooter = memo(() => {
     const params = useParams();
@@ -25,7 +25,8 @@ export const FormFooter = memo(() => {
     const testState = useAppSelector((state) => state.nationalTestCreator);
     const [isLoading, setIsLoading] = useState(false);
     const [createNationalTest] = useCreateNationalTestMutation();
-    const [createNationalTestTeacher] = useCreateNationalTestTeacherMutation();
+    const [createNationalTestTeacher] =
+        useCreateNationalTestClassroomMutation();
     const { notify } = useNotification();
 
     const handleSaveTest = async () => {

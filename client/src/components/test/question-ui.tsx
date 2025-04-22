@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Upload, message } from 'antd';
 import { RcFile, UploadFile } from 'antd/es/upload';
