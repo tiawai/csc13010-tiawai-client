@@ -53,9 +53,22 @@ export default function TestResultPage() {
     const [currentQuestion, setCurrentQuestion] = useState<Question>(
         QuestionUtils.initQuestion(),
     );
+    const [explanations, setExplanations] = useState<Record<number, string>>(
+        {},
+    );
 
     const showModal = (question: Question) => {
-        setCurrentQuestion(question);
+        const existingExplanation = explanations[question.questionOrder];
+
+        if (existingExplanation) {
+            setCurrentQuestion({
+                ...question,
+                explanation: existingExplanation,
+            });
+        } else {
+            setCurrentQuestion(question);
+        }
+
         setIsModalOpen(true);
     };
 
@@ -370,10 +383,22 @@ export default function TestResultPage() {
                                         questionOrder:
                                             currentQuestion.questionOrder,
                                     });
-                                    setCurrentQuestion({
-                                        ...currentQuestion,
-                                        explanation: response?.data?.body,
-                                    });
+
+                                    const newExplanation =
+                                        response?.data?.content;
+
+                                    if (newExplanation) {
+                                        setExplanations((prev) => ({
+                                            ...prev,
+                                            [currentQuestion.questionOrder]:
+                                                newExplanation,
+                                        }));
+
+                                        setCurrentQuestion({
+                                            ...currentQuestion,
+                                            explanation: newExplanation,
+                                        });
+                                    }
                                 }}
                                 type="primary"
                                 shape="round"
