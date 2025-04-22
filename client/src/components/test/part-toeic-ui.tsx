@@ -32,11 +32,11 @@ import {
     useCreatePart2TRMutation,
     useCreatePart3TRMutation,
     useCreateToeicReadingTestMutation,
-
-    // teacher
-    useCreateToeicListeningTestTeacherMutation,
-    useCreateToeicReadingTestTeacherMutation,
 } from '@/services/test.service';
+import {
+    useCreateToeicListeningTestClassroomMutation,
+    useCreateToeicReadingTestClassroomMutation,
+} from '@/services/classroom';
 import { TestType } from '@/types/test.type';
 import {
     NavigationButtonBack,
@@ -155,9 +155,9 @@ export const PartNavigationFooter = memo(
 
         // Teacher hooks
         const [createToeicListeningTestTeacher] =
-            useCreateToeicListeningTestTeacherMutation();
+            useCreateToeicListeningTestClassroomMutation();
         const [createToeicReadingTestTeacher] =
-            useCreateToeicReadingTestTeacherMutation();
+            useCreateToeicReadingTestClassroomMutation();
 
         const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
