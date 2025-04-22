@@ -328,8 +328,8 @@ const ClassManagement = () => {
                                         id={test.id}
                                         classroomId={id}
                                         title={test.title}
-                                        duration={test.timeLength}
-                                        attempts={test.submissionCount}
+                                        duration={test.timeLength || 0}
+                                        attempts={test.submissionCount || 0}
                                     />
                                 ))
                             ) : (
