@@ -9,7 +9,7 @@ interface TestBoxProps {
     description?: string;
     tag?: string;
     theme?: 'pink' | 'blue';
-    examData: Exam[] | undefined;
+    examData?: Exam[] | undefined;
 }
 
 const TestBox = (props: Readonly<TestBoxProps>) => {
@@ -32,9 +32,9 @@ const TestBox = (props: Readonly<TestBoxProps>) => {
             </Title>
             {props.examData && (
                 <Row gutter={[48, 40]}>
-                    {props.examData.map((exam, index) => (
+                    {props.examData.map((_, index) => (
                         <Col span={8} key={index}>
-                            <ExamFrame theme={props.theme} examData={exam} />
+                            <ExamFrame theme={props.theme} />
                         </Col>
                     ))}
                 </Row>
