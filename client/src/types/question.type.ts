@@ -11,7 +11,7 @@ export interface Question {
     questionOrder: number;
     paragraph?: string;
     hasParagraph?: boolean;
-    content: string;
+    body: string;
     imageUrls?: string[];
     images?: string[];
     choices: Choices;
@@ -40,7 +40,7 @@ export class QuestionUtils {
     static initQuestion(questionOrder = 1): Question {
         return {
             questionOrder: questionOrder,
-            content: '',
+            body: '',
             choices: {
                 A: '',
                 B: '',
