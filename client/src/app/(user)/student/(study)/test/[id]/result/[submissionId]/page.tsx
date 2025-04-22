@@ -335,36 +335,30 @@ export default function TestResultPage() {
                             textAlign: 'left',
                         }}
                     >
-                        <Button
-                            onClick={async () => {
-                                const response = await getExplaination({
-                                    id: testId,
-                                    questionOrder:
-                                        currentQuestion.questionOrder,
-                                });
-                                console.log(response.data);
-                                setCurrentQuestion({
-                                    ...currentQuestion,
-                                    explanation: response?.data,
-                                });
-                                console.log(currentQuestion);
-                            }}
-                            type="primary"
-                            shape="round"
-                            loading={isLoadingExplain}
-                        >
-                            Giải thích với AI
-                        </Button>
+                        {!currentQuestion.explanation && (
+                            <Button
+                                onClick={async () => {
+                                    const response = await getExplaination({
+                                        id: testId,
+                                        questionOrder:
+                                            currentQuestion.questionOrder,
+                                    });
+                                    setCurrentQuestion({
+                                        ...currentQuestion,
+                                        explanation: response?.data?.content,
+                                    });
+                                }}
+                                type="primary"
+                                shape="round"
+                                loading={isLoadingExplain}
+                            >
+                                Giải thích với AI
+                            </Button>
+                        )}
                         <Text>{currentQuestion.explanation}</Text>
                     </Panel>
                 </Collapse>
             </Modal>
         </Row>
     );
-}
-function useGetExplanationForTestQuery(arg0: {
-    id: string;
-    questionOrder: string;
-}): { data: any } {
-    throw new Error('Function not implemented.');
 }

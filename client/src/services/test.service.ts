@@ -34,7 +34,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         getExplanationForTest: builder.query<
-            string,
+            { content: string },
             { id: string; questionOrder: number }
         >({
             query: ({ id, questionOrder }) =>
