@@ -33,6 +33,14 @@ const testApi = appApi.injectEndpoints({
             query: (id) => `/tests/test/${id}`,
         }),
 
+        getExplanationForTest: builder.query<
+            string,
+            { id: string; questionOrder: number }
+        >({
+            query: ({ id, questionOrder }) =>
+                `/tests/test/${id}/explanation/${questionOrder}`,
+        }),
+
         submitTestById: builder.mutation<TestResult, SubmitTestDto>({
             query: ({ testId, ...body }) => ({
                 url: `/tests/test/${testId}/submission`,
@@ -187,6 +195,7 @@ export const {
     useGetTestsAnyoneQuery,
     useGetTestsQuery,
     useGetTestByIdQuery,
+    useLazyGetExplanationForTestQuery,
     useSubmitTestByIdMutation,
 
     // National test hooks

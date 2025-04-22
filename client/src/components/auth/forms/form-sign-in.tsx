@@ -35,6 +35,7 @@ const FormSignIn = () => {
             if (userRole !== Role.ADMIN) {
                 createChatSession();
             }
+            setIsLoading(false);
             router.push('/');
         }
     }, [userId, userRole, router, dispatch, createSession]);
@@ -48,7 +49,6 @@ const FormSignIn = () => {
             password: formData.password,
             redirect: false,
         });
-        setIsLoading(false);
 
         if (res !== undefined && !res?.error) {
             notify({
@@ -61,6 +61,7 @@ const FormSignIn = () => {
                 description: 'Email hoặc mật khẩu không hợp lệ.',
                 notiType: 'error',
             });
+            setIsLoading(false);
         }
     };
 

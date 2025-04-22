@@ -24,6 +24,7 @@ import {
 import {
     useGetSubmissionResultByIdQuery,
     useGetTestByIdQuery,
+    useLazyGetExplanationForTestQuery,
 } from '@/services/test.service';
 
 const { Title, Text, Paragraph } = Typography;
@@ -37,6 +38,10 @@ export default function TestResultPage() {
     const { data: testData, isLoading } = useGetTestByIdQuery(testId);
     const { data: submissions, isLoading: isLoadingSubmissions } =
         useGetSubmissionResultByIdQuery({ testId, submissionId });
+    const [
+        getExplaination,
+        { isLoading: isLoadingExplain, data: explanation },
+    ] = useLazyGetExplanationForTestQuery();
 
     const test = testData?.test;
     const questions = testData?.questions || [];
@@ -330,10 +335,36 @@ export default function TestResultPage() {
                             textAlign: 'left',
                         }}
                     >
+                        <Button
+                            onClick={async () => {
+                                const response = await getExplaination({
+                                    id: testId,
+                                    questionOrder:
+                                        currentQuestion.questionOrder,
+                                });
+                                console.log(response.data);
+                                setCurrentQuestion({
+                                    ...currentQuestion,
+                                    explanation: response?.data,
+                                });
+                                console.log(currentQuestion);
+                            }}
+                            type="primary"
+                            shape="round"
+                            loading={isLoadingExplain}
+                        >
+                            Giải thích với AI
+                        </Button>
                         <Text>{currentQuestion.explanation}</Text>
                     </Panel>
                 </Collapse>
             </Modal>
         </Row>
     );
+}
+function useGetExplanationForTestQuery(arg0: {
+    id: string;
+    questionOrder: string;
+}): { data: any } {
+    throw new Error('Function not implemented.');
 }
