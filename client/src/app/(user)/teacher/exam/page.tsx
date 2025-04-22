@@ -1,3 +1,4 @@
+// @/app/(user)/teacher/exam/page.tsx
 'use client';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -13,13 +14,7 @@ import {
     useGetTeacherClassroomsQuery,
     useGetLessonsQuery,
 } from '@/services/classroom';
-
-const examList = [
-    { id: 1, title: 'Đề Thi Toán 2023', duration: 90, attempts: 150 },
-    { id: 2, title: 'Đề Thi Vật Lý 2023', duration: 60, attempts: 120 },
-    { id: 3, title: 'Đề Thi Hóa Học 2023', duration: 75, attempts: 100 },
-    { id: 4, title: 'Đề Thi Tiếng Anh 2023', duration: 45, attempts: 80 },
-];
+import { useGetTestByClassroomIdQuery } from '@/services/classroom';
 
 const ExamPage = () => {
     const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
@@ -34,6 +29,13 @@ const ExamPage = () => {
         error: lessonsError,
     } = useGetLessonsQuery({
         classId: selectedClassId,
+    });
+    const {
+        data: tests,
+        isLoading: isTestsLoading,
+        error: testsError,
+    } = useGetTestByClassroomIdQuery(selectedClassId as string, {
+        skip: !selectedClassId,
     });
 
     const handleClassSelect = (classId: string | undefined) => {
@@ -50,8 +52,8 @@ const ExamPage = () => {
     );
 
     // Lọc đề thi dựa trên searchTerm
-    const filteredExams = examList.filter((exam) =>
-        exam.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    const filteredTests = tests?.filter((test) =>
+        test.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     return (
@@ -89,14 +91,18 @@ const ExamPage = () => {
 
                 {/* Danh sách đề thi */}
                 <div className="mb-6 mt-6 text-2xl font-bold">Đề thi</div>
-                {filteredExams.length > 0 ? (
+                {isTestsLoading ? (
+                    <Spin size="large" className="flex justify-center" />
+                ) : testsError ? (
+                    <Empty description="Lỗi khi tải danh sách đề thi" />
+                ) : filteredTests && filteredTests.length > 0 ? (
                     <Row gutter={[16, 16]} className="mb-6">
-                        {filteredExams.map((exam) => (
-                            <Col key={exam.id} xs={24} sm={12} md={8} lg={6}>
+                        {filteredTests.map((test) => (
+                            <Col key={test.id} xs={24} sm={12} md={8} lg={6}>
                                 <TestCard
-                                    title={exam.title}
-                                    duration={exam.duration}
-                                    attempts={exam.attempts}
+                                    title={test.title}
+                                    duration={test.timeLength}
+                                    attempts={0} // API không trả số lượt làm, để 0 hoặc thêm logic
                                 />
                             </Col>
                         ))}
