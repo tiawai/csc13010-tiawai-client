@@ -1,5 +1,5 @@
 import { appApi } from '@/services/config.service';
-import { Submission } from '@/types/submission.type';
+import { Submission, SubmissionResult } from '@/types/submission.type';
 import {
     Test,
     CreateTestDto,
@@ -170,7 +170,7 @@ const testApi = appApi.injectEndpoints({
         }),
 
         getSubmissionResultById: builder.query<
-            Submission,
+            SubmissionResult,
             {
                 testId: string;
                 submissionId: string;
