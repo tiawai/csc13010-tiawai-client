@@ -1,4 +1,3 @@
-// @/app/(user)/teacher/classroom/[id]/page.tsx
 'use client';
 import { useParams, useRouter } from 'next/navigation';
 import { DownOutlined } from '@ant-design/icons';
@@ -326,9 +325,11 @@ const ClassManagement = () => {
                                 tests.map((test) => (
                                     <TestCard
                                         key={test.id}
+                                        id={test.id}
+                                        classroomId={id}
                                         title={test.title}
                                         duration={test.timeLength}
-                                        attempts={0} // API không trả số lượt làm, để 0 hoặc thêm logic
+                                        attempts={test.submissionCount}
                                     />
                                 ))
                             ) : (

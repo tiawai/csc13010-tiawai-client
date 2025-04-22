@@ -195,9 +195,9 @@ export const {
     useUpdateLessonMutation,
     useDeleteLessonMutation,
     useRemoveStudentFromClassroomMutation,
-
     useCreateNationalTestClassroomMutation,
     useCreateToeicListeningTestClassroomMutation,
     useCreateToeicReadingTestClassroomMutation,
     useGetTestByClassroomIdQuery,
+    useDeleteTestByClassroomIdMutation,
 } = classroomApi;

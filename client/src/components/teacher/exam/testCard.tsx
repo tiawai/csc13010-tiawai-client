@@ -1,4 +1,5 @@
-import { Button, Dropdown } from 'antd';
+'use client';
+import { Button, Dropdown, notification } from 'antd';
 import type { MenuProps } from 'antd';
 import {
     ClockCircleOutlined,
@@ -10,14 +11,48 @@ import {
 } from '@ant-design/icons';
 import Image from 'next/image';
 import bookIcon from '@public/teacher/book.svg';
+import { useState } from 'react';
+import ConfirmModal from '@/components/common/confirm-modal';
+import { useDeleteTestByClassroomIdMutation } from '@/services/classroom';
 
 interface TestCardProps {
+    id: string;
+    classroomId: string;
     title: string;
     duration: number;
     attempts: number;
 }
 
-const TestCard: React.FC<TestCardProps> = ({ title, duration, attempts }) => {
+const TestCard: React.FC<TestCardProps> = ({
+    id,
+    classroomId,
+    title,
+    duration,
+    attempts,
+}) => {
+    const [deleteTest, { isLoading: isDeleting }] =
+        useDeleteTestByClassroomIdMutation();
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    const handleDelete = async () => {
+        try {
+            await deleteTest({ classroomId, testId: id }).unwrap();
+            notification.success({
+                message: 'Xóa bài test thành công!',
+                description: `Bài test "${title}" đã được xóa khỏi lớp học.`,
+            });
+            setIsConfirmModalOpen(false);
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string | string[] } };
+            const errorMessage =
+                err.data?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.';
+            notification.error({
+                message: 'Xóa bài test thất bại',
+                description: errorMessage,
+            });
+        }
+    };
+
     const items: MenuProps['items'] = [
         {
             key: '1',
@@ -36,6 +71,7 @@ const TestCard: React.FC<TestCardProps> = ({ title, duration, attempts }) => {
                     Xoá đề thi
                 </span>
             ),
+            onClick: () => setIsConfirmModalOpen(true),
         },
     ];
 
@@ -74,6 +110,14 @@ const TestCard: React.FC<TestCardProps> = ({ title, duration, attempts }) => {
                     </Dropdown>
                 </div>
             </div>
+
+            <ConfirmModal
+                open={isConfirmModalOpen}
+                content={`Bạn có chắc chắn muốn xóa bài test "${title}" khỏi lớp học không?`}
+                onConfirm={handleDelete}
+                onCancel={() => setIsConfirmModalOpen(false)}
+                confirmLoading={isDeleting}
+            />
         </div>
     );
 };
