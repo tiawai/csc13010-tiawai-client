@@ -36,8 +36,15 @@ export const appApi = createApi({
     tagTypes: [
         'Auth',
         'User',
+        'Student',
+        'Teacher',
+
         'Exam',
         'Test',
+        'Submission',
+        'Classroom',
+        'Lesson',
+
         'History',
         'Chat',
         'Flashcard',

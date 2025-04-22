@@ -26,7 +26,7 @@ import {
     LeftOutlined,
     BookOutlined,
 } from '@ant-design/icons';
-import { useGetTestByClassroomIdQuery } from '@/services/test.service';
+import { useGetTestByClassroomIdQuery } from '@/services/classroom';
 import { twJoin } from 'tailwind-merge';
 
 const { Title } = Typography;

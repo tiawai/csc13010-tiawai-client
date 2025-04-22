@@ -7,6 +7,7 @@ import { Test, TestType } from '@/types/test.type';
 import { useGetTestsAnyoneQuery } from '@/services/test.service';
 import { useSearch } from '@/lib/hooks/use-search';
 import { TestFrame } from '@/components/test/test-ui';
+import { Loading } from '@/components/common/loading';
 
 const { Title } = Typography;
 
@@ -42,7 +43,7 @@ const testContent: Record<
 export default function TestPage() {
     const params = useSearchParams();
     const type = (params.get('type') as TestType) || TestType.NATIONAL_TEST;
-    const { data: tests } = useGetTestsAnyoneQuery(type);
+    const { data: tests, isLoading } = useGetTestsAnyoneQuery(type);
 
     const searchFn = (test: Test, query: string) => {
         const value = query.toLowerCase();
@@ -86,8 +87,10 @@ export default function TestPage() {
                     size="large"
                 />
             </div>
-            {filteredData.length > 0 ? (
-                <div className="grid flex-[4] auto-rows-min grid-cols-3 gap-4">
+            {isLoading ? (
+                <Loading />
+            ) : filteredData.length > 0 ? (
+                <div className="grid flex-[4] auto-rows-min grid-cols-4 gap-4">
                     {filteredData.map((test, index) => (
                         <TestFrame
                             key={index}

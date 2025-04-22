@@ -15,10 +15,14 @@ const keyMap: { [key: string]: string } = {
     accountNumber: 'Số tài khoản',
     accountName: 'Tên tài khoản',
     bankName: 'Tên ngân hàng',
+
+    toeicTestCompleted: 'Số đề thi TOEIC đã làm',
+    nationalTestCompleted: 'Số đề thi THPTQG đã làm',
+    vocabularyLearned: 'Số từ vựng đã học',
 };
 
 interface UserInfoDisplayProps {
-    [key: string]: string | number | boolean | undefined;
+    [key: string]: string | number | boolean | undefined | null;
 }
 
 const UserInfoDisplay = ({ props }: { props: UserInfoDisplayProps }) => (

@@ -75,13 +75,15 @@ const UserCard = ({
 
 const UserInfoCard = ({
     title,
+    loading,
     children,
 }: {
     title: string;
+    loading?: boolean;
     children?: React.ReactNode;
 }) => {
     return (
-        <CardBorder>
+        <CardBorder loading={loading}>
             <CardTitle title={title} />
             {children}
         </CardBorder>

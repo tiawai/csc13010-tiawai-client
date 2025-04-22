@@ -1,4 +1,5 @@
 import { appApi } from '@/services/config.service';
+import { Submission } from '@/types/submission.type';
 import {
     Test,
     CreateTestDto,
@@ -163,43 +164,20 @@ const testApi = appApi.injectEndpoints({
             }),
         }),
 
-        // create test for teacher
-        createNationalTestTeacher: builder.mutation<
-            Test,
-            CreateNationalTestDto
-        >({
-            query: ({ classroomId, ...body }) => ({
-                url: `/tests/teacher/national-test/${classroomId}`,
-                method: 'POST',
-                body: body,
-            }),
-            invalidatesTags: ['Test'],
-        }),
-
-        createToeicListeningTestTeacher: builder.mutation<
-            Test,
-            CreateToeicListeningTestDto
-        >({
-            query: ({ classroomId, audioUrl, test }) => ({
-                url: `/tests/teacher/toeic-listening-test/${classroomId}?audioUrl=${audioUrl}`,
-                method: 'POST',
-                body: test,
-            }),
-            invalidatesTags: ['Test'],
-        }),
-
-        createToeicReadingTestTeacher: builder.mutation<Test, CreateTestDto>({
-            query: ({ classroomId, ...body }) => ({
-                url: `/tests/teacher/toeic-reading-test/${classroomId}`,
-                method: 'POST',
-                body: body,
-            }),
-            invalidatesTags: ['Test'],
-        }),
-
-        getTestByClassroomId: builder.query<Test[], string>({
-            query: (classroomId) => `/tests/classroom/${classroomId}`,
+        getSubmissionsByTestId: builder.query<Submission[], string>({
+            query: (testId) => `/tests/test/${testId}/submission`,
             providesTags: ['Test'],
+        }),
+
+        getSubmissionResultById: builder.query<
+            Submission,
+            {
+                testId: string;
+                submissionId: string;
+            }
+        >({
+            query: ({ testId, submissionId }) =>
+                `/tests/test/${testId}/submission/${submissionId}`,
         }),
     }),
 });
@@ -230,9 +208,7 @@ export const {
     useCreatePart2TRMutation,
     useCreatePart3TRMutation,
 
-    // Teacher test hooks
-    useCreateNationalTestTeacherMutation,
-    useCreateToeicListeningTestTeacherMutation,
-    useCreateToeicReadingTestTeacherMutation,
-    useGetTestByClassroomIdQuery,
+    // Submission hooks
+    useGetSubmissionsByTestIdQuery,
+    useGetSubmissionResultByIdQuery,
 } = testApi;
