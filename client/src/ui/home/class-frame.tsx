@@ -34,8 +34,9 @@ const priceFormatter = (price: number) => {
 
 const ClassFrame: React.FC<{
     className?: string;
+    isMine?: boolean;
     class: Classroom;
-}> = ({ className, class: classData }) => {
+}> = ({ className, isMine = false, class: classData }) => {
     const router = useRouter();
     const [createPayment, { isLoading }] = useCreatePaymentClassroomMutation();
     const { notify } = useNotification();
@@ -90,9 +91,11 @@ const ClassFrame: React.FC<{
                         {classData.avgRating || '0.0'}
                     </span>
                 </Flex>
-                <span className="font-bold text-secondary">
-                    {priceFormatter(classData.price || 0)}
-                </span>
+                {!isMine && (
+                    <span className="font-bold text-secondary">
+                        {priceFormatter(classData.price || 0)}
+                    </span>
+                )}
             </Flex>
             <div className="h-[60px] overflow-hidden">
                 <Title
