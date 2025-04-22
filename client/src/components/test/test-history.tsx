@@ -25,6 +25,11 @@ const columns = [
         title: 'Thời gian làm bài',
         dataIndex: 'timeConsumed',
         key: 'timeConsumed',
+        render: (timeConsumed: number) => {
+            const minutes = Math.floor(timeConsumed / 60);
+            const seconds = timeConsumed % 60;
+            return `${minutes} phút ${seconds} giây`;
+        },
     },
     {
         title: 'Bài nộp',

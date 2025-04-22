@@ -71,4 +71,6 @@ export default testSlice.reducer;
 export const selectAnswerByQuestionOrder =
     (questionOrder: number) =>
     (state: RootState): Answer =>
-        state.test.answers[questionOrder - 1];
+        state.test.answers.find(
+            (answer) => answer.questionOrder === questionOrder,
+        ) || state.test.answers[questionOrder - 1];
