@@ -90,7 +90,7 @@ export default function TestPage() {
             {isLoading ? (
                 <Loading />
             ) : filteredData.length > 0 ? (
-                <div className="grid flex-[4] auto-rows-min grid-cols-4 gap-4">
+                <div className="grid flex-[4] auto-rows-min grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {filteredData.map((test, index) => (
                         <TestFrame
                             key={index}
