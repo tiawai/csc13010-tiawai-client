@@ -3,8 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "prepare": "husky install",
-        "lint-staged": "lint-staged"
+        "prepare": "husky install"
     },
     "type": "module",
     "keywords": [],
