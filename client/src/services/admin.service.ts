@@ -4,6 +4,19 @@ import { Exam } from '@/types/exam';
 const adminApi = appApi.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
+        getStatistics: builder.query<
+            {
+                totalUsers: number;
+                totalReports: number;
+                totalClassrooms: number;
+                totalTests: number;
+            },
+            void
+        >({
+            query: () => '/statistics',
+            providesTags: ['Statistics'],
+        }),
+
         createExam: builder.mutation({
             query: (exam) => ({
                 url: '/exam',
@@ -32,6 +45,7 @@ const adminApi = appApi.injectEndpoints({
 });
 
 export const {
+    useGetStatisticsQuery,
     useCreateExamMutation,
     useGetExamsQuery,
     useDeleteExamByIdMutation,

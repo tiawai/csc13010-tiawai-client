@@ -50,5 +50,7 @@ export const appApi = createApi({
         'Flashcard',
         'Payment',
         'Report',
+
+        'Statistics',
     ],
 });
