@@ -1,6 +1,6 @@
 import { appApi } from '@/services/config.service';
 import { UserHistoryExam } from '@/types/exam';
-import { Role, User } from '@/types/user.type';
+import { Role, User, UserStatistics } from '@/types/user.type';
 
 const userApi = appApi.injectEndpoints({
     overrideExisting: true,
@@ -19,6 +19,11 @@ const userApi = appApi.injectEndpoints({
                 method: 'GET',
             }),
             providesTags: ['User'],
+        }),
+
+        getUserStatistics: builder.query<UserStatistics, void>({
+            query: () => '/users/user/statistics',
+            providesTags: ['Submission'],
         }),
 
         updateUserProfile: builder.mutation<
@@ -42,13 +47,6 @@ const userApi = appApi.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
-        getMyStatistics: builder.query({
-            query: () => ({
-                url: '/user/exam',
-                method: 'GET',
-            }),
-        }),
-
         getHistoryExams: builder.query<UserHistoryExam[], void>({
             query: () => ({
                 url: '/user/history/exams',
@@ -62,7 +60,7 @@ const userApi = appApi.injectEndpoints({
 export const {
     useGetUsersQuery,
     useGetMyProfileQuery,
-    useGetMyStatisticsQuery,
+    useGetUserStatisticsQuery,
     useGetHistoryExamsQuery,
     useUpdateUserProfileMutation,
     useUploadProfileImageMutation,

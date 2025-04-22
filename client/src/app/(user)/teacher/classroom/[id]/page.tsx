@@ -132,13 +132,11 @@ const StudentActions: React.FC<{ studentId: string }> = ({ studentId }) => {
     );
 };
 
-import { useGetTestByClassroomIdQuery } from '@/services/test.service';
 const ClassManagement = () => {
     const router = useRouter();
     const { id } = useParams() as { id: string };
     const [activeTab, setActiveTab] = useState('students');
     const [activeTable, setActiveTable] = useState('lessons');
-    const { data: tests } = useGetTestByClassroomIdQuery(id);
 
     const {
         data: classroom,

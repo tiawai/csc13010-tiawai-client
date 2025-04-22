@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
     Button,
     Card,
@@ -15,22 +15,38 @@ import {
     Flex,
 } from 'antd';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { ChoicesType, ChoicesTypes, Question } from '@/types/question.type';
-import { useAppSelector } from '@/lib/hooks/hook';
+import {
+    ChoicesType,
+    ChoicesTypes,
+    Question,
+    QuestionUtils,
+} from '@/types/question.type';
+import {
+    useGetSubmissionResultByIdQuery,
+    useGetTestByIdQuery,
+} from '@/services/test.service';
 
 const { Title, Text, Paragraph } = Typography;
 const { Panel } = Collapse;
 
 export default function TestResultPage() {
-    const test = useAppSelector((state) => state.test.test);
-    const questions = useAppSelector((state) => state.test.questions);
-    const answers = useAppSelector((state) => state.test.answers);
-    const result = useAppSelector((state) => state.test.result);
+    const params = useParams();
+    const testId = params.id as string;
+    const submissionId = params.submissionId as string;
+
+    const { data: testData, isLoading } = useGetTestByIdQuery(testId);
+    const { data: submissions, isLoading: isLoadingSubmissions } =
+        useGetSubmissionResultByIdQuery({ testId, submissionId });
+
+    const test = testData?.test;
+    const questions = testData?.questions || [];
+    const answers = submissions?.answers || [];
+    const result = submissions?.result;
 
     const router = useRouter();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState<Question>(
-        questions[0],
+        QuestionUtils.initQuestion(),
     );
 
     const showModal = (question: Question) => {
@@ -46,12 +62,7 @@ export default function TestResultPage() {
         setIsModalOpen(false);
     };
 
-    // const { data: result, isLoading } = useGetExamResultQuery({
-    //     id: +params.id,
-    //     submissionId: params.submissionId,
-    // });
-
-    if (result === undefined) {
+    if (isLoading || isLoadingSubmissions) {
         return (
             <Space className="!w-full" size={16} direction="vertical">
                 <Skeleton.Node className="!h-12 !w-full" active />
@@ -98,7 +109,7 @@ export default function TestResultPage() {
                     <Button
                         size="large"
                         shape="round"
-                        onClick={() => router.push('/exam')}
+                        onClick={() => router.push('/student/test')}
                     >
                         Quay về trang đề thi
                     </Button>
@@ -118,7 +129,7 @@ export default function TestResultPage() {
                                 Số điểm:{' '}
                                 {result?.score !== undefined &&
                                 test?.totalQuestions !== undefined
-                                    ? (result?.score).toFixed(1)
+                                    ? Number(result?.score).toFixed(1)
                                     : 0}
                                 /10
                             </Paragraph>
@@ -158,7 +169,7 @@ export default function TestResultPage() {
                                 Bỏ qua
                             </Title>
                             <Title className="!text-[#8c8c8c]" level={2}>
-                                {result.emptyAnswers}
+                                {result?.emptyAnswers}
                             </Title>
                             <Text>câu hỏi</Text>
                         </Card>
@@ -181,6 +192,10 @@ export default function TestResultPage() {
                     {questions.map((question, index) => (
                         <Col key={index}>
                             <Button
+                                href={`#question-${question.questionOrder}`}
+                                onClick={() => {
+                                    showModal(question);
+                                }}
                                 danger={
                                     answers[index].answer !==
                                     question.correctAnswer
@@ -216,6 +231,7 @@ export default function TestResultPage() {
                         <Col span={12} key={index}>
                             <Space align="center">
                                 <div
+                                    id={`question-${question.questionOrder}`}
                                     className="max-h-10 min-h-10 min-w-10 max-w-10 content-center rounded-full bg-[#E9DAE9] text-center font-bold"
                                     style={{
                                         lineHeight: '40px',
@@ -268,9 +284,11 @@ export default function TestResultPage() {
 
             <Modal
                 title={<Title level={4}>Đáp án chi tiết</Title>}
-                visible={isModalOpen}
+                open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
+                okButtonProps={{ style: { display: 'none' } }}
+                cancelButtonProps={{ style: { display: 'none' } }}
             >
                 <Title level={5}>Câu hỏi:</Title>
                 <Paragraph className="px-4">
