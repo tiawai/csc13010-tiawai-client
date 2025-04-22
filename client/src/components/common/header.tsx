@@ -76,7 +76,7 @@ const adminItems: MenuProps["items"] = [
 const dropdownItemsStudent: MenuProps["items"] = [
     { key: "profile", label: <Link href="/profile">Hồ sơ cá nhân</Link>, icon: <UserOutlined /> },
     { key: "study-history", label: <Link href="/student/study-history">Lịch sử học tập</Link>, icon: <HistoryOutlined /> },
-    { key: "my-class", label: <Link href="/student/my-class">Lớp học của tôi</Link>, icon: <YoutubeOutlined /> },
+    { key: "my-class", label: <Link href="/student/class/me">Lớp học của tôi</Link>, icon: <YoutubeOutlined /> },
     { key: "payment-history", label: <Link href="/payment-history">Lịch sử giao dịch</Link>, icon: <DollarOutlined /> },
     { key: "signout", label: "Đăng xuất", icon: <LogoutOutlined /> },
 ];
