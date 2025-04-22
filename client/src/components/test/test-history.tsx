@@ -1,6 +1,5 @@
 'use client';
 import { Empty, Table, Typography } from 'antd';
-import { useGetSubmissionsQuery } from '@/services/exam';
 const { Title } = Typography;
 import Link from 'next/link';
 import { useGetSubmissionsByTestIdQuery } from '@/services/test.service';
