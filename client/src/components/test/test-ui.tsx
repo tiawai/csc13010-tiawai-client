@@ -53,12 +53,12 @@ export const TestFrame = ({
 
     return (
         <Flex
-            className="!w-full !gap-3 !rounded-xl !py-4 px-3"
+            className="!w-full !max-w-[300px] !gap-3 !rounded-xl !py-4 px-3"
+            align="center"
             style={{
                 backgroundColor: bgColor,
                 boxShadow: '0px 4px 25px 0px rgba(0,0,0,0.10)',
             }}
-            align="center"
         >
             <IconFrame
                 className="aspect-square min-h-max min-w-max"
@@ -68,9 +68,14 @@ export const TestFrame = ({
                 width={size}
                 height={size}
             />
-            <Flex className="!max-w-full grow gap-4" vertical>
+            <Flex
+                className="!grow !gap-4 !overflow-hidden"
+                justify="space-between"
+                vertical
+            >
                 <Title
-                    className="!m-0 !max-w-[65%] truncate !font-roboto"
+                    className="!m-0 !min-w-0 max-w-full !font-roboto"
+                    ellipsis
                     level={5}
                 >
                     {test.title}
