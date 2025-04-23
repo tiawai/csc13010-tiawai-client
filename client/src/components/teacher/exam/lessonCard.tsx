@@ -5,7 +5,7 @@ import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import videoIcon from '@public/teacher/video.svg';
-import { useDeleteLessonMutation } from '@/services/classroom';
+import { useDeleteLessonMutation } from '@/services/classroom.service';
 import { useState } from 'react';
 import ConfirmModal from '@/components/common/confirm-modal';
 

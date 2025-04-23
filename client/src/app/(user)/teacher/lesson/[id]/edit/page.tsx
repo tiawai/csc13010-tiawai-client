@@ -10,7 +10,7 @@ import FileUploader from '@/components/teacher/classroom/create-lesson/file-uplo
 import {
     useGetLessonByIdQuery,
     useUpdateLessonMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 
 const CkEditor = dynamic(
     () => import('@/components/teacher/classroom/create-lesson/ckeditor'),

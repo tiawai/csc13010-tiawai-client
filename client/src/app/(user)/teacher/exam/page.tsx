@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { BannerTitle, BannerSubTitle } from '@/components/common/banner';
 import Banner from '@/app/(user)/student/(study)/_ui/banner';
@@ -13,13 +13,18 @@ import {
     useGetTeacherClassroomsQuery,
     useGetLessonsQuery,
     useGetTestByClassroomIdQuery,
-} from '@/services/classroom';
+    useGetTestClassoomQuery,
+} from '@/services/classroom.service';
+import { skip } from 'node:test';
+import { Test } from '@/types/test.type';
 
 const ExamPage = () => {
     const [selectedClassId, setSelectedClassId] = useState<string>('');
     const [searchTerm, setSearchTerm] = useState<string>('');
     const { data: classrooms, isLoading: isClassroomsLoading } =
         useGetTeacherClassroomsQuery();
+    const [tests, setTests] = useState<Test[]>([]);
+
     const {
         data: lessons,
         isLoading: isLessonsLoading,
@@ -28,13 +33,27 @@ const ExamPage = () => {
         classId: selectedClassId,
     });
     const {
-        data: tests,
+        data: testsByClassroomId,
         isLoading: isTestsLoading,
         error: testsError,
-    } = useGetTestByClassroomIdQuery(selectedClassId);
+    } = useGetTestByClassroomIdQuery(selectedClassId, {
+        skip: selectedClassId === '',
+    });
+
+    const { data: allTestInClass } = useGetTestClassoomQuery(undefined, {
+        skip: selectedClassId !== '',
+    });
+
+    useEffect(() => {
+        if (testsByClassroomId) {
+            setTests(testsByClassroomId);
+        } else if (allTestInClass) {
+            setTests(allTestInClass);
+        }
+    }, [testsByClassroomId]);
 
     const handleClassSelect = (classId: string | undefined) => {
-        setSelectedClassId(classId);
+        setSelectedClassId(classId || '');
     };
 
     const handleSearch = (value: string) => {
@@ -95,9 +114,11 @@ const ExamPage = () => {
                         {filteredTests.map((test) => (
                             <Col key={test.id} xs={24} sm={12} md={8} lg={6}>
                                 <TestCard
+                                    id={test.id}
+                                    classroomId={selectedClassId}
                                     title={test.title}
                                     duration={test.timeLength}
-                                    attempts={0} // API không trả số lượt làm, để 0 hoặc thêm logic
+                                    attempts={test?.submissionCount || 0}
                                 />
                             </Col>
                         ))}

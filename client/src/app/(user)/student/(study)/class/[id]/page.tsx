@@ -2,7 +2,7 @@
 import {
     useGetClassroomByIdQuery,
     useGetClassroomLessonsQuery,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import ExamFrame from '@/ui/exam-frame';
 import LessonFrame from '@/ui/lesson-frame';
 import {
@@ -26,7 +26,7 @@ import {
     LeftOutlined,
     BookOutlined,
 } from '@ant-design/icons';
-import { useGetTestByClassroomIdQuery } from '@/services/classroom';
+import { useGetTestByClassroomIdQuery } from '@/services/classroom.service';
 import { twJoin } from 'tailwind-merge';
 
 const { Title } = Typography;
