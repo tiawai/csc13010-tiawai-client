@@ -36,7 +36,7 @@ import {
 import {
     useCreateToeicListeningTestClassroomMutation,
     useCreateToeicReadingTestClassroomMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import { TestType } from '@/types/test.type';
 import {
     NavigationButtonBack,

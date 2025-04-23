@@ -12,7 +12,7 @@ import ConfirmModal from '@/components/common/confirm-modal';
 import {
     useGetTeacherClassroomsQuery,
     useDeleteClassroomMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import { PlusOutlined } from '@ant-design/icons';
 import chatIcon from '@public/chat-icon.svg';
 import { notification } from 'antd';

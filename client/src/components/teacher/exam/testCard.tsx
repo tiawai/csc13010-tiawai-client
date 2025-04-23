@@ -13,7 +13,7 @@ import Image from 'next/image';
 import bookIcon from '@public/teacher/book.svg';
 import { useState } from 'react';
 import ConfirmModal from '@/components/common/confirm-modal';
-import { useDeleteTestByClassroomIdMutation } from '@/services/classroom';
+import { useDeleteTestByClassroomIdMutation } from '@/services/classroom.service';
 
 interface TestCardProps {
     id: string;

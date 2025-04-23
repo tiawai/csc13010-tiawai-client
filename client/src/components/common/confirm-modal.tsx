@@ -6,6 +6,7 @@ interface ConfirmModalProps {
     content: string;
     onConfirm: () => void;
     onCancel: () => void;
+    confirmLoading?: boolean;
 }
 
 const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -13,6 +14,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
     content,
     onConfirm,
     onCancel,
+    confirmLoading,
 }) => {
     return (
         <Modal
@@ -28,6 +30,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
                 </Button>,
             ]}
             destroyOnClose
+            confirmLoading={confirmLoading}
         >
             <p>{content}</p>
         </Modal>

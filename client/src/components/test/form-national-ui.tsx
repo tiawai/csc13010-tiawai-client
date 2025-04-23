@@ -14,7 +14,7 @@ import { CreateQuestionDto } from '@/types/question.type';
 import { CreateNationalTestDto, TestType } from '@/types/test.type';
 import { useParams } from 'next/navigation';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { useCreateNationalTestClassroomMutation } from '@/services/classroom';
+import { useCreateNationalTestClassroomMutation } from '@/services/classroom.service';
 import { useCreateNationalTestMutation } from '@/services/test.service';
 
 export const FormFooter = memo(() => {

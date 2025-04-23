@@ -31,6 +31,7 @@ const { Title, Text, Paragraph } = Typography;
 const { Panel } = Collapse;
 
 export default function TestResultPage() {
+    console.log('TestResultPage');
     const params = useParams();
     const testId = params.id as string;
     const submissionId = params.submissionId as string;
@@ -53,22 +54,9 @@ export default function TestResultPage() {
     const [currentQuestion, setCurrentQuestion] = useState<Question>(
         QuestionUtils.initQuestion(),
     );
-    const [explanations, setExplanations] = useState<Record<number, string>>(
-        {},
-    );
 
     const showModal = (question: Question) => {
-        const existingExplanation = explanations[question.questionOrder];
-
-        if (existingExplanation) {
-            setCurrentQuestion({
-                ...question,
-                explanation: existingExplanation,
-            });
-        } else {
-            setCurrentQuestion(question);
-        }
-
+        setCurrentQuestion(question);
         setIsModalOpen(true);
     };
 
@@ -245,47 +233,27 @@ export default function TestResultPage() {
             <Title level={4}>Part</Title>
             <Col span={24}>
                 <Row gutter={[16, 16]}>
-                    {[...questions]
-                        .sort((a, b) => a.questionOrder - b.questionOrder)
-                        .map((question, index) => (
-                            <Col span={12} key={index}>
-                                <Space align="center">
-                                    <div
-                                        id={`question-${question.questionOrder}`}
-                                        className="max-h-10 min-h-10 min-w-10 max-w-10 content-center rounded-full bg-[#E9DAE9] text-center font-bold"
-                                        style={{
-                                            lineHeight: '40px',
-                                            width: '40px',
-                                            height: '40px',
-                                            textAlign: 'center',
-                                        }}
-                                    >
-                                        {
-                                            questions.find(
-                                                (q) =>
-                                                    q.questionOrder ===
-                                                    index + 1,
-                                            )?.questionOrder
-                                        }
-                                    </div>
-                                    <Text>
-                                        {
-                                            questions.find(
-                                                (q) =>
-                                                    q.questionOrder ===
-                                                    index + 1,
-                                            )?.correctAnswer
-                                        }
-                                        :{' '}
-                                        {answers.find(
-                                            (answer) =>
-                                                answer.questionOrder ===
-                                                index + 1,
-                                        )?.answer ===
-                                        questions.find(
-                                            (q) =>
-                                                q.questionOrder === index + 1,
-                                        )?.correctAnswer ? (
+                    {questions.map((question, index) => (
+                        <Col span={12} key={index}>
+                            <Space align="center">
+                                <div
+                                    id={`question-${question.questionOrder}`}
+                                    className="max-h-10 min-h-10 min-w-10 max-w-10 content-center rounded-full bg-[#E9DAE9] text-center font-bold"
+                                    style={{
+                                        lineHeight: '40px',
+                                        width: '40px',
+                                        height: '40px',
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    {index + 1}
+                                </div>
+                                <Text>
+                                    {question.correctAnswer}:{' '}
+                                    {answers[index].answer ===
+                                    question.correctAnswer ? (
+                                        <>
+                                            {answers[index].answer}
                                             <CheckOutlined
                                                 style={{
                                                     fontSize: 16,
@@ -293,37 +261,30 @@ export default function TestResultPage() {
                                                     marginLeft: 8,
                                                 }}
                                             />
-                                        ) : (
-                                            <>
-                                                <del>
-                                                    {
-                                                        answers.find(
-                                                            (answer) =>
-                                                                answer.questionOrder ===
-                                                                question.questionOrder,
-                                                        )?.answer
-                                                    }
-                                                </del>
-                                                <CloseOutlined
-                                                    size={40}
-                                                    style={{
-                                                        fontSize: 16,
-                                                        color: '#ff4d4f',
-                                                        marginLeft: 8,
-                                                    }}
-                                                />
-                                            </>
-                                        )}
-                                    </Text>
-                                    <Button
-                                        type="link"
-                                        onClick={() => showModal(question)}
-                                    >
-                                        [Chi tiết]
-                                    </Button>
-                                </Space>
-                            </Col>
-                        ))}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <del>{answers[index].answer}</del>
+                                            <CloseOutlined
+                                                size={40}
+                                                style={{
+                                                    fontSize: 16,
+                                                    color: '#ff4d4f',
+                                                    marginLeft: 8,
+                                                }}
+                                            />
+                                        </>
+                                    )}
+                                </Text>
+                                <Button
+                                    type="link"
+                                    onClick={() => showModal(question)}
+                                >
+                                    [Chi tiết]
+                                </Button>
+                            </Space>
+                        </Col>
+                    ))}
                 </Row>
             </Col>
 
@@ -383,22 +344,10 @@ export default function TestResultPage() {
                                         questionOrder:
                                             currentQuestion.questionOrder,
                                     });
-
-                                    const newExplanation =
-                                        response?.data?.content;
-
-                                    if (newExplanation) {
-                                        setExplanations((prev) => ({
-                                            ...prev,
-                                            [currentQuestion.questionOrder]:
-                                                newExplanation,
-                                        }));
-
-                                        setCurrentQuestion({
-                                            ...currentQuestion,
-                                            explanation: newExplanation,
-                                        });
-                                    }
+                                    setCurrentQuestion({
+                                        ...currentQuestion,
+                                        explanation: response?.data?.content,
+                                    });
                                 }}
                                 type="primary"
                                 shape="round"
