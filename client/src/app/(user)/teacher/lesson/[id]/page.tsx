@@ -13,7 +13,7 @@ import {
 import {
     useGetLessonByIdQuery,
     useDeleteLessonMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import {
     ArrowLeftOutlined,
     EditOutlined,

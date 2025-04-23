@@ -13,7 +13,7 @@ import bigTiawai from '@public/home/big-tiawai.png';
 import homeCircle1 from '@public/home/home-circle-1.svg';
 import homeDots from '@public/home/home-dots.png';
 import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
-import { useGetClassroomsQuery } from '@/services/classroom';
+import { useGetClassroomsQuery } from '@/services/classroom.service';
 import { useGetTestsAnyoneQuery } from '@/services/test.service';
 import { Classroom } from '@/types/classroom.type';
 import { Exam } from '@/types/exam';

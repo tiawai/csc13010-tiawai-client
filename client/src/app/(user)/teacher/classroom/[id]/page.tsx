@@ -29,8 +29,8 @@ import {
     useGetLessonsQuery,
     useGetClassroomStudentsQuery,
     useRemoveStudentFromClassroomMutation,
-} from '@/services/classroom';
-import { useGetTestByClassroomIdQuery } from '@/services/classroom';
+} from '@/services/classroom.service';
+import { useGetTestByClassroomIdQuery } from '@/services/classroom.service';
 import { Student } from '@/types/classroom.type';
 
 const columns: TableColumnsType<Student> = [

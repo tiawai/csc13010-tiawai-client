@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { useAppSelector } from '@/lib/hooks/hook';
-import { useGetMyClassroomsQuery } from '@/services/classroom';
+import { useGetMyClassroomsQuery } from '@/services/classroom.service';
 import { selectUser } from '@/lib/slices/auth.slice';
 import { Button, Flex, Typography, Spin, Empty, Row, Col } from 'antd';
 import ClassFrame from '@/ui/home/class-frame';

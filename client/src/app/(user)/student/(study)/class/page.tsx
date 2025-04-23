@@ -1,5 +1,5 @@
 'use client';
-import { useGetClassroomsQuery } from '@/services/classroom';
+import { useGetClassroomsQuery } from '@/services/classroom.service';
 import { CLASS_BANNER, CLASS_HEADER } from '@/strings/class';
 import FindClassInput from '@/ui/components/find-class-input';
 import LeftTextBanner from '@/ui/components/left-text-banner';

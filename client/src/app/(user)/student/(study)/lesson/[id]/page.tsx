@@ -1,7 +1,7 @@
 'use client';
 import { useParams, useRouter } from 'next/navigation';
 import { Spin, Empty, Button, Card, Typography, Space, Divider } from 'antd';
-import { useGetLessonByIdQuery } from '@/services/classroom';
+import { useGetLessonByIdQuery } from '@/services/classroom.service';
 import {
     ArrowLeftOutlined,
     FilePdfOutlined,

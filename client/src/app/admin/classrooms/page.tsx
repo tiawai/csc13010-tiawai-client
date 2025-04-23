@@ -9,7 +9,7 @@ import { useNotification } from '@/lib/hooks/use-notification';
 import {
     useGetClassroomsQuery,
     useDeleteClassroomMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import { Classroom } from '@/types/classroom.type';
 
 export default function AdminClassroomsPage() {

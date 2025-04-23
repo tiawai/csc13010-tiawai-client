@@ -16,7 +16,7 @@ import type { UploadFile } from 'antd';
 import {
     useCreateClassroomMutation,
     useUpdateClassroomMutation,
-} from '@/services/classroom';
+} from '@/services/classroom.service';
 import { Classroom, CreateClassroomDto } from '@/types/classroom.type';
 
 interface ClassroomModalProps {

@@ -17,6 +17,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: ['Classroom'],
         }),
+
         getClassrooms: builder.query<Classroom[], void>({
             query: () => ({
                 url: '/classrooms',
@@ -24,6 +25,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: ['Classroom'],
         }),
+
         getClassroomById: builder.query<Classroom, string>({
             query: (id) => ({
                 url: `/classrooms/${id}`,
@@ -31,10 +33,12 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: (result, error, id) => [{ type: 'Classroom', id }],
         }),
+
         getMyClassrooms: builder.query<Classroom[], string>({
             query: (id) => `/classrooms/student/${id}/classrooms`,
             providesTags: ['Classroom'],
         }),
+
         getClassroomStudents: builder.query<Student[], string>({
             query: (classId) => ({
                 url: `/classrooms/${classId}/students`,
@@ -42,6 +46,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: ['Student'],
         }),
+
         getClassroomLessons: builder.query<Lesson[], string>({
             query: (classId) => ({
                 url: `/lessons?classId=${classId}`,
@@ -49,6 +54,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: (result, error, id) => [{ type: 'Lesson', id }],
         }),
+
         getLessons: builder.query<Lesson[], { classId?: string }>({
             query: ({ classId }) => ({
                 url: '/lessons',
@@ -57,6 +63,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: ['Lesson'],
         }),
+
         getLessonById: builder.query<Lesson, string>({
             query: (id) => ({
                 url: `/lessons/${id}`,
@@ -64,6 +71,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             providesTags: (result, error, id) => [{ type: 'Lesson', id }],
         }),
+
         createClassroom: builder.mutation<Classroom, FormData>({
             query: (formData) => ({
                 url: '/classrooms',
@@ -72,6 +80,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Classroom'],
         }),
+
         updateClassroom: builder.mutation<
             Classroom,
             { id: string; formData: FormData }
@@ -83,6 +92,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Classroom'],
         }),
+
         deleteClassroom: builder.mutation<void, string>({
             query: (id) => ({
                 url: `/classrooms/${id}`,
@@ -90,6 +100,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Classroom'],
         }),
+
         createLesson: builder.mutation<Lesson, FormData>({
             query: (formData) => ({
                 url: '/lessons',
@@ -98,6 +109,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Lesson'],
         }),
+
         updateLesson: builder.mutation<
             Lesson,
             { id: string; formData: FormData }
@@ -109,6 +121,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Lesson'],
         }),
+
         deleteLesson: builder.mutation<void, string>({
             query: (id) => ({
                 url: `/lessons/${id}`,
@@ -116,6 +129,7 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Lesson'],
         }),
+
         removeStudentFromClassroom: builder.mutation<
             void,
             { classId: string; studentId: string }
@@ -161,6 +175,11 @@ const classroomApi = appApi.injectEndpoints({
             invalidatesTags: ['Test'],
         }),
 
+        getTestClassoom: builder.query<Test[], void>({
+            query: () => `/classrooms/tests`,
+            providesTags: ['Test'],
+        }),
+
         getTestByClassroomId: builder.query<Test[], string>({
             query: (classroomId) => `/classrooms/${classroomId}/tests`,
             providesTags: ['Test'],
@@ -198,6 +217,8 @@ export const {
     useCreateNationalTestClassroomMutation,
     useCreateToeicListeningTestClassroomMutation,
     useCreateToeicReadingTestClassroomMutation,
+
+    useGetTestClassoomQuery,
     useGetTestByClassroomIdQuery,
     useDeleteTestByClassroomIdMutation,
 } = classroomApi;

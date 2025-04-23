@@ -7,7 +7,7 @@ import { Button, Form, Input, notification } from 'antd';
 import type { UploadFile } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import FileUploader from '@/components/teacher/classroom/create-lesson/file-uploader';
-import { useCreateLessonMutation } from '@/services/classroom';
+import { useCreateLessonMutation } from '@/services/classroom.service';
 
 const CkEditor = dynamic(
     () => import('@/components/teacher/classroom/create-lesson/ckeditor'),
