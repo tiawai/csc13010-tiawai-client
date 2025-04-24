@@ -17,9 +17,9 @@ const Class = () => {
     const popularClasses = useMemo(() => {
         if (!classData || classData.length === 0) return [];
 
-        return [...classData]
-            .sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0))
-            .slice(0, 3);
+        return [...classData].sort(
+            (a, b) => (b.avgRating || 0) - (a.avgRating || 0),
+        );
     }, [classData]);
 
     const filteredClasses = useMemo(() => {
