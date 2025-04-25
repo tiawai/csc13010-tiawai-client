@@ -1,8 +1,9 @@
 'use client';
-import { useMemo } from 'react';
-import { Flex, Table, Button, Empty } from 'antd';
+import { useMemo, useState } from 'react';
+import { Flex, Table, Button, Empty, notification } from 'antd';
 import { AdminBanner } from '@/components/common/banner';
 import { TableInputSearch } from '@/components/admin/table';
+import ConfirmModal from '@/components/common/confirm-modal';
 import { usePagination } from '@/lib/hooks/use-paganation';
 import { useSearch } from '@/lib/hooks/use-search';
 import { useNotification } from '@/lib/hooks/use-notification';
@@ -13,14 +14,15 @@ import {
 import { Classroom } from '@/types/classroom.type';
 
 export default function AdminClassroomsPage() {
-    // Use the real API query
     const { data: classrooms = [], isLoading } = useGetClassroomsQuery();
-
-    // Use the real delete mutation
-    const [deleteClassroomMutation] = useDeleteClassroomMutation();
-
+    const [deleteClassroomMutation, { isLoading: isDeleting }] =
+        useDeleteClassroomMutation();
     const { notify } = useNotification();
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [selectedClassroomId, setSelectedClassroomId] = useState<
+        string | null
+    >(null);
 
     const searchFn = (classroom: Classroom, query: string): boolean => {
         const value = query.toLowerCase();
@@ -31,6 +33,27 @@ export default function AdminClassroomsPage() {
         classrooms || [],
         searchFn,
     );
+
+    const handleDelete = async () => {
+        if (!selectedClassroomId) return;
+        try {
+            await deleteClassroomMutation(selectedClassroomId).unwrap();
+            notification.success({
+                message: 'Thành công',
+                description: 'Xóa lớp học thành công!',
+            });
+            setIsConfirmModalOpen(false);
+            setSelectedClassroomId(null);
+        } catch (error: unknown) {
+            const err = error as Error;
+            notification.error({
+                message: 'Xoá lớp học thất bại',
+                description:
+                    err.message || 'Lỗi không xác định. Vui lòng thử lại.',
+            });
+            console.error(error);
+        }
+    };
 
     const columns = useMemo(
         () => [
@@ -86,29 +109,10 @@ export default function AdminClassroomsPage() {
                             shape="round"
                             danger
                             onClick={() => {
-                                if (
-                                    confirm(
-                                        'Bạn có chắc chắn muốn xóa lớp học này?',
-                                    )
-                                ) {
-                                    deleteClassroomMutation(record.id)
-                                        .unwrap()
-                                        .then(() => {
-                                            notify({
-                                                message:
-                                                    'Xóa lớp học thành công',
-                                            });
-                                        })
-                                        .catch((error) => {
-                                            notify({
-                                                message:
-                                                    'Đã có lỗi xảy ra khi xóa lớp học',
-                                                notiType: 'error',
-                                            });
-                                            console.error(error);
-                                        });
-                                }
+                                setSelectedClassroomId(record.id);
+                                setIsConfirmModalOpen(true);
                             }}
+                            disabled={isDeleting}
                         >
                             Xóa
                         </Button>
@@ -116,7 +120,7 @@ export default function AdminClassroomsPage() {
                 ),
             },
         ],
-        [deleteClassroomMutation, notify],
+        [isDeleting, notify],
     );
 
     return (
@@ -156,6 +160,16 @@ export default function AdminClassroomsPage() {
                         current: currentPage,
                         onChange: handlePageChange,
                     }}
+                />
+                <ConfirmModal
+                    open={isConfirmModalOpen}
+                    content="Bạn có chắc chắn muốn xóa lớp học này?"
+                    onConfirm={handleDelete}
+                    onCancel={() => {
+                        setIsConfirmModalOpen(false);
+                        setSelectedClassroomId(null);
+                    }}
+                    confirmLoading={isDeleting}
                 />
             </div>
         </>
