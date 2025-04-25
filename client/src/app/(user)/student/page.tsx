@@ -1,7 +1,6 @@
 'use client';
 import { ArrowRightOutlined, CheckCircleFilled } from '@ant-design/icons';
 import { Flex, Typography, Empty, Row, Col, Button, Spin } from 'antd';
-import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -13,9 +12,8 @@ import bigTiawai from '@public/home/big-tiawai.png';
 import homeCircle1 from '@public/home/home-circle-1.svg';
 import homeDots from '@public/home/home-dots.png';
 import { HOME_TITLE, HOME_HEADERS, HOME_FIRST_FEATURES } from '@/strings/home';
-import { useGetClassroomsQuery } from '@/services/classroom.service';
+import { useGetTopRatedClassroomsQuery } from '@/services/classroom.service';
 import { useGetTestsAnyoneQuery } from '@/services/test.service';
-import { Classroom } from '@/types/classroom.type';
 import { Exam } from '@/types/exam';
 import { TestType } from '@/types/test.type';
 import { TestFrame } from '@/components/test/test-ui';
@@ -28,132 +26,18 @@ export interface ExamData {
     tests: Exam[];
 }
 
-const examData: ExamData[] = [
+const examData = [
     {
         key: `/student/test?type=${encodeURIComponent(TestType.TOEIC_READING)}`,
         type: 'TOEIC Reading',
-        tests: [
-            {
-                id: 1,
-                title: 'Đề thi thử số 1',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 2,
-                title: 'Đề thi thử số 2',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 3,
-                title: 'Đề thi thử số 3',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 4,
-                title: 'Đề thi thử số 4',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-        ],
     },
     {
         key: `/student/test?type=${encodeURIComponent(TestType.TOEIC_LISTENING)}`,
         type: 'TOEIC Listening',
-        tests: [
-            {
-                id: 1,
-                title: 'Bài tập chuyên đề số 1',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 2,
-                title: 'Bài tập chuyên đề số 2',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 3,
-                title: 'Bài tập chuyên đề số 3',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 4,
-                title: 'Bài tập chuyên đề số 4',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-        ],
     },
     {
         key: `/student/test?type=${encodeURIComponent(TestType.NATIONAL_TEST)}`,
         type: 'Bộ đề thi THPTQG',
-        tests: [
-            {
-                id: 1,
-                title: 'Bài tập chuyên đề số 1',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 2,
-                title: 'Bài tập chuyên đề số 2',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 3,
-                title: 'Bài tập chuyên đề số 3',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-            {
-                id: 4,
-                title: 'Bài tập chuyên đề số 4',
-                totalQuestions: 10,
-                questions: [],
-                duration: 10,
-                totalAttempts: 0,
-                uploadedAt: '2024-01-01',
-            },
-        ],
     },
 ];
 
@@ -199,36 +83,11 @@ export default function Home() {
     const { data: nationalTests } = useGetTestsAnyoneQuery(
         TestType.NATIONAL_TEST,
     );
-    // const { data, isLoading } = useGetExamsQuery();
-    // const { data: practiceData } = useGetExamPracticesQuery();
 
-    // if (isLoading || !data || !practiceData) return;
-
-    // const examData: ExamData[] = [
-    //     {
-    //         key: "exam",
-    //         type: "Đề thi thử theo mẫu THPTQG",
-    //         tests: data,
-    //     },
-    //     {
-    //         key: "practice",
-    //         type: "Bài tập chuyên đề",
-    //         tests: practiceData,
-    //     },
-    // ];
-    const [popularClassrooms, setPopularClassrooms] = useState<Classroom[]>([]);
-    const { data: classData = [], isLoading: isLoadingClassrooms } =
-        useGetClassroomsQuery();
+    const { data: popularClassrooms = [], isLoading: isLoadingClassrooms } =
+        useGetTopRatedClassroomsQuery();
     const router = useRouter();
-
-    useEffect(() => {
-        if (classData.length > 0) {
-            const topClasses = [...classData]
-                .sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0))
-                .slice(0, 3);
-            setPopularClassrooms(topClasses);
-        }
-    }, [classData]);
+    console.log('popularClassrooms', popularClassrooms);
 
     return (
         <main className="flex select-none flex-col items-center justify-center">
@@ -399,7 +258,7 @@ export default function Home() {
 
                 <Flex justify="space-between" align="center">
                     <Title className="!m-0 leading-none">
-                        {examData[2].type}
+                        {examData[0].type}
                     </Title>
                     <Link
                         href={`${examData[0].key}`}
@@ -466,7 +325,7 @@ export default function Home() {
                 )}
             </Flex>
 
-            <Flex vertical className="mb-40">
+            <Flex vertical className="mb-40 !w-full">
                 <Flex vertical align="center">
                     <Heading className="relative !text-[2.7rem]">
                         {HOME_HEADERS[3].title}
