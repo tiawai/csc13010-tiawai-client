@@ -113,6 +113,7 @@ export const {
     useCreatePaymentAIMutation,
     useVerifyPaymentMutation,
 
+    useGetPayoutQuery,
     useLazyGetPayoutQuery,
     useProcessPayoutMutation,
     useUpdatePayoutSuccessMutation,
