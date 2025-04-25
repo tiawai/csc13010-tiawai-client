@@ -46,6 +46,21 @@ const paymentApi = appApi.injectEndpoints({
             invalidatesTags: ['Payment'],
         }),
 
+        canUseAil: builder.query<boolean, void>({
+            query: () => ({
+                url: '/payments/ai/checkout',
+                method: 'GET',
+            }),
+            providesTags: ['Payment'],
+        }),
+
+        deletePaymentAI: builder.mutation<Payment, void>({
+            query: () => ({
+                url: '/payments/ai',
+                method: 'DELETE',
+            }),
+        }),
+
         verifyPayment: builder.mutation<Payment, PaymentVerify>({
             query: (body) => ({
                 url: '/payments/verify',
@@ -111,6 +126,8 @@ export const {
 
     useCreatePaymentClassroomMutation,
     useCreatePaymentAIMutation,
+    useCanUseAilQuery,
+    useDeletePaymentAIMutation,
     useVerifyPaymentMutation,
 
     useGetPayoutQuery,
