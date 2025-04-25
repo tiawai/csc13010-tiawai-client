@@ -11,6 +11,7 @@ export interface User {
     email: string;
     role: Role;
     profileImage?: string;
+    balance?: number;
     phone?: string;
     birthdate?: string;
     gender?: 'male' | 'female' | null;

@@ -122,6 +122,11 @@ const ClassManagement = () => {
     const { id } = useParams() as { id: string };
     const [activeTab, setActiveTab] = useState('students');
     const [activeTable, setActiveTable] = useState('lessons');
+    const {
+        data: tests,
+        isLoading: isTestsLoading,
+        error: testsError,
+    } = useGetTestByClassroomIdQuery(id);
 
     const {
         data: classroom,
