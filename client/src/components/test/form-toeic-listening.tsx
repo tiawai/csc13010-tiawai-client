@@ -184,7 +184,7 @@ const FormPartQuestions = memo(() => {
         <FormQuestionLayout>
             <FormQuestionTitle title={`Câu ${currentQuestionId}`} />
             <div className="p-6">
-                {currentPart !== 'part1' && (
+                {currentPart !== 'part1' && currentPart !== 'part2' && (
                     <Form.Item>
                         <QuestionNavigation
                             currentType={questionType}
@@ -194,8 +194,26 @@ const FormPartQuestions = memo(() => {
                     </Form.Item>
                 )}
 
-                {questionType === 0 ? (
-                    <BasicQuestion questionOrder={currentQuestionId} />
+                {currentPart === 'part1' ? (
+                    <BasicQuestion
+                        questionOrder={currentQuestionId}
+                        showQuestion={false}
+                        showQuestionImage={true}
+                        showChoices={false}
+                    />
+                ) : currentPart === 'part2' ? (
+                    <BasicQuestion
+                        questionOrder={currentQuestionId}
+                        showQuestion={false}
+                        showQuestionImage={false}
+                        showChoices={false}
+                    />
+                ) : questionType === 0 ? (
+                    <BasicQuestion
+                        questionOrder={currentQuestionId}
+                        showQuestion={true}
+                        showQuestionImage={false}
+                    />
                 ) : (
                     <>
                         <BasicQuestion
