@@ -1,4 +1,5 @@
 import { appApi } from '@/services/config.service';
+import { CreateQuestionDto } from '@/types/question.type';
 import { Submission, SubmissionResult } from '@/types/submission.type';
 import {
     Test,
@@ -14,6 +15,7 @@ import {
     SubmitTestDto,
     TestType,
     TestResult,
+    Category,
 } from '@/types/test.type';
 
 const testApi = appApi.injectEndpoints({
@@ -187,6 +189,14 @@ const testApi = appApi.injectEndpoints({
             query: ({ testId, submissionId }) =>
                 `/tests/test/${testId}/submission/${submissionId}`,
         }),
+
+        createPracticeTest: builder.mutation<CreateQuestionDto[], Category>({
+            query: (category) => ({
+                url: `/tests/practice-test?category=${encodeURIComponent(category)}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Test'],
+        }),
     }),
 });
 
@@ -220,4 +230,7 @@ export const {
     // Submission hooks
     useGetSubmissionsByTestIdQuery,
     useGetSubmissionResultByIdQuery,
+
+    // ai
+    useCreatePracticeTestMutation,
 } = testApi;
