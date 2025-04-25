@@ -1,7 +1,6 @@
 'use client';
 import { Card, Dropdown, MenuProps } from 'antd';
 import {
-    StarFilled,
     UserOutlined,
     DollarOutlined,
     MoreOutlined,
@@ -26,8 +25,6 @@ interface CourseProps {
 const Course: React.FC<CourseProps> = ({
     title,
     image,
-    star,
-    rating,
     price,
     students,
     onEdit,
