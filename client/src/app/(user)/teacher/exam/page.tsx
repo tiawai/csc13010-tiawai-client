@@ -44,12 +44,12 @@ const ExamPage = () => {
     });
 
     useEffect(() => {
-        if (testsByClassroomId) {
-            setTests(testsByClassroomId);
-        } else if (allTestInClass) {
+        if (selectedClassId === '' && allTestInClass) {
             setTests(allTestInClass);
+        } else if (testsByClassroomId) {
+            setTests(testsByClassroomId);
         }
-    }, [testsByClassroomId]);
+    }, [selectedClassId, allTestInClass, testsByClassroomId]);
 
     const handleClassSelect = (classId: string | undefined) => {
         setSelectedClassId(classId || '');
@@ -59,12 +59,10 @@ const ExamPage = () => {
         setSearchTerm(value);
     };
 
-    // Lọc bài học dựa trên searchTerm
     const filteredLessons = lessons?.filter((lesson) =>
         lesson.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
-    // Lọc đề thi dựa trên searchTerm
     const filteredTests = tests?.filter((test) =>
         test.title.toLowerCase().includes(searchTerm.toLowerCase()),
     );
@@ -114,7 +112,7 @@ const ExamPage = () => {
                             <Col key={test.id} xs={24} sm={12} md={8} lg={6}>
                                 <TestCard
                                     id={test.id}
-                                    classroomId={selectedClassId}
+                                    classroomId={selectedClassId || ''} // fix sau
                                     title={test.title}
                                     duration={test.timeLength}
                                     attempts={test?.submissionCount || 0}
