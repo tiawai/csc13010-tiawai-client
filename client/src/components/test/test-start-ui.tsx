@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useCallback } from 'react';
 import {
     Button,
     Typography,
@@ -11,6 +11,7 @@ import {
     RadioChangeEvent,
     Tabs,
     TabsProps,
+    Modal,
 } from 'antd';
 import { useRouter } from 'next/navigation';
 import { ChoicesType } from '@/types/exam';
@@ -31,6 +32,7 @@ import {
     selectAnswerByQuestionOrder,
     setAnswer,
     setResults,
+    setTimeConsumed,
 } from '@/lib/slices/test.slice';
 import Image from 'next/image';
 import { useSubmitTestByIdMutation } from '@/services/test.service';
@@ -160,11 +162,9 @@ export const PageLayout = memo(
         formQuestionNav: React.ReactNode;
     }) => {
         const router = useRouter();
-        const {
-            id: testId,
-            title,
-            timeLength,
-        } = useAppSelector((state) => state.test.test);
+        const { id: testId, title } = useAppSelector(
+            (state) => state.test.test,
+        );
         const dispatch = useAppDispatch();
         const answers = useAppSelector((state) => state.test.answers);
         const audioUrl = useAppSelector((state) => state.test.test.audioUrl);
@@ -172,26 +172,87 @@ export const PageLayout = memo(
         const [isSubmit, setIsSubmit] = useState<boolean>(false);
         const [submitTest, { isLoading }] = useSubmitTestByIdMutation();
         const { notify } = useNotification();
+        const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+        const [pendingUrl, setPendingUrl] = useState<string | null>(null);
+        const [modalAction, setModalAction] = useState<
+            'navigate' | 'submit' | 'exit' | null
+        >(null);
+
+        useEffect(() => {
+            const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+                event.preventDefault();
+                event.returnValue = '';
+                return 'Bạn có chắc chắn muốn thoát? Các thay đổi chưa lưu sẽ bị mất.';
+            };
+
+            window.addEventListener('beforeunload', handleBeforeUnload);
+            return () => {
+                window.removeEventListener('beforeunload', handleBeforeUnload);
+            };
+        }, []);
 
         useEffect(() => {
             setTimeStart(new Date().toISOString());
         }, []);
 
         useEffect(() => {
-            const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-                if (isSubmit) return;
+            console.log('useEffect: pushState');
+            window.history.pushState(null, '', window.location.href);
+
+            const handlePopState = (e: PopStateEvent | BeforeUnloadEvent) => {
                 e.preventDefault();
-                e.returnValue = true;
+                console.log('useEffect: popstate');
+                setIsModalVisible(true);
+                return;
+
+                // if (isSubmit) return;
             };
 
-            if (!isSubmit) {
-                window.addEventListener('beforeunload', handleBeforeUnload);
+            window.addEventListener('popstate', handlePopState);
+            window.addEventListener('beforeunload', handlePopState);
+            return () => {
+                window.removeEventListener('popstate', handlePopState);
+                window.addEventListener('beforeunload', handlePopState);
+            };
+        }, []);
+
+        const handleConfirmAction = useCallback(async () => {
+            setIsModalVisible(false);
+
+            if (modalAction === 'navigate' && pendingUrl) {
+                if (pendingUrl === 'back') {
+                    window.history.back();
+                } else if (pendingUrl === 'forward') {
+                    window.history.forward();
+                } else {
+                    await router.push(pendingUrl);
+                }
+            } else if (modalAction === 'submit') {
+                await handleSubmit();
+            } else if (modalAction === 'exit') {
+                setIsSubmit(true);
+                await router.push('/');
             }
 
-            return () => {
-                window.removeEventListener('beforeunload', handleBeforeUnload);
-            };
-        }, [isSubmit]);
+            setPendingUrl(null);
+            setModalAction(null);
+        }, [pendingUrl, modalAction, router]);
+
+        const handleCancelAction = useCallback(() => {
+            setIsModalVisible(false);
+            setPendingUrl(null);
+            setModalAction(null);
+        }, []);
+
+        const showSubmitConfirmation = () => {
+            setModalAction('submit');
+            setIsModalVisible(true);
+        };
+
+        const showExitConfirmation = () => {
+            setModalAction('exit');
+            setIsModalVisible(true);
+        };
 
         const handleSubmit = async () => {
             const submitPayload = {
@@ -207,6 +268,7 @@ export const PageLayout = memo(
             };
 
             const res = await submitTest(submitPayload);
+            dispatch(setTimeConsumed(0));
 
             if (!res.error) {
                 setIsSubmit(true);
@@ -228,6 +290,37 @@ export const PageLayout = memo(
                 });
             }
         };
+
+        const getModalConfig = () => {
+            switch (modalAction) {
+                case 'submit':
+                    return {
+                        title: 'Xác nhận nộp bài',
+                        content: 'Bạn có chắc chắn muốn nộp bài không?',
+                        okText: 'Nộp bài',
+                        cancelText: 'Hủy',
+                    };
+                case 'exit':
+                    return {
+                        title: 'Xác nhận thoát',
+                        content:
+                            'Bạn có chắc chắn muốn thoát? Dữ liệu bài làm sẽ không được lưu.',
+                        okText: 'Thoát',
+                        cancelText: 'Hủy',
+                    };
+                case 'navigate':
+                default:
+                    return {
+                        title: 'Xác nhận rời trang',
+                        content:
+                            'Bạn có chắc chắn muốn rời trang này? Dữ liệu bài làm sẽ không được lưu.',
+                        okText: 'Rời trang',
+                        cancelText: 'Ở lại',
+                    };
+            }
+        };
+
+        const modalConfig = getModalConfig();
 
         return (
             <>
@@ -264,17 +357,16 @@ export const PageLayout = memo(
                     >
                         <Card>
                             <CardTitle title="Thời gian còn lại" />
-                            <TimeLeft
-                                timeStart={timeStart}
-                                duration={timeLength}
-                                onTimeUp={handleSubmit}
-                            />
+                            <TimeLeft onTimeUp={handleSubmit} />
                             <Paragraph className="!mt-2 !text-[#ff7a45]">
                                 Chú ý: bạn có thể click vào số thứ tự câu hỏi
                                 trong bài để đánh dấu review
                             </Paragraph>
                             <Divider />
-                            {formQuestionNav}
+                            {/* Add data attribute to mark internal navigation */}
+                            <div data-internal-nav="true">
+                                {formQuestionNav}
+                            </div>
 
                             <Divider />
                             <div className="flex justify-between gap-4">
@@ -283,7 +375,7 @@ export const PageLayout = memo(
                                     htmlType="submit"
                                     size="large"
                                     className="!flex-[1]"
-                                    onClick={handleSubmit}
+                                    onClick={showSubmitConfirmation}
                                     loading={isLoading}
                                 >
                                     Nộp bài
@@ -295,7 +387,7 @@ export const PageLayout = memo(
                                     size="large"
                                     danger
                                     className="!flex-[1]"
-                                    onClick={handleSubmit}
+                                    onClick={showExitConfirmation}
                                 >
                                     Thoát
                                 </Button>
@@ -303,11 +395,22 @@ export const PageLayout = memo(
                         </Card>
                     </Sider>
                 </Layout>
+
+                {/* Confirmation Modal */}
+                <Modal
+                    title={modalConfig.title}
+                    open={isModalVisible}
+                    onOk={handleConfirmAction}
+                    onCancel={handleCancelAction}
+                    okText={modalConfig.okText}
+                    cancelText={modalConfig.cancelText}
+                >
+                    <p>{modalConfig.content}</p>
+                </Modal>
             </>
         );
     },
 );
-
 PageLayout.displayName = 'PageLayout';
 
 const QuestionCard = memo(({ question }: { question: Question }) => {
@@ -475,16 +578,11 @@ const ToeicTestQuestionsNav = ({
     );
 };
 
-const TimeLeft = ({
-    timeStart,
-    duration,
-    onTimeUp,
-}: {
-    timeStart?: string;
-    duration: number;
-    onTimeUp: () => void;
-}) => {
-    const [timeLeft, setTimeLeft] = useState<number>(0);
+const TimeLeft = ({ onTimeUp }: { onTimeUp: () => void }) => {
+    const dispatch = useAppDispatch();
+    const timeLength = useAppSelector((state) => state.test.test.timeLength);
+    const timeConsumed = useAppSelector((state) => state.test.timeConsumed);
+    const timeLeft = timeLength * 60 - timeConsumed;
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60);
@@ -495,38 +593,16 @@ const TimeLeft = ({
     };
 
     useEffect(() => {
-        if (timeStart) {
-            const startTime = new Date(timeStart).getTime();
-            const now = Date.now();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            const totalDurationSeconds = duration * 60;
-            const remainingSeconds = totalDurationSeconds - elapsedSeconds;
-
-            if (remainingSeconds <= 0) {
-                onTimeUp();
-                setTimeLeft(0);
-            } else {
-                setTimeLeft(remainingSeconds);
-            }
-        } else {
-            setTimeLeft(duration * 60);
-        }
-    }, [timeStart, duration, onTimeUp]);
-
-    useEffect(() => {
         const timer = setInterval(() => {
-            setTimeLeft((prevTime) => {
-                if (prevTime <= 1) {
-                    clearInterval(timer);
-                    onTimeUp();
-                    return 0;
-                }
-                return prevTime - 1;
-            });
+            const newTimeConsumed = timeConsumed + 1;
+            dispatch(setTimeConsumed(newTimeConsumed));
+            if (!timeLeft) {
+                clearInterval(timer);
+                onTimeUp();
+            }
         }, 1000);
-
         return () => clearInterval(timer);
-    }, [onTimeUp]);
+    }, [onTimeUp, timeConsumed]);
 
     return (
         <Title className="!m-0" type="danger" level={2}>
