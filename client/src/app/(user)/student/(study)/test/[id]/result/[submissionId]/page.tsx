@@ -39,10 +39,8 @@ export default function TestResultPage() {
     const { data: testData, isLoading } = useGetTestByIdQuery(testId);
     const { data: submissions, isLoading: isLoadingSubmissions } =
         useGetSubmissionResultByIdQuery({ testId, submissionId });
-    const [
-        getExplaination,
-        { isLoading: isLoadingExplain, data: explanation },
-    ] = useLazyGetExplanationForTestQuery();
+    const [getExplaination, { isLoading: isLoadingExplain }] =
+        useLazyGetExplanationForTestQuery();
 
     const test = testData?.test;
     const questions = testData?.questions || [];

@@ -197,6 +197,20 @@ const testApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Test'],
         }),
+
+        createTrackAbandoned: builder.mutation<void, string>({
+            query: (testId) => ({
+                url: `/tests/test/${testId}/abandoned`,
+                method: 'POST',
+            }),
+        }),
+
+        deleteTrackAbandoned: builder.mutation<void, string>({
+            query: (testId) => ({
+                url: `/tests/test/${testId}/abandoned`,
+                method: 'DELETE',
+            }),
+        }),
     }),
 });
 
@@ -233,4 +247,6 @@ export const {
 
     // ai
     useCreatePracticeTestMutation,
+    useCreateTrackAbandonedMutation,
+    useDeleteTrackAbandonedMutation,
 } = testApi;
