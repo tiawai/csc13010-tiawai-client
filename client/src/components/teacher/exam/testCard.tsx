@@ -8,6 +8,7 @@ import {
     DownOutlined,
     EditOutlined,
     DeleteOutlined,
+    AlignRightOutlined,
 } from '@ant-design/icons';
 import Image from 'next/image';
 import bookIcon from '@public/teacher/book.svg';
@@ -58,13 +59,22 @@ const TestCard: React.FC<TestCardProps> = ({
             key: '1',
             label: (
                 <span className="flex cursor-pointer items-center gap-2 font-semibold hover:bg-gray-100">
+                    <AlignRightOutlined className="!rotate-90" />
+                    Bảng điểm
+                </span>
+            ),
+        },
+        {
+            key: '2',
+            label: (
+                <span className="flex cursor-pointer items-center gap-2 font-semibold hover:bg-gray-100">
                     <EditOutlined />
                     Sửa đề thi
                 </span>
             ),
         },
         {
-            key: '2',
+            key: '3',
             label: (
                 <span className="flex cursor-pointer items-center gap-2 font-semibold text-red-500 hover:bg-gray-100">
                     <DeleteOutlined />
