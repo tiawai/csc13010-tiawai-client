@@ -14,12 +14,17 @@ export interface TestState {
     questions: Question[];
     answers: Answer[];
     result?: TestResult;
+    timeStart?: string;
+    timeConsumed: number;
 }
 
 const initialState: TestState = {
     test: {} as Test,
     questions: [],
     answers: [],
+    result: undefined,
+    timeStart: undefined,
+    timeConsumed: 0,
 };
 
 const testSlice = createSlice({
@@ -46,6 +51,7 @@ const testSlice = createSlice({
             state.questions = [];
             state.answers = [];
             state.result = undefined;
+            state.timeConsumed = 0;
         },
 
         setAnswer: (
@@ -62,10 +68,15 @@ const testSlice = createSlice({
         setResults: (state, action: PayloadAction<TestResult>) => {
             state.result = action.payload;
         },
+
+        setTimeConsumed: (state, action: PayloadAction<number>) => {
+            state.timeConsumed = action.payload;
+        },
     },
 });
 
-export const { setTest, resetTest, setAnswer, setResults } = testSlice.actions;
+export const { setTest, resetTest, setAnswer, setResults, setTimeConsumed } =
+    testSlice.actions;
 export default testSlice.reducer;
 
 export const selectAnswerByQuestionOrder =
