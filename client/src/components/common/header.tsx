@@ -13,12 +13,7 @@ import {
     Avatar,
     Dropdown,
 } from 'antd';
-import {
-    DownOutlined,
-    UserOutlined,
-    HistoryOutlined,
-    LogoutOutlined,
-} from '@ant-design/icons';
+import { DownOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import logo from '@public/logo.svg';
 import { signOut } from 'next-auth/react';
 import { selectUser } from '@/lib/slices/auth.slice';
