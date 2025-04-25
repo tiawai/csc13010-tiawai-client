@@ -134,7 +134,9 @@ export default function TestPage({ params }: { params: { id: string } }) {
                     Thời gian làm bài: {test.timeLength} phút
                 </Title>
 
-                <Title level={5}>Đã có {test.timeLength} lượt làm đề này</Title>
+                <Title level={5}>
+                    Đã có {test.submissionCount} lượt làm đề này
+                </Title>
 
                 <Divider />
 
