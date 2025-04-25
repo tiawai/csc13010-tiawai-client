@@ -1,4 +1,3 @@
-// @/components/teacher/exam/classdropdown.tsx
 'use client';
 import { Select } from 'antd';
 import { Classroom } from '@/types/classroom.type';
@@ -18,6 +17,7 @@ const ClassDropdown: React.FC<ClassDropdownProps> = ({
         <div className="mb-8 w-52 overflow-hidden rounded-full border-2 border-black shadow-md">
             <Select
                 placeholder="Chọn lớp học"
+                defaultValue=""
                 onChange={(value) => onSelect(value || undefined)}
                 loading={loading}
                 className="w-full !text-black"

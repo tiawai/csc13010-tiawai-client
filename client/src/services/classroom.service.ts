@@ -141,7 +141,6 @@ const classroomApi = appApi.injectEndpoints({
             invalidatesTags: ['Student'],
         }),
 
-        // create test for teacher
         createNationalTestClassroom: builder.mutation<
             Test,
             CreateNationalTestDto
