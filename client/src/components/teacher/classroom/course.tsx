@@ -88,20 +88,6 @@ const Course: React.FC<CourseProps> = ({
             }
             onClick={handleClick}
         >
-            <div className="mb-2 flex items-center space-x-1">
-                {Array.from({ length: 5 }).map((_, index) => (
-                    <StarFilled
-                        key={index}
-                        className={
-                            index < star ? '!text-[#FF3000]' : '!text-gray-300'
-                        }
-                    />
-                ))}
-                <span className="ml-2 font-semibold">
-                    {isNaN(Number(rating)) ? '0' : Number(rating).toFixed(1)}
-                </span>
-            </div>
-
             <h3 className="my-2 text-xl font-bold">{title}</h3>
             <div className="my-6 flex items-center justify-around bg-white p-4 text-gray-600">
                 <span>

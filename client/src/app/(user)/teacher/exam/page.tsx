@@ -15,7 +15,6 @@ import {
     useGetTestByClassroomIdQuery,
     useGetTestClassoomQuery,
 } from '@/services/classroom.service';
-import { skip } from 'node:test';
 import { Test } from '@/types/test.type';
 
 const ExamPage = () => {
