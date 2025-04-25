@@ -77,7 +77,7 @@ const ClassFrame: React.FC<{
                 width={412}
                 height={250}
                 alt="cover image"
-                className="min-h-[250px] rounded-xl"
+                className="h-[250px] rounded-xl"
             />
             <Flex justify="space-between" align="center">
                 <Flex align="center" gap={4}>
