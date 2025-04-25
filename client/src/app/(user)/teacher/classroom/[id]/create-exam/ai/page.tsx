@@ -35,7 +35,7 @@ const CreateExamByAI = () => {
                     startDate: values.startDate,
                     endDate: values.endDate,
                     totalQuestions: res.data.length,
-                    timeLength: values.timeLength,
+                    timeLength: Number(values.timeLength),
                 },
                 questions: res.data,
             });
@@ -148,7 +148,10 @@ const CreateExamByAI = () => {
                                     },
                                 ]}
                             >
-                                <Input className="mt-1 !rounded-full !bg-purple-100" />
+                                <Input
+                                    className="mt-1 !rounded-full !bg-purple-100"
+                                    type="number"
+                                />
                             </Form.Item>
                         </Col>
 
