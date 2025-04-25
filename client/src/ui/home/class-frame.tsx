@@ -1,6 +1,6 @@
 'use client';
 import { FileTextFilled, UserOutlined } from '@ant-design/icons';
-import { Button, Flex, Rate } from 'antd';
+import { Button, Flex } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { Typography } from 'antd';
@@ -79,25 +79,7 @@ const ClassFrame: React.FC<{
                 alt="cover image"
                 className="h-[250px] rounded-xl"
             />
-            <Flex justify="space-between" align="center">
-                <Flex align="center" gap={4}>
-                    <Rate
-                        value={classData.avgRating || 0}
-                        disabled
-                        allowHalf
-                        style={{ fontSize: 16, color: '#FF3000' }}
-                    />
-                    <span className="ml-1 text-xs font-medium">
-                        {classData.avgRating || '0.0'}
-                    </span>
-                </Flex>
-                {!isMine && (
-                    <span className="font-bold text-secondary">
-                        {priceFormatter(classData.price || 0)}
-                    </span>
-                )}
-            </Flex>
-            <div className="h-[60px] overflow-hidden">
+            <div className="h-[56px] overflow-hidden">
                 <Title
                     className="!mb-0 line-clamp-2 uppercase"
                     level={4}
@@ -106,6 +88,13 @@ const ClassFrame: React.FC<{
                     {classData.className}
                 </Title>
             </div>
+            <Flex justify="space-between" align="center">
+                {!isMine && (
+                    <span className="font-bold text-secondary">
+                        {priceFormatter(classData.price || 0)}
+                    </span>
+                )}
+            </Flex>
             <Flex gap={10}>
                 <Flex
                     className="flex-1 rounded-md bg-white p-5 text-secondary"
