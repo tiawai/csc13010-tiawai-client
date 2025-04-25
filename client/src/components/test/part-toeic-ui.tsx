@@ -47,6 +47,7 @@ import {
 } from './form-ui';
 import { CreateQuestionDto, Question } from '@/types/question.type';
 import { useParams } from 'next/navigation';
+import { useNotification } from '@/lib/hooks/use-notification';
 
 export const PartTitle = ({ title }: { title: string }) => {
     return <Title className="!text-center">{title}</Title>;
@@ -103,6 +104,7 @@ export const PartNavigation = memo(
 
 export const PartNavigationFooter = memo(
     <T extends string>({ partMap }: PartNavigationProps<T>) => {
+        const { notify } = useNotification();
         const params = useParams();
         const classroomId = params.id as string;
         const dispatch = useAppDispatch();
@@ -457,6 +459,10 @@ export const PartNavigationFooter = memo(
             }
 
             setIsLoading(false);
+            notify({
+                message: 'Tạo đề thành công',
+                description: `Đề thi ${title} đã được tạo`,
+            });
         };
 
         const handleCancelTest = () => {
