@@ -18,6 +18,14 @@ const classroomApi = appApi.injectEndpoints({
             providesTags: ['Classroom'],
         }),
 
+        getTopRatedClassrooms: builder.query<Classroom[], void>({
+            query: () => ({
+                url: '/classrooms/top-rated',
+                method: 'GET',
+            }),
+            providesTags: ['Classroom'],
+        }),
+
         getClassrooms: builder.query<Classroom[], void>({
             query: () => ({
                 url: '/classrooms',
@@ -199,6 +207,7 @@ const classroomApi = appApi.injectEndpoints({
 
 export const {
     useGetTeacherClassroomsQuery,
+    useGetTopRatedClassroomsQuery,
     useGetClassroomsQuery,
     useGetMyClassroomsQuery,
     useGetClassroomByIdQuery,
