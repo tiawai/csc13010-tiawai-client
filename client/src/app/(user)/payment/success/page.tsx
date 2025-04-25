@@ -24,12 +24,12 @@ const paymentContent: Record<PaymentType, PaymentContent> = {
     },
     BALANCE: {
         success: {
-            title: 'Nạp tiền thành công!',
-            subtitle: 'Số tiền đã được cộng vào tài khoản của bạn.',
+            title: 'Thanh toán tạo đề AI thành công!',
+            subtitle: 'Bạn có thể thử sử dụng chức năng này ngay bây giờ.',
         },
         error: {
-            title: 'Nạp tiền thất bại',
-            subtitle: 'Đã có lỗi xảy ra trong quá trình nạp tiền.',
+            title: 'Thanh toán tạo đề AI thất bại',
+            subtitle: 'Đã có lỗi xảy ra trong quá trình thanh toán.',
         },
     },
 };
@@ -82,17 +82,29 @@ export default function PaymentSuccess() {
                                 >
                                     Về trang chủ
                                 </Button>,
-                                <Button
-                                    key="classroom"
-                                    type="primary"
-                                    onClick={() =>
-                                        router.push(
-                                            `/student/class/${payment.classroomId}`,
-                                        )
-                                    }
-                                >
-                                    Vào lớp học
-                                </Button>,
+                                payment.type === PaymentType.CLASSROOM ? (
+                                    <Button
+                                        key="classroom"
+                                        type="primary"
+                                        onClick={() =>
+                                            router.push(
+                                                `/student/class/${payment.classroomId}`,
+                                            )
+                                        }
+                                    >
+                                        Vào lớp học
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        key="balance"
+                                        type="primary"
+                                        onClick={() =>
+                                            router.push(`/teacher/classroom`)
+                                        }
+                                    >
+                                        Vào lớp học
+                                    </Button>
+                                ),
                             ]}
                         />
                     ) : (
