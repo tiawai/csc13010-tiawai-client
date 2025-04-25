@@ -112,7 +112,11 @@ const ExamPage = () => {
                             <Col key={test.id} xs={24} sm={12} md={8} lg={6}>
                                 <TestCard
                                     id={test.id}
-                                    classroomId={selectedClassId || ''} // fix sau
+                                    classroomId={
+                                        selectedClassId ||
+                                        test?.classroomId ||
+                                        ''
+                                    }
                                     title={test.title}
                                     duration={test.timeLength}
                                     attempts={test?.submissionCount || 0}

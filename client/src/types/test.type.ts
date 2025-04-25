@@ -21,6 +21,7 @@ export interface Test {
     submissionCount?: number;
     createdAt?: Date;
     updatedAt?: Date;
+    classroomId?: string;
 }
 
 export interface TestResponseDto {
