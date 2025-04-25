@@ -64,15 +64,17 @@ export interface PaymentContent {
     };
 }
 
+export interface Payout {
+    index: number;
+    accountNumber: string;
+    accountHolderName: string;
+    bankName: string;
+    amount: number;
+    message: string;
+}
+
 export interface PayoutDto {
-    payouts: {
-        index: number;
-        accountNumber: string;
-        accountHolderName: string;
-        bankName: string;
-        amount: number;
-        message: string;
-    }[];
+    payouts: Payout[];
     payments: string[];
 }
 
