@@ -315,7 +315,9 @@ const ClassManagement = () => {
                             ) : isTestsLoading ? (
                                 <Spin size="large" />
                             ) : testsError ? (
-                                <Empty description="Lỗi khi tải danh sách đề thi" />
+                                <div className="col-span-full flex w-full items-center justify-center">
+                                    <Empty description="Lỗi khi tải danh sách đề thi" />
+                                </div>
                             ) : tests && tests.length > 0 ? (
                                 tests.map((test) => (
                                     <TestCard
