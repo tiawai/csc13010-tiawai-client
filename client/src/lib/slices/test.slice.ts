@@ -50,8 +50,8 @@ const testSlice = createSlice({
             state.test = {} as Test;
             state.questions = [];
             state.answers = [];
-            state.result = undefined;
             state.timeConsumed = 0;
+            state.result = undefined;
         },
 
         setAnswer: (
@@ -65,6 +65,11 @@ const testSlice = createSlice({
             state.answers[questionOrder - 1].answer = choice;
         },
 
+        setResetSubmit: (state) => {
+            state.answers = QuestionUtils.initListAnswers(state.questions);
+            state.timeConsumed = 0;
+        },
+
         setResults: (state, action: PayloadAction<TestResult>) => {
             state.result = action.payload;
         },
@@ -75,8 +80,14 @@ const testSlice = createSlice({
     },
 });
 
-export const { setTest, resetTest, setAnswer, setResults, setTimeConsumed } =
-    testSlice.actions;
+export const {
+    setTest,
+    resetTest,
+    setAnswer,
+    setResults,
+    setTimeConsumed,
+    setResetSubmit,
+} = testSlice.actions;
 export default testSlice.reducer;
 
 export const selectAnswerByQuestionOrder =

@@ -31,11 +31,16 @@ import { toeicTestInfo } from '@/lib/slices/toeic-test-creator.slice';
 import {
     selectAnswerByQuestionOrder,
     setAnswer,
+    setResetSubmit,
     setResults,
     setTimeConsumed,
 } from '@/lib/slices/test.slice';
 import Image from 'next/image';
-import { useSubmitTestByIdMutation } from '@/services/test.service';
+import {
+    useSubmitTestByIdMutation,
+    useCreateTrackAbandonedMutation,
+    useDeleteTrackAbandonedMutation,
+} from '@/services/test.service';
 
 const { Title, Paragraph } = Typography;
 const { Sider, Content } = Layout;
@@ -162,86 +167,86 @@ export const PageLayout = memo(
         formQuestionNav: React.ReactNode;
     }) => {
         const router = useRouter();
-        const { id: testId, title } = useAppSelector(
-            (state) => state.test.test,
-        );
+        const {
+            id: testId,
+            title,
+            audioUrl,
+        } = useAppSelector((state) => state.test.test);
         const dispatch = useAppDispatch();
         const answers = useAppSelector((state) => state.test.answers);
-        const audioUrl = useAppSelector((state) => state.test.test.audioUrl);
-        const [timeStart, setTimeStart] = useState<string>('');
-        const [isSubmit, setIsSubmit] = useState<boolean>(false);
+        const timeConsumed = useAppSelector((state) => state.test.timeConsumed);
         const [submitTest, { isLoading }] = useSubmitTestByIdMutation();
         const { notify } = useNotification();
         const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
         const [pendingUrl, setPendingUrl] = useState<string | null>(null);
         const [modalAction, setModalAction] = useState<
-            'navigate' | 'submit' | 'exit' | null
+            'submit' | 'exit' | null
         >(null);
 
-        useEffect(() => {
-            const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-                event.preventDefault();
-                event.returnValue = '';
-                return 'Bạn có chắc chắn muốn thoát? Các thay đổi chưa lưu sẽ bị mất.';
-            };
-
-            window.addEventListener('beforeunload', handleBeforeUnload);
-            return () => {
-                window.removeEventListener('beforeunload', handleBeforeUnload);
-            };
-        }, []);
+        const [createTrack] = useCreateTrackAbandonedMutation();
+        const [deleteTrack] = useDeleteTrackAbandonedMutation();
 
         useEffect(() => {
-            setTimeStart(new Date().toISOString());
-        }, []);
-
-        useEffect(() => {
-            console.log('useEffect: pushState');
-            window.history.pushState(null, '', window.location.href);
-
-            const handlePopState = (e: PopStateEvent | BeforeUnloadEvent) => {
-                e.preventDefault();
-                console.log('useEffect: popstate');
-                setIsModalVisible(true);
-                return;
-
-                // if (isSubmit) return;
+            window.history.pushState(null, '', window.location.pathname);
+            const handlePopState = async () => {
+                createTrack(testId);
             };
-
             window.addEventListener('popstate', handlePopState);
-            window.addEventListener('beforeunload', handlePopState);
             return () => {
                 window.removeEventListener('popstate', handlePopState);
-                window.addEventListener('beforeunload', handlePopState);
             };
-        }, []);
+        }, [createTrack]);
+
+        useEffect(() => {
+            const handleDeleteTrack = async () => {
+                deleteTrack(testId);
+            };
+            handleDeleteTrack();
+        }, [deleteTrack, testId]);
+
+        // useEffect(() => {
+        //     if (ref.current !== pathname) {
+        //         createTrack(testId);
+        //     }
+        //     ref.current = pathname;
+        // }, [pathname]);
+
+        // useEffect(() => {
+        //     const handlePopState = async (
+        //         e: PopStateEvent | BeforeUnloadEvent,
+        //     ) => {
+        //         console.log('handlePopState', e);
+        //         await createTrack(testId);
+        //         e.preventDefault();
+        //         e.returnValue = '';
+        //         return 'Bạn có chắc chắn muốn thoát? Các thay đổi chưa lưu sẽ bị mất.';
+        //     };
+
+        //     window.addEventListener('popstate', handlePopState);
+        //     window.addEventListener('beforeunload', handlePopState);
+        //     return () => {
+        //         window.removeEventListener('popstate', handlePopState);
+        //         window.addEventListener('beforeunload', handlePopState);
+        //     };
+        // }, []);
 
         const handleConfirmAction = useCallback(async () => {
             setIsModalVisible(false);
-
-            if (modalAction === 'navigate' && pendingUrl) {
-                if (pendingUrl === 'back') {
-                    window.history.back();
-                } else if (pendingUrl === 'forward') {
-                    window.history.forward();
-                } else {
-                    await router.push(pendingUrl);
-                }
-            } else if (modalAction === 'submit') {
+            if (modalAction === 'submit') {
                 await handleSubmit();
             } else if (modalAction === 'exit') {
-                setIsSubmit(true);
                 await router.push('/');
             }
-
             setPendingUrl(null);
             setModalAction(null);
         }, [pendingUrl, modalAction, router]);
 
-        const handleCancelAction = useCallback(() => {
+        const handleCancelAction = useCallback(async () => {
             setIsModalVisible(false);
             setPendingUrl(null);
             setModalAction(null);
+            dispatch(setResetSubmit);
+            await createTrack(testId);
         }, []);
 
         const showSubmitConfirmation = () => {
@@ -255,12 +260,10 @@ export const PageLayout = memo(
         };
 
         const handleSubmit = async () => {
+            await deleteTrack(testId);
             const submitPayload = {
                 testId: testId,
-                timeConsumed: Math.floor(
-                    (new Date().getTime() - new Date(timeStart).getTime()) /
-                        1000,
-                ),
+                timeConsumed: timeConsumed,
                 answers: answers.map((answer) => ({
                     ...answer,
                     answer: answer?.answer,
@@ -271,8 +274,6 @@ export const PageLayout = memo(
             dispatch(setTimeConsumed(0));
 
             if (!res.error) {
-                setIsSubmit(true);
-                setTimeStart('');
                 notify({
                     message: 'Nộp bài thành công',
                     description: 'Bài thi của bạn đã được ghi nhận',
@@ -282,7 +283,6 @@ export const PageLayout = memo(
                 dispatch(setResults(data));
                 router.push(`result/${submissionId}`);
             } else {
-                setIsSubmit(false);
                 notify({
                     message: 'Nộp bài thất bại',
                     description: 'Vui lòng thử lại sau',
@@ -308,7 +308,6 @@ export const PageLayout = memo(
                         okText: 'Thoát',
                         cancelText: 'Hủy',
                     };
-                case 'navigate':
                 default:
                     return {
                         title: 'Xác nhận rời trang',
@@ -396,7 +395,6 @@ export const PageLayout = memo(
                     </Sider>
                 </Layout>
 
-                {/* Confirmation Modal */}
                 <Modal
                     title={modalConfig.title}
                     open={isModalVisible}
@@ -404,6 +402,7 @@ export const PageLayout = memo(
                     onCancel={handleCancelAction}
                     okText={modalConfig.okText}
                     cancelText={modalConfig.cancelText}
+                    closeIcon={false}
                 >
                     <p>{modalConfig.content}</p>
                 </Modal>
