@@ -4,6 +4,7 @@ import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Button, Flex, Result, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
 const { Text, Title } = Typography;
+import home8 from '@public/home/home-8.svg';
 
 export const TestNotFound = ({ onClick }: { onClick: () => void }) => {
     return (
@@ -44,7 +45,7 @@ export const TestFrame = ({
     const router = useRouter();
     const iconSrc =
         theme === 'pink'
-            ? '/home/home-8.svg'
+            ? home8
             : 'https://tiawai-storage.sgp1.cdn.digitaloceanspaces.com/client/home/home-4.png';
     const iconAlt = theme === 'pink' ? 'home icon 8' : 'home icon 4';
     const bgColor = theme === 'pink' ? '#E9DAE9' : '#DAE3E9';
