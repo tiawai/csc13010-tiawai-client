@@ -31,7 +31,7 @@ const protectedRoutes: ProtectedRoutes = {
         redirect: '/',
     },
     Admin: {
-        invalidRoutes: ['/auth'],
+        invalidRoutes: ['/student/', '/teacher/', '/auth'],
         validRoutes: [],
         redirect: '/admin',
     },
