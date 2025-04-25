@@ -1,5 +1,5 @@
 'use client';
-import { Card, Dropdown, MenuProps } from 'antd';
+import { Card, Dropdown, MenuProps, Typography } from 'antd';
 import {
     UserOutlined,
     DollarOutlined,
@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+const { Title } = Typography;
 
 interface CourseProps {
     title: string;
@@ -85,7 +86,15 @@ const Course: React.FC<CourseProps> = ({
             }
             onClick={handleClick}
         >
-            <h3 className="my-2 text-xl font-bold">{title}</h3>
+            <div className="h-[60px] overflow-hidden">
+                <Title
+                    className="!mb-0 line-clamp-2 uppercase"
+                    level={4}
+                    ellipsis={{ rows: 2, tooltip: title }}
+                >
+                    {title}
+                </Title>
+            </div>
             <div className="my-6 flex items-center justify-around bg-white p-4 text-gray-600">
                 <span>
                     <DollarOutlined /> {price}
