@@ -1,10 +1,15 @@
 import { Test } from '@/types/test.type';
 import IconFrame from '@/ui/icon-frame';
-import { ClockCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+    ClockCircleOutlined,
+    DownloadOutlined,
+    AlignRightOutlined,
+} from '@ant-design/icons';
 import { Button, Flex, Result, Typography } from 'antd';
 import { useRouter } from 'next/navigation';
 const { Text, Title } = Typography;
 import home8 from '@public/home/home-8.svg';
+import { twMerge } from 'tailwind-merge';
 
 export const TestNotFound = ({ onClick }: { onClick: () => void }) => {
     return (
@@ -93,17 +98,32 @@ export const TestFrame = ({
                         </Flex>
                     ))}
                 </Flex>
-                <div>
-                    <Button
-                        shape="round"
-                        type="primary"
-                        className={`${theme === 'pink' ? '!bg-primary-button' : '!bg-secondary-button'}`}
-                        size="small"
-                        onClick={() => router.push(`/student/test/${test.id}`)}
-                    >
-                        Xem đề thi
-                    </Button>
-                </div>
+                <Flex justify="space-between" item="center">
+                    <div>
+                        <Button
+                            shape="round"
+                            type="primary"
+                            className={`${theme === 'pink' ? '!bg-primary-button' : '!bg-secondary-button'}`}
+                            size="small"
+                            onClick={() =>
+                                router.push(`/student/test/${test.id}`)
+                            }
+                        >
+                            Xem đề thi
+                        </Button>
+                    </div>
+                    <AlignRightOutlined
+                        onClick={() => router.push(`/test/${test.id}/ranking`)}
+                        className={twMerge(
+                            '!rotate-90 p-2 text-base hover:cursor-pointer',
+                            'transition duration-200 ease-in-out',
+                            theme === 'pink'
+                                ? 'hover:bg-[#4D2C5E] hover:text-white'
+                                : 'hover:bg-[#2C2F5E] hover:text-white',
+                            'rounded-full',
+                        )}
+                    />
+                </Flex>
             </Flex>
         </Flex>
     );

@@ -5,6 +5,7 @@ import {
     CreateTestDto,
     CreateToeicListeningTestDto,
     Test,
+    TestRankingResponse,
 } from '@/types/test.type';
 
 const classroomApi = appApi.injectEndpoints({
@@ -202,6 +203,11 @@ const classroomApi = appApi.injectEndpoints({
             }),
             invalidatesTags: ['Test'],
         }),
+
+        getTestRankings: builder.query<TestRankingResponse, string>({
+            query: (testId) => `/tests/test/${testId}/rankings`,
+            providesTags: ['Test'],
+        }),
     }),
 });
 
@@ -229,4 +235,5 @@ export const {
     useGetTestClassoomQuery,
     useGetTestByClassroomIdQuery,
     useDeleteTestByClassroomIdMutation,
+    useGetTestRankingsQuery,
 } = classroomApi;
