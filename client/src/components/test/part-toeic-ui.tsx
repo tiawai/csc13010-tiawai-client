@@ -300,7 +300,12 @@ export const PartNavigationFooter = memo(
                     paragraph: question?.paragraph,
                     content: question?.content,
                     explanation: question?.explanation,
-                    choices: question.choices,
+                    choices: {
+                        A: question.choices.A || 'Đáp án A',
+                        B: question.choices.B || 'Đáp án B',
+                        C: question.choices.C || 'Đáp án C',
+                        D: question.choices.D || 'Đáp án D',
+                    },
                     correctAnswer: question.correctAnswer || 'A',
                     points: 4.5,
 
@@ -351,19 +356,18 @@ export const PartNavigationFooter = memo(
                     paragraph: question?.paragraph,
                     content: question?.content,
                     explanation: question?.explanation,
-                    choices: question.choices,
+                    choices: {
+                        A: question.choices.A || 'Đáp án A',
+                        B: question.choices.B || 'Đáp án B',
+                        C: question.choices.C || 'Đáp án C',
+                        D: question.choices.D || 'Đáp án D',
+                    },
                     correctAnswer: question.correctAnswer || 'A',
                     points: 4.5,
 
                     // paragraph: `Đoạn văn - Câu ${question.questionOrder}`,
                     // content: `Câu ${question.questionOrder}`,
                     // explanation: `Giải thích - Câu ${question.questionOrder}`,
-                    // choices: {
-                    //     A: 'Đáp án A',
-                    //     B: 'Đáp án B',
-                    //     C: 'Đáp án C',
-                    //     D: 'Đáp án D',
-                    // },
                 }),
             );
 

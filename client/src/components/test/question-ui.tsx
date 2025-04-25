@@ -129,7 +129,9 @@ export const QuestionImage = ({ getField, setField }: QuestionProps) => {
     return (
         <>
             <Form.Item
-                label={`Hình ảnh câu hỏi ${questionOrder}`}
+                label={
+                    <FormLabel label={`Hình ảnh câu hỏi ${questionOrder}`} />
+                }
                 rules={[
                     {
                         required: true,
@@ -278,10 +280,12 @@ export const BasicQuestion = memo(
         questionOrder,
         showQuestion = true,
         showQuestionImage = false,
+        showChoices = true,
     }: {
         questionOrder: number;
         showQuestion?: boolean;
         showQuestionImage?: boolean;
+        showChoices?: boolean;
     }) => {
         const { getField, setField } = useQuestionField('toeic', questionOrder);
         return (
@@ -292,7 +296,9 @@ export const BasicQuestion = memo(
                 {showQuestionImage && (
                     <QuestionImage getField={getField} setField={setField} />
                 )}
-                <QuestionChoices getField={getField} setField={setField} />
+                {showChoices && (
+                    <QuestionChoices getField={getField} setField={setField} />
+                )}
                 <QuestionCorrectAnswer
                     getField={getField}
                     setField={setField}
