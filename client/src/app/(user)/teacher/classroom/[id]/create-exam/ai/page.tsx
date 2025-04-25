@@ -31,7 +31,7 @@ const CreateExamByAI = () => {
                 classroomId: (params.id as string) || '',
                 test: {
                     title: values.title,
-                    type: TestType.NATIONAL_TEST,
+                    type: TestType.ASSIGNMENT,
                     startDate: values.startDate,
                     endDate: values.endDate,
                     totalQuestions: res.data.length,
