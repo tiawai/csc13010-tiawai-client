@@ -24,12 +24,12 @@ const paymentContent: Record<PaymentType, PaymentContent> = {
     },
     BALANCE: {
         success: {
-            title: 'Hủy nạp tiền thành công!',
-            subtitle: 'Bạn có thể thử nạp tiền lại sau.',
+            title: 'Hủy thanh toán tạo đề AI thành công!',
+            subtitle: 'Bạn có thể thanh toán lại chức năng này sau.',
         },
         error: {
-            title: 'Hủy nạp tiền thất bại',
-            subtitle: 'Đã có lỗi xảy ra trong quá trình hủy nạp tiền.',
+            title: 'Hủy thanh toán thất bại',
+            subtitle: 'Đã có lỗi xảy ra trong quá trình hủy thanh toán.',
         },
     },
 };
