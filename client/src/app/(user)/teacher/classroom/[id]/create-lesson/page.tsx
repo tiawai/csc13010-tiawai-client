@@ -44,12 +44,12 @@ const CreateLesson = () => {
         });
 
         try {
-            await createLesson(formData).unwrap();
+            const response = await createLesson(formData).unwrap();
             notification.success({ message: 'Tạo bài học thành công!' });
             form.resetFields();
             setContent('');
             setFileList([]);
-            router.push(`/teacher/classroom/${classId}`);
+            router.push(`/teacher/lesson/${response.id}`);
         } catch (error: unknown) {
             const err = error as Error;
             notification.error({
