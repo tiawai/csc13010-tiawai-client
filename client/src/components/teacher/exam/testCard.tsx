@@ -67,15 +67,6 @@ const TestCard: React.FC<TestCardProps> = ({
         {
             key: '2',
             label: (
-                <span className="flex cursor-pointer items-center gap-2 font-semibold hover:bg-gray-100">
-                    <EditOutlined />
-                    Sửa đề thi
-                </span>
-            ),
-        },
-        {
-            key: '3',
-            label: (
                 <span className="flex cursor-pointer items-center gap-2 font-semibold text-red-500 hover:bg-gray-100">
                     <DeleteOutlined />
                     Xoá đề thi
@@ -90,23 +81,10 @@ const TestCard: React.FC<TestCardProps> = ({
             <Image src={bookIcon} alt="Book Icon" className="h-20 w-20" />
 
             <div className="w-44 flex-1">
-                <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold">
-                    {title}
-                </div>
-                <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
-                    <ClockCircleOutlined className="mr-1 text-black" />{' '}
-                    {duration} phút
-                    <DownloadOutlined className="mr-1 text-black" /> {attempts}{' '}
-                    lượt làm
-                </div>
-                <div className="mt-2 flex justify-between">
-                    <Button
-                        type="primary"
-                        shape="round"
-                        className="flex items-center bg-[#2C2F5E] !p-2 !text-sm"
-                    >
-                        Xem bài test <DownOutlined className="ml-1" />
-                    </Button>
+                <div className="flex justify-between">
+                    <div className="overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold">
+                        {title}
+                    </div>
 
                     <Dropdown
                         menu={{ items }}
@@ -118,6 +96,21 @@ const TestCard: React.FC<TestCardProps> = ({
                             rotate={90}
                         />
                     </Dropdown>
+                </div>
+                <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
+                    <ClockCircleOutlined className="mr-1 text-black" />{' '}
+                    {duration} phút
+                    <DownloadOutlined className="mr-1 text-black" /> {attempts}{' '}
+                    lượt làm
+                </div>
+                <div className="mt-2 flex justify-between">
+                    {/* <Button
+                        type="primary"
+                        shape="round"
+                        className="flex items-center bg-[#2C2F5E] !p-2 !text-sm"
+                    >
+                        Xem bài test <DownOutlined className="ml-1" />
+                    </Button> */}
                 </div>
             </div>
 

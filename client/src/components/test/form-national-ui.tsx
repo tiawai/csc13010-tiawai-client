@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation';
 import { Button, Modal } from 'antd';
 import { memo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
@@ -25,6 +26,7 @@ export const FormFooter = memo(() => {
     const testState = useAppSelector((state) => state.nationalTestCreator);
     const [isLoading, setIsLoading] = useState(false);
     const [createNationalTest] = useCreateNationalTestMutation();
+    const router = useRouter();
     const [createNationalTestTeacher] =
         useCreateNationalTestClassroomMutation();
     const { notify } = useNotification();
@@ -90,6 +92,9 @@ export const FormFooter = memo(() => {
                 message: 'Đăng đề thành công',
                 description: 'Đề thi đã được đăng thành công.',
             });
+            if (classroomId) {
+                router.push(`/teacher/classroom/${classroomId}`);
+            }
         } else {
             notify({
                 message: 'Đăng đề thất bại',
