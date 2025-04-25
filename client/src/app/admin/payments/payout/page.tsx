@@ -1,5 +1,5 @@
 'use client';
-import { Button, Empty, Table, Steps, Alert, Divider } from 'antd';
+import { Button, Empty, Table, Steps, Alert } from 'antd';
 import {
     useGetPayoutQuery,
     useProcessPayoutMutation,
@@ -51,7 +51,6 @@ const columns: ColumnsType<Payout> = [
 ];
 
 export default function AdminPaymentsPage() {
-    const router = useRouter();
     const [current, setCurrent] = useState<number>(0);
     const { currentPage, pageSize, handlePageChange } = usePagination(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
