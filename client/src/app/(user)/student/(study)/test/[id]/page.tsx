@@ -21,7 +21,7 @@ import { Loading } from '@/components/common/loading';
 import { TestHistory } from '@/components/test/test-history';
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/hook';
 import { useNotification } from '@/lib/hooks/use-notification';
-import { setTest } from '@/lib/slices/test.slice';
+import { setTest, setTimeConsumed } from '@/lib/slices/test.slice';
 import { useGetTestByIdQuery } from '@/services/test.service';
 import { useCreateReportMutation } from '@/services/report.service';
 import { CreateReport } from '@/types/report.type';
@@ -48,6 +48,7 @@ export default function TestPage({ params }: { params: { id: string } }) {
                     }),
                 }),
             );
+            dispatch(setTimeConsumed(0));
         }
     }, [dispatch, data]);
 

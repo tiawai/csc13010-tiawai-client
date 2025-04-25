@@ -8,7 +8,7 @@ import { Category, TestType } from '@/types/test.type';
 import { useNotification } from '@/lib/hooks/use-notification';
 import { useCreateNationalTestClassroomMutation } from '@/services/classroom.service';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'next/navigation';
 
 const CreateExamByAI = () => {
     const params = useParams();
@@ -28,7 +28,7 @@ const CreateExamByAI = () => {
             }
 
             const test = await createNationalTest({
-                classroomId: params.id,
+                classroomId: (params.id as string) || '',
                 test: {
                     title: values.title,
                     type: TestType.NATIONAL_TEST,
