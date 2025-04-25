@@ -1,12 +1,11 @@
 'use client';
-import { Button, Dropdown, notification } from 'antd';
+
+import { Dropdown, notification } from 'antd';
 import type { MenuProps } from 'antd';
 import {
     ClockCircleOutlined,
     DownloadOutlined,
     MoreOutlined,
-    DownOutlined,
-    EditOutlined,
     DeleteOutlined,
     AlignRightOutlined,
 } from '@ant-design/icons';
@@ -15,6 +14,7 @@ import bookIcon from '@public/teacher/book.svg';
 import { useState } from 'react';
 import ConfirmModal from '@/components/common/confirm-modal';
 import { useDeleteTestByClassroomIdMutation } from '@/services/classroom.service';
+import { useRouter } from 'next/navigation';
 
 interface TestCardProps {
     id: string;
@@ -31,9 +31,14 @@ const TestCard: React.FC<TestCardProps> = ({
     duration,
     attempts,
 }) => {
+    const router = useRouter();
     const [deleteTest, { isLoading: isDeleting }] =
         useDeleteTestByClassroomIdMutation();
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+    const handleRanking = () => {
+        router.push(`/test/${id}/ranking`);
+    };
 
     const handleDelete = async () => {
         try {
@@ -63,6 +68,7 @@ const TestCard: React.FC<TestCardProps> = ({
                     Bảng điểm
                 </span>
             ),
+            onClick: handleRanking,
         },
         {
             key: '2',

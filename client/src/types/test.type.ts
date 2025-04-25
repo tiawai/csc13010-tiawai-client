@@ -24,6 +24,24 @@ export interface Test {
     classroomId?: string;
 }
 
+export interface TestRankingResponse {
+    testId: string;
+    testTitle: string;
+    totalParticipants: number;
+    rankings: Ranking[];
+}
+
+export interface Ranking {
+    rank: number;
+    userId: string;
+    username: string;
+    email: string;
+    correctAnswers: number;
+    totalQuestions: number;
+    percentage: number;
+    formattedTime: string;
+}
+
 export interface TestResponseDto {
     test: Test;
     questions: Question[];
