@@ -38,7 +38,7 @@ const LessonFrame = ({ lesson }: Readonly<LessonFrameProps>) => {
             />
             <Flex className="!max-w-full gap-4" vertical>
                 <Title
-                    className="!m-0 !max-w-[65%] truncate !font-montserrat !text-xl"
+                    className="!m-0 !max-w-full truncate text-wrap !font-montserrat !text-xl"
                     level={5}
                 >
                     {title}

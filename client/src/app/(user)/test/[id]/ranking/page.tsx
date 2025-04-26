@@ -1,4 +1,3 @@
-// @/app/(user)/teacher/challenge/[testId]/page.tsx
 'use client';
 import { useParams, useRouter } from 'next/navigation';
 import { Flex, Avatar, Spin, Empty, Button } from 'antd';
@@ -25,8 +24,8 @@ const TOP10_COLORS = [
 
 const Challenge = () => {
     const router = useRouter();
-    const { id: testId } = useParams() as { testId: string };
-    const { data, isLoading, error } = useGetTestRankingsQuery(testId);
+    const { id } = useParams() as { id: string };
+    const { data, isLoading, error } = useGetTestRankingsQuery(id);
 
     const handleBack = () => {
         if (window.history.length > 1) {
@@ -144,8 +143,11 @@ const Challenge = () => {
                                               : '3rd'}
                                     </strong>
                                     <strong className="rounded-[60px] bg-white/30 px-4 py-1 text-2xl">
-                                        {item.correctAnswers}/
-                                        {item.totalQuestions}
+                                        {Math.min(
+                                            item.correctAnswers,
+                                            item.totalQuestions,
+                                        )}
+                                        /{item.totalQuestions}
                                     </strong>
                                     <span>{item.formattedTime}</span>
                                 </Flex>
@@ -204,7 +206,11 @@ const Challenge = () => {
                                 className="font-montserrat"
                             >
                                 <span className="text-xl font-semibold">
-                                    {item.correctAnswers}/{item.totalQuestions}
+                                    {Math.min(
+                                        item.correctAnswers,
+                                        item.totalQuestions,
+                                    )}
+                                    /{item.totalQuestions}
                                 </span>
                                 <span className="text-[#B09393]">
                                     {item.formattedTime}
