@@ -98,7 +98,7 @@ export const TestFrame = ({
                         </Flex>
                     ))}
                 </Flex>
-                <Flex justify="space-between" item="center">
+                <Flex justify="space-between" align="center">
                     <div>
                         <Button
                             shape="round"
